@@ -1,9 +1,18 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "moduleResolution": "node"
+        "target": "ES2017",
+        "sourceMap": true,
+        "module": "CommonJs"
     },
-    "include": [
-        "./src/**/*"
+    "exclude": [
+        "node_modules",
+        "phaser.d.ts",
+        "build",
+        "scripts",
+        "acceptance-tests",
+        "webpack",
+        "jest",
+        "raw",
+        "src/setupTests.ts"
     ]
 }

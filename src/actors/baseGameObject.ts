@@ -1,11 +1,22 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { Direction } from '../global/direction';
 import Point = Phaser.Geom.Point;
+import Sprite = Phaser.GameObjects.Sprite;
 
 export abstract class BaseGameObject extends GameObject {
-    protected sprite: Phaser.GameObjects.Sprite;
+    protected sprite?: Phaser.GameObjects.Sprite; // Sprite might not available when not on screen.
 
     abstract update: (delta: number) => void;
+
+    public setSprite = (sprite: Sprite) => {
+        this.sprite = sprite;
+    };
+
+    // TODO: Is there a more performant way?
+    public destroySprite = () => {
+        this.sprite.destroy(true);
+        this.sprite = undefined;
+    };
 
     private setPos = (pos: Phaser.Geom.Point) => {
         this.sprite.setPosition(pos.x, pos.y);
@@ -20,7 +31,6 @@ export abstract class BaseGameObject extends GameObject {
     };
 
     public move = (direction: Direction) => {
-        console.log(direction);
         switch (direction) {
             case Direction.DOWN:
                 this.setPosY(this.sprite.y + 1);
