@@ -5,7 +5,8 @@
     "main": "src/game.ts",
     "scripts": {
         "dev": "webpack --mode development && webpack-dev-server --mode development --hot",
-        "build": "webpack --mode production && webpack-dev-server --mode production"
+        "build": "webpack --mode production && webpack-dev-server --mode production",
+	"prettier": "prettier --write ./src/*"
     },
     "repository": {
         "type": "git",
@@ -19,6 +20,7 @@
     "homepage": "https://github.com/photonstorm/phaser3-typescript-project-template#readme",
     "dependencies": {
         "phaser": "^3.20.1",
+        "rxjs": "^6.5.3",
         "typescript": "^3.7.2"
     },
     "devDependencies": {

@@ -3,14 +3,22 @@ import { Direction } from '../global/direction';
 import Point = Phaser.Geom.Point;
 import Sprite = Phaser.GameObjects.Sprite;
 
-export abstract class BaseGameObject extends GameObject {
+export abstract class BaseGameObject {
     protected sprite?: Phaser.GameObjects.Sprite; // Sprite might not available when not on screen.
 
     abstract update: (delta: number) => void;
 
+    constructor(private _id: string){}
+
+    get id(): string {
+        return this._id;
+    }
+
     public setSprite = (sprite: Sprite) => {
         this.sprite = sprite;
     };
+
+    public getSprite = () => this.sprite;
 
     // TODO: Is there a more performant way?
     public destroySprite = () => {

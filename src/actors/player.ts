@@ -6,8 +6,8 @@ export class Player extends BaseGameObject {
         scene: Phaser.Scene,
         initialPos: Phaser.Geom.Point
     ) => {
-        const player = new Player(scene, 'player');
-        player.sprite = scene.add.sprite(initialPos.x, initialPos.y, 'test', 0);
+        const player = new Player('player');
+        player.sprite = scene.physics.add.sprite(initialPos.x, initialPos.y, 'player', 0);
         return player;
     };
 

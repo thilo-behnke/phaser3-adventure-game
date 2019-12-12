@@ -1,34 +1,50 @@
 import 'phaser';
+import * as player from '../assets/green-knight.png';
 import { Player } from './actors/player';
 import { Direction } from './global/direction';
 import { Action, KeyManager } from './input/keyManager';
 import Point = Phaser.Geom.Point;
-import {Capsule} from "./actors/capsule";
+import { Capsule } from './actors/capsule';
+import { MonsterFactory } from './factories/MonsterFactory';
 
 export default class Demo extends Phaser.Scene {
     private player: Player;
     private keyManager: KeyManager;
+    private monsterFactory: MonsterFactory;
 
     constructor() {
         super('demo');
     }
 
     preload() {
-        this.load.image('logo', 'assets/phaser3-logo.png');
-        this.load.image('libs', 'assets/libs.png');
-        this.load.glsl('bundle', 'assets/plasma-bundle.glsl.js');
-        this.load.glsl('stars', 'assets/starfields.glsl.js');
+        this.load.image('player', player);
     }
 
     create() {
         this.player = Player.create(this, new Point(100, 100));
         this.keyManager = KeyManager.create(this);
+        this.monsterFactory = MonsterFactory.create(this);
+        // TODO: Update colliders? Maybe inject into ColliderManager...
+        this.monsterFactory.getGameObjects().subscribe();
 
         const itemObjects = [Capsule.create(this, new Point(20, 200))];
-        const items = this.physics.add.group(itemObjects);
+        const monsters = [this.monsterFactory.generate()];
 
-
-        const itemCollider = this.physics.add.collider(this.player, items, console.log, console.log);
+        this.physics.add.overlap(
+            this.player.getSprite(),
+            itemObjects[0].getSprite(),
+            () => console.log('overlap'),
+            console.log,
+            this
+        );
+        this.physics.add.collider(
+            this.player.getSprite(),
+            itemObjects[0].getSprite(),
+            () => console.log('overlap'),
+            console.log,
+            this
+        );
+        /*        const itemCollider = this.physics.add.collider(this.player.sprite, items, console.log, console.log);*/
     }
 
     update(time: number, delta: number): void {
@@ -53,8 +69,8 @@ const config = {
     scene: Demo,
     physics: {
         default: 'arcade',
-        arcade: { debug: true }
-    }
+        arcade: { debug: true },
+    },
 };
 
 const game = new Phaser.Game(config);

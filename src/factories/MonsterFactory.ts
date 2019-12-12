@@ -1,22 +1,21 @@
-import {
-    CollectableMonsterObject,
-    Monster,
-} from '../actors/collectableMonsterObject';
-import { NUMBER_OF_MONSTERS } from '../constants';
-import Point = Phaser.Geom.Point;
-import {IMonsterGenerator} from "./IMonsterGenerator";
-import Scene = Phaser.Scene;
+import {GameObjectFactory} from "./GameObjectFactory";
+import {CollectableMonsterObject, Monster} from "../actors/collectableMonsterObject";
+import {NUMBER_OF_MONSTERS} from "../constants";
 
-export class MonsterFactory {
+export class MonsterFactory extends GameObjectFactory<CollectableMonsterObject> {
 
-    private registry: {[key: number]: CollectableMonsterObject};
+    constructor(scene: Phaser.Scene){
+        super(scene);
+    }
 
-    constructor(private scene: Phaser.Scene){}
+    static create(scene: Phaser.Scene) {
+        return new MonsterFactory(scene);
+    }
 
-    generateMonsterBySeed = (generator: IMonsterGenerator) => {
+    protected generateObject (): [number, CollectableMonsterObject] {
         // Determine the monster.
-        // TODO: Implement.
-        const seed = generator.getSeed();
+        // TODO: Implement: The seed most come in as an input (e.g. from a capsule)
+        const seed = Date.now();
         const mod = seed % NUMBER_OF_MONSTERS;
         const stats = {
             type: Monster.WOLF,
@@ -24,16 +23,7 @@ export class MonsterFactory {
             strength: 100,
             agility: 100,
         };
-        this.registry[seed] = CollectableMonsterObject.generate(this.scene, stats);
-        return seed;
-    };
-
-    addToScene(id: number, pos: Point) {
-        const monster = this.registry[id];
-        if(!monster) {
-            throw new Error(`Monster with id ${id} not found!`)
-        }
-        const sprite = this.scene.add.sprite(pos.x, pos.y, monster.type);
-        monster.setSprite(sprite);
+        return [seed, CollectableMonsterObject.generate(seed, stats)];
     }
+
 }
