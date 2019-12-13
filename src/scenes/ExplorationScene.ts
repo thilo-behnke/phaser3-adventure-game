@@ -29,8 +29,8 @@ export default class ExplorationScene extends Phaser.Scene {
         this.sceneProvider = container.resolve(SceneProvider);
         this.sceneProvider.initialize(this);
         this.monsterFactory = container.resolve(MonsterFactory);
+        this.keyManager = container.resolve(KeyManager);
         this.player = Player.create(this, new Point(100, 100));
-        this.keyManager = KeyManager.create(this);
 
         const itemObjects = [Capsule.create(this, new Point(20, 200))];
         this.monsterFactory.generate(new Point(100, 200));

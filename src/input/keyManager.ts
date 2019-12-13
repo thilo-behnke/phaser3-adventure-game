@@ -1,5 +1,8 @@
 import Key = Phaser.Input.Keyboard.Key;
 import Scene = Phaser.Scene;
+import {injectable, singleton} from "tsyringe";
+import SceneManager = Phaser.Scenes.SceneManager;
+import {SceneProvider} from "../scene/SceneProvider";
 
 export enum Action {
     LEFT = 'LEFT',
@@ -8,31 +11,30 @@ export enum Action {
     UP = 'UP',
 }
 
+@singleton()
+@injectable()
 export class KeyManager {
     private scene: Scene;
 
     // Actions.
     private actions: { [key in Action]: Key };
 
-    static create = (scene: Phaser.Scene) => {
-        const keyManager = new KeyManager();
-        keyManager.scene = scene;
-        keyManager.actions = {
-            [Action.LEFT]: scene.input.keyboard.addKey(
+    constructor(private sceneProvider: SceneProvider) {
+        this.actions = {
+            [Action.LEFT]: sceneProvider.addKey(
                 Phaser.Input.Keyboard.KeyCodes.LEFT
             ),
-            [Action.RIGHT]: scene.input.keyboard.addKey(
+            [Action.RIGHT]: sceneProvider.addKey(
                 Phaser.Input.Keyboard.KeyCodes.RIGHT
             ),
-            [Action.UP]: scene.input.keyboard.addKey(
+            [Action.UP]: sceneProvider.addKey(
                 Phaser.Input.Keyboard.KeyCodes.UP
             ),
-            [Action.DOWN]: scene.input.keyboard.addKey(
+            [Action.DOWN]: sceneProvider.addKey(
                 Phaser.Input.Keyboard.KeyCodes.DOWN
             ),
         };
-        return keyManager;
-    };
+    }
 
     isDown = (action: Action) => {
         return this.actions[action].isDown;

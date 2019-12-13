@@ -30,4 +30,8 @@ export class SceneProvider {
         return this.scene.physics.add.collider(obj.getSprite(), null);
     }
 
+    addKey = (keyCode: number) => {
+        return this.scene.input.keyboard.addKey(keyCode)
+    }
+
 }
