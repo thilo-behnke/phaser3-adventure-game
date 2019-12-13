@@ -2,11 +2,11 @@
     "name": "phaser3-typescript-project-template",
     "version": "1.0.1",
     "description": "A Phaser 3 Project Template using Rollup and TypeScript",
-    "main": "src/game.ts",
+    "main": "src/index.ts",
     "scripts": {
         "dev": "webpack --mode development && webpack-dev-server --mode development --hot",
         "build": "webpack --mode production && webpack-dev-server --mode production",
-	"prettier": "prettier --write ./src/*"
+        "prettier": "prettier --write ./src/*"
     },
     "repository": {
         "type": "git",
@@ -20,7 +20,9 @@
     "homepage": "https://github.com/photonstorm/phaser3-typescript-project-template#readme",
     "dependencies": {
         "phaser": "^3.20.1",
+        "reflect-metadata": "^0.1.13",
         "rxjs": "^6.5.3",
+        "tsyringe": "^4.0.1",
         "typescript": "^3.7.2"
     },
     "devDependencies": {

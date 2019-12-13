@@ -1,15 +1,19 @@
 import 'phaser';
-import * as player from '../assets/green-knight.png';
-import { Player } from './actors/player';
-import { Direction } from './global/direction';
-import { Action, KeyManager } from './input/keyManager';
+import * as player from '../../assets/green-knight.png';
+import { Player } from '../actors/player';
+import { Direction } from '../global/direction';
+import { Action, KeyManager } from '../input/keyManager';
 import Point = Phaser.Geom.Point;
-import { Capsule } from './actors/capsule';
-import { MonsterFactory } from './factories/MonsterFactory';
+import { Capsule } from '../actors/capsule';
+import { MonsterFactory } from '../factories/MonsterFactory';
+import {autoInjectable, container, inject, injectable} from "tsyringe";
+import {SceneProvider} from "../scene/SceneProvider";
+import {Test} from "./Test";
 
-export default class Demo extends Phaser.Scene {
+export default class ExplorationScene extends Phaser.Scene {
     private player: Player;
     private keyManager: KeyManager;
+    private sceneProvider: SceneProvider;
     private monsterFactory: MonsterFactory;
 
     constructor() {
@@ -21,14 +25,15 @@ export default class Demo extends Phaser.Scene {
     }
 
     create() {
+        // TODO: Why does constructor autowiring not work here?
+        this.sceneProvider = container.resolve(SceneProvider);
+        this.sceneProvider.initialize(this);
+        this.monsterFactory = container.resolve(MonsterFactory);
         this.player = Player.create(this, new Point(100, 100));
         this.keyManager = KeyManager.create(this);
-        this.monsterFactory = MonsterFactory.create(this);
-        // TODO: Update colliders? Maybe inject into ColliderManager...
-        this.monsterFactory.getGameObjects().subscribe();
 
         const itemObjects = [Capsule.create(this, new Point(20, 200))];
-        const monsters = [this.monsterFactory.generate()];
+        this.monsterFactory.generate(new Point(100, 200));
 
         this.physics.add.overlap(
             this.player.getSprite(),
@@ -44,7 +49,6 @@ export default class Demo extends Phaser.Scene {
             console.log,
             this
         );
-        /*        const itemCollider = this.physics.add.collider(this.player.sprite, items, console.log, console.log);*/
     }
 
     update(time: number, delta: number): void {
@@ -60,17 +64,3 @@ export default class Demo extends Phaser.Scene {
         }
     }
 }
-
-const config = {
-    type: Phaser.AUTO,
-    backgroundColor: '#125555',
-    width: 800,
-    height: 600,
-    scene: Demo,
-    physics: {
-        default: 'arcade',
-        arcade: { debug: true },
-    },
-};
-
-const game = new Phaser.Game(config);

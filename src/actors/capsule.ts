@@ -1,7 +1,11 @@
 import { ItemObject } from './item';
 import Point = Phaser.Geom.Point;
-import { NUMBER_OF_MONSTERS } from '../constants';
+import { NUMBER_OF_MONSTERS } from '../shared/constants';
+import {CollisionGroupDef} from "../collision/CollisionGroupDef";
+import {CollisionGroup} from "../collision/CollisionGroup";
 
+
+@CollisionGroupDef(CollisionGroup.PLAYER)
 export class Capsule extends ItemObject {
     private seed: number;
 

@@ -1,25 +1,20 @@
-import {
-    CollectableMonsterObject,
-    Monster,
-} from '../actors/collectableMonsterObject';
-import { NUMBER_OF_MONSTERS } from '../constants';
-import Point = Phaser.Geom.Point;
-import Scene = Phaser.Scene;
-import { IGameObjectFactory } from './IGameObjectFactory';
-import { IGameObjectProvider } from './IGameObjectProvider';
+import {IGameObjectFactory} from './IGameObjectFactory';
+import {IGameObjectProvider} from './IGameObjectProvider';
 import {BehaviorSubject, Observable} from 'rxjs';
-import { BaseGameObject } from '../actors/baseGameObject';
+import {BaseGameObject} from '../actors/baseGameObject';
 import {filter} from "rxjs/operators";
-import game from "../game";
+import Point = Phaser.Geom.Point;
+import {SceneProvider} from "../scene/SceneProvider";
+import {injectable} from "tsyringe";
 
 export abstract class GameObjectFactory<T extends BaseGameObject>
-    implements IGameObjectFactory, IGameObjectProvider {
+    implements IGameObjectFactory {
     private registry: { [key: number]: T } = {};
-    private changeSubject = new BehaviorSubject<BaseGameObject[] | undefined>(
-        undefined
-    );
 
-    protected constructor(protected scene: Phaser.Scene) {}
+
+
+    protected constructor(protected sceneProvider: SceneProvider) {
+    }
 
     protected abstract generateObject(): [number, T];
 
@@ -37,16 +32,9 @@ export abstract class GameObjectFactory<T extends BaseGameObject>
         if (!gameObject) {
             throw new Error(`GameObject with id ${id} not found!`);
         }
-        const sprite = this.scene.add.sprite(
-            pos.x,
-            pos.y,
-            gameObject.id.toString()
+        this.sceneProvider.addToScene(
+            gameObject,
+            pos
         );
-        gameObject.setSprite(sprite);
-        this.changeSubject.next(Object.values(this.registry));
-    }
-
-    getGameObjects = () => {
-        return this.changeSubject.asObservable().pipe(filter(val => val !== undefined)) as Observable<BaseGameObject[]>;
     }
 }

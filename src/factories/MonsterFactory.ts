@@ -1,15 +1,15 @@
 import {GameObjectFactory} from "./GameObjectFactory";
 import {CollectableMonsterObject, Monster} from "../actors/collectableMonsterObject";
-import {NUMBER_OF_MONSTERS} from "../constants";
+import {NUMBER_OF_MONSTERS} from "../shared/constants";
+import {autoInjectable, injectable, singleton} from "tsyringe";
+import {SceneProvider} from "../scene/SceneProvider";
 
+/*@singleton()*/
+@injectable()
 export class MonsterFactory extends GameObjectFactory<CollectableMonsterObject> {
 
-    constructor(scene: Phaser.Scene){
-        super(scene);
-    }
-
-    static create(scene: Phaser.Scene) {
-        return new MonsterFactory(scene);
+    constructor(sceneProvider: SceneProvider) {
+        super(sceneProvider);
     }
 
     protected generateObject (): [number, CollectableMonsterObject] {
