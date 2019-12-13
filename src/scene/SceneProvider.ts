@@ -23,12 +23,11 @@ export class SceneProvider {
         );
         obj.setSprite(sprite);
         return obj;
-    }
+    };
 
-    addCollider = (obj: BaseGameObject, group: CollisionGroup) => {
-        // TODO: Condition?
-        return this.scene.physics.add.collider(obj.getSprite(), null);
-    }
+    addCollider = (obj: BaseGameObject, obj2: BaseGameObject, onCollide) => {
+        return this.scene.physics.add.collider(obj.getSprite(), null, onCollide);
+    };
 
     addKey = (keyCode: number) => {
         return this.scene.input.keyboard.addKey(keyCode)

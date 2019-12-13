@@ -3,13 +3,14 @@ import {CollectableMonsterObject, Monster} from "../actors/collectableMonsterObj
 import {NUMBER_OF_MONSTERS} from "../shared/constants";
 import {autoInjectable, injectable, singleton} from "tsyringe";
 import {SceneProvider} from "../scene/SceneProvider";
+import {CollisionDetectionManager} from "../collision/CollisionDetectionManager";
 
 /*@singleton()*/
 @injectable()
 export class MonsterFactory extends GameObjectFactory<CollectableMonsterObject> {
 
-    constructor(sceneProvider: SceneProvider) {
-        super(sceneProvider);
+    constructor(sceneProvider: SceneProvider, collisionDetectionManager: CollisionDetectionManager) {
+        super(sceneProvider, collisionDetectionManager);
     }
 
     protected generateObject (): [number, CollectableMonsterObject] {

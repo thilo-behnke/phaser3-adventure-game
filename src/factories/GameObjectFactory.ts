@@ -6,14 +6,13 @@ import {filter} from "rxjs/operators";
 import Point = Phaser.Geom.Point;
 import {SceneProvider} from "../scene/SceneProvider";
 import {injectable} from "tsyringe";
+import {CollisionDetectionManager} from "../collision/CollisionDetectionManager";
 
 export abstract class GameObjectFactory<T extends BaseGameObject>
     implements IGameObjectFactory {
     private registry: { [key: number]: T } = {};
 
-
-
-    protected constructor(protected sceneProvider: SceneProvider) {
+    protected constructor(protected sceneProvider: SceneProvider, protected collisionDetectionManager: CollisionDetectionManager) {
     }
 
     protected abstract generateObject(): [number, T];
@@ -36,5 +35,6 @@ export abstract class GameObjectFactory<T extends BaseGameObject>
             gameObject,
             pos
         );
+        this.collisionDetectionManager.register(gameObject);
     }
 }
