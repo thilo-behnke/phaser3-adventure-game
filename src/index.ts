@@ -1,10 +1,10 @@
-import "reflect-metadata";
-import {container} from "tsyringe";
+import 'reflect-metadata';
+import { container } from 'tsyringe';
 
-import ExplorationScene from "./scenes/ExplorationScene";
-import {SceneProvider} from "./scene/SceneProvider";
+import ExplorationScene from './scenes/ExplorationScene';
+import { SceneProvider } from './scene/SceneProvider';
 import Scene = Phaser.Scene;
-import {Test} from "./scenes/Test";
+import { Test } from './scenes/Test';
 
 const config = {
     type: Phaser.AUTO,
@@ -20,5 +20,5 @@ const config = {
 
 const explorationScene = new Phaser.Game(config);
 // TODO: Is this really needed?
-container.register<Test>(Test, {useClass: Test});
+container.register<Test>(Test, { useClass: Test });
 /*container.register<SceneProvider>(SceneProvider, {useClass: SceneProvider});*/
