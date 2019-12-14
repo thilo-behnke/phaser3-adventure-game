@@ -17,6 +17,7 @@ export type MonsterStats = {
 
 @CollisionGroupDef(CollisionGroup.PLAYER)
 export class MonsterObject extends BaseGameObject {
+    private _hp: number;
     private type: MonsterType;
     private stats: MonsterStats;
 
@@ -26,10 +27,27 @@ export class MonsterObject extends BaseGameObject {
         this.stats = stats;
     }
 
+    get hp(): number {
+        return this._hp;
+    }
+
+    set hp(value: number) {
+        // Don't allow hp below 0 or above max hp.
+        const correctedHp = Math.max(0, Math.min(value, this.stats.health));
+        if (correctedHp === 0) {
+            this.onDeath();
+        }
+        this._hp = correctedHp;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update = (delta: number): void => {
         return;
     };
 
     getStats = (): MonsterStats => this.stats;
+
+    onDeath = (): void => {
+        return;
+    };
 }

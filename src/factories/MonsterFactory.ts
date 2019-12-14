@@ -5,7 +5,7 @@ import {
     MonsterType,
     NUMBER_OF_MONSTERS,
 } from '../actors/MonsterObject';
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 
 import * as wolfTemplate from '../../assets/data/monsters/wolf.json';
 
@@ -14,7 +14,7 @@ type MonsterTemplate = {
     baseStats: MonsterStats;
 };
 
-@injectable()
+@singleton()
 export class MonsterFactory implements IGameObjectFactory<MonsterObject> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private getMonsterBySeed(n: number): MonsterTemplate {
@@ -23,11 +23,11 @@ export class MonsterFactory implements IGameObjectFactory<MonsterObject> {
         return wolfTemplate as MonsterTemplate;
     }
 
-    generateObject(seed: number): MonsterObject {
-        const mod = seed % NUMBER_OF_MONSTERS;
+    generateObject(rarity: number): MonsterObject {
+        const mod = rarity % NUMBER_OF_MONSTERS;
         const monsterTemplate = this.getMonsterBySeed(mod);
         return new MonsterObject(
-            seed.toString(),
+            rarity.toString(),
             monsterTemplate.baseStats,
             monsterTemplate.type
         );
