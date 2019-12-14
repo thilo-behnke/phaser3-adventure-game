@@ -1,3 +1,3 @@
 export enum CollisionGroup {
-    PLAYER = 'PLAYER'
+    PLAYER = 'PLAYER',
 }

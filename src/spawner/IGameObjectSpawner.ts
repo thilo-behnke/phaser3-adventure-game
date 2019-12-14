@@ -1,6 +1,5 @@
-import {ExplorationMap} from "../map/ExplorationMap";
+import { ExplorationMap } from '../map/ExplorationMap';
 
 export interface IGameObjectSpawner {
-    spawn: (map: ExplorationMap) => void
+    spawn: (map: ExplorationMap) => void;
 }
-

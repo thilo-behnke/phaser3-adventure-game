@@ -1,10 +1,10 @@
-import {BaseGameObject} from './BaseGameObject';
-import {CollisionGroupDef} from "../collision/CollisionGroupDef";
-import {CollisionGroup} from "../collision/CollisionGroup";
+import { BaseGameObject } from './BaseGameObject';
+import { CollisionGroupDef } from '../collision/CollisionGroupDef';
+import { CollisionGroup } from '../collision/CollisionGroup';
 
 export enum MonsterType {
     WOLF = 'WOLF',
-    SHEEP = 'SHEEP'
+    SHEEP = 'SHEEP',
 }
 
 export const NUMBER_OF_MONSTERS = Object.keys(MonsterType).length;

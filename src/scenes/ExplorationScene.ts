@@ -1,14 +1,14 @@
 import 'phaser';
 import * as player from '../../assets/graphics/green-knight.png';
-import {Player} from '../actors/player';
-import {Direction} from '../global/direction';
-import {Action, KeyManager} from '../input/keyManager';
-import {container} from 'tsyringe';
-import {SceneProvider} from '../scene/SceneProvider';
-import {MonsterSpawner} from '../spawner/MonsterSpawner';
-import {GameObjectRegistry} from "../registry/GameObjectRegistry";
+import { Player } from '../actors/player';
+import { Direction } from '../global/direction';
+import { Action, KeyManager } from '../input/keyManager';
+import { container } from 'tsyringe';
+import { SceneProvider } from '../scene/SceneProvider';
+import { MonsterSpawner } from '../spawner/MonsterSpawner';
+import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import Point = Phaser.Geom.Point;
-import {ItemSpawner} from "../spawner/ItemSpawner";
+import { ItemSpawner } from '../spawner/ItemSpawner';
 
 export default class ExplorationScene extends Phaser.Scene {
     private player: Player;
@@ -39,7 +39,7 @@ export default class ExplorationScene extends Phaser.Scene {
 
         /*        const itemObjects = [Capsule.create(this, new Point(20, 200))];*/
         this.monsterSpawner.spawn({} as any);
-        this.itemSpawner.spawn({} as any)
+        this.itemSpawner.spawn({} as any);
 
         /*        this.physics.add.overlap(
             this.player.getSprite(),

@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "webpack --mode development && webpack-dev-server --mode development --hot",
         "build": "webpack --mode production && webpack-dev-server --mode production",
-        "prettier": "prettier --write ./src/*"
+        "prettier": "prettier --write ./src/**/*.ts"
     },
     "repository": {
         "type": "git",

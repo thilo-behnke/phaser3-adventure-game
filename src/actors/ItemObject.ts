@@ -1,14 +1,14 @@
-import {BaseGameObject} from './BaseGameObject';
-import {CollisionGroupDef} from '../collision/CollisionGroupDef';
-import {CollisionGroup} from '../collision/CollisionGroup';
+import { BaseGameObject } from './BaseGameObject';
+import { CollisionGroupDef } from '../collision/CollisionGroupDef';
+import { CollisionGroup } from '../collision/CollisionGroup';
 
 export enum ItemType {
-    CAPSULE = 'CAPSULE'
+    CAPSULE = 'CAPSULE',
 }
 
 export type ItemStats = {
-   rarity: number
-}
+    rarity: number;
+};
 
 export const NUMBER_OF_ITEMS = Object.keys(ItemType).length;
 

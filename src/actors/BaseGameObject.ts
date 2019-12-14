@@ -8,7 +8,7 @@ export abstract class BaseGameObject {
 
     abstract update: (delta: number) => void;
 
-    constructor(private _id: string){}
+    constructor(private _id: string) {}
 
     get id(): string {
         return this._id;

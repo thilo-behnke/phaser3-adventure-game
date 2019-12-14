@@ -1,8 +1,8 @@
 import Key = Phaser.Input.Keyboard.Key;
 import Scene = Phaser.Scene;
-import {injectable, singleton} from "tsyringe";
+import { injectable, singleton } from 'tsyringe';
 import SceneManager = Phaser.Scenes.SceneManager;
-import {SceneProvider} from "../scene/SceneProvider";
+import { SceneProvider } from '../scene/SceneProvider';
 
 export enum Action {
     LEFT = 'LEFT',
