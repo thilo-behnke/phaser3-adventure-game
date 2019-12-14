@@ -3,16 +3,28 @@ import { injectable } from 'tsyringe';
 import Point = Phaser.Geom.Point;
 import { ExplorationMap } from '../map/ExplorationMap';
 import { MonsterFactory } from '../factories/MonsterFactory';
-import { IGameObjectSpawner } from './IGameObjectSpawner';
+import { GameObjectSpawner } from './GameObjectSpawner';
+import { SceneProvider } from '../scene/SceneProvider';
+import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
+import { GameObjectRegistry } from '../registry/GameObjectRegistry';
+import { BaseGameObject } from '../actors/BaseGameObject';
 
 @injectable()
-export class MonsterSpawner implements IGameObjectSpawner {
-    constructor(private monsterFactory: MonsterFactory) {}
+export class MonsterSpawner extends GameObjectSpawner {
+    constructor(
+        sceneProvider: SceneProvider,
+        collisionDetectionManager: CollisionDetectionManager,
+        gameObjectRegistry: GameObjectRegistry,
+        private monsterFactory: MonsterFactory
+    ) {
+        super(sceneProvider, collisionDetectionManager, gameObjectRegistry);
+    }
 
     // TODO: Evaluate map, determine monster positions...
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    spawn = (map: ExplorationMap): void => {
+    generateSpawns = (map: ExplorationMap): Array<[Point, BaseGameObject]> => {
         const seed = Date.now();
-        this.monsterFactory.addToScene(new Point(200, 200), seed);
+        const obj = this.monsterFactory.generateObject(seed);
+        return [[new Point(200, 200), obj]];
     };
 }

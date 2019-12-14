@@ -1,5 +1,5 @@
-import Point = Phaser.Geom.Point;
+import { BaseGameObject } from '../actors/BaseGameObject';
 
-export interface IGameObjectFactory {
-    addToScene: (pos: Point, seed: number) => void;
+export interface IGameObjectFactory<T extends BaseGameObject> {
+    generateObject: (seed: number) => T;
 }

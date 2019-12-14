@@ -7,11 +7,8 @@ import {
 
 import * as capsuleTemplate from '../../assets/data/items/capsule.json';
 
-import { GameObjectFactory } from './GameObjectFactory';
+import { IGameObjectFactory } from './IGameObjectFactory';
 import { injectable } from 'tsyringe';
-import { GameObjectRegistry } from '../registry/GameObjectRegistry';
-import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
-import { SceneProvider } from '../scene/SceneProvider';
 
 type ItemTemplate = {
     type: ItemType;
@@ -19,15 +16,7 @@ type ItemTemplate = {
 };
 
 @injectable()
-export class ItemFactory extends GameObjectFactory<ItemObject> {
-    constructor(
-        sceneProvider: SceneProvider,
-        collisionDetectionManager: CollisionDetectionManager,
-        gameObjectRegistry: GameObjectRegistry
-    ) {
-        super(sceneProvider, collisionDetectionManager, gameObjectRegistry);
-    }
-
+export class ItemFactory implements IGameObjectFactory<ItemObject> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private getItemBySeed(n: number): ItemTemplate {
         // Determine the monster.
@@ -35,7 +24,7 @@ export class ItemFactory extends GameObjectFactory<ItemObject> {
         return capsuleTemplate as ItemTemplate;
     }
 
-    protected generateObject(seed: number): ItemObject {
+    generateObject(seed: number): ItemObject {
         const mod = seed % NUMBER_OF_ITEMS;
         const itemTemplate = this.getItemBySeed(mod);
         return new ItemObject(
