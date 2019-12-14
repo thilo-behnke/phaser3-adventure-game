@@ -1,0 +1,6 @@
+* TODO Player movement
+* TODO Animation loading / system 
+* TODO Tilemap 
+* TODO Randomly setup a level 
+* TODO Collision Handling 
+* TODO Pick up a capsule an spawn a monster from it
