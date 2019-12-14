@@ -1,6 +1,5 @@
 import {GameObjectFactory} from "./GameObjectFactory";
-import {MonsterObject, MonsterType, MonsterStats} from "../actors/MonsterObject";
-import {NUMBER_OF_MONSTERS} from "../shared/constants";
+import {MonsterObject, MonsterType, MonsterStats, NUMBER_OF_MONSTERS} from "../actors/MonsterObject";
 import {autoInjectable, injectable, singleton} from "tsyringe";
 import {SceneProvider} from "../scene/SceneProvider";
 import {CollisionDetectionManager} from "../collision/CollisionDetectionManager";

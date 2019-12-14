@@ -17,6 +17,7 @@ export abstract class GameObjectFactory<T extends BaseGameObject>
         protected gameObjectRegistry: GameObjectRegistry
     ) {}
 
+
     protected abstract generateObject(seed: number): T;
 
     addToScene(pos: Point, seed: number) {

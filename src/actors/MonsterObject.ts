@@ -7,6 +7,8 @@ export enum MonsterType {
     SHEEP = 'SHEEP'
 }
 
+export const NUMBER_OF_MONSTERS = Object.keys(MonsterType).length;
+
 export type MonsterStats = {
     health: number;
     strength: number;

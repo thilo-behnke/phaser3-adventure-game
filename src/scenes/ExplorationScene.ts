@@ -1,16 +1,14 @@
 import 'phaser';
 import * as player from '../../assets/graphics/green-knight.png';
-import { Player } from '../actors/player';
-import { Direction } from '../global/direction';
-import { Action, KeyManager } from '../input/keyManager';
-import Point = Phaser.Geom.Point;
-import { Capsule } from '../actors/capsule';
-import { MonsterFactory } from '../factories/MonsterFactory';
-import { autoInjectable, container, inject, injectable } from 'tsyringe';
-import { SceneProvider } from '../scene/SceneProvider';
-import { Test } from './Test';
-import { MonsterSpawner } from '../spawner/MonsterSpawner';
+import {Player} from '../actors/player';
+import {Direction} from '../global/direction';
+import {Action, KeyManager} from '../input/keyManager';
+import {container} from 'tsyringe';
+import {SceneProvider} from '../scene/SceneProvider';
+import {MonsterSpawner} from '../spawner/MonsterSpawner';
 import {GameObjectRegistry} from "../registry/GameObjectRegistry";
+import Point = Phaser.Geom.Point;
+import {ItemSpawner} from "../spawner/ItemSpawner";
 
 export default class ExplorationScene extends Phaser.Scene {
     private player: Player;
@@ -18,6 +16,7 @@ export default class ExplorationScene extends Phaser.Scene {
     private gameObjectRegistry: GameObjectRegistry;
     private sceneProvider: SceneProvider;
     private monsterSpawner: MonsterSpawner;
+    private itemSpawner: ItemSpawner;
 
     constructor() {
         super('demo');
@@ -32,6 +31,7 @@ export default class ExplorationScene extends Phaser.Scene {
         this.sceneProvider = container.resolve(SceneProvider);
         this.sceneProvider.initialize(this);
         this.monsterSpawner = container.resolve(MonsterSpawner);
+        this.itemSpawner = container.resolve(ItemSpawner);
         this.gameObjectRegistry = container.resolve(GameObjectRegistry);
         this.keyManager = container.resolve(KeyManager);
         this.player = Player.create(this, new Point(100, 100));
@@ -39,6 +39,7 @@ export default class ExplorationScene extends Phaser.Scene {
 
         /*        const itemObjects = [Capsule.create(this, new Point(20, 200))];*/
         this.monsterSpawner.spawn({} as any);
+        this.itemSpawner.spawn({} as any)
 
         /*        this.physics.add.overlap(
             this.player.getSprite(),
