@@ -1,4 +1,3 @@
-import { IGameObjectFactory } from './IGameObjectFactory';
 import {
     ItemObject,
     ItemStats,
@@ -7,12 +6,12 @@ import {
 } from '../actors/ItemObject';
 
 import * as capsuleTemplate from '../../assets/data/items/capsule.json';
-import { MonsterObject } from '../actors/MonsterObject';
+
 import { GameObjectFactory } from './GameObjectFactory';
 import { injectable } from 'tsyringe';
-import { SceneProvider } from '../scene/SceneProvider';
-import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
+import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
+import { SceneProvider } from '../scene/SceneProvider';
 
 type ItemTemplate = {
     type: ItemType;
@@ -29,7 +28,8 @@ export class ItemFactory extends GameObjectFactory<ItemObject> {
         super(sceneProvider, collisionDetectionManager, gameObjectRegistry);
     }
 
-    private getItemBySeed(n: number) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    private getItemBySeed(n: number): ItemTemplate {
         // Determine the monster.
         // TODO: Implement random mechanism.
         return capsuleTemplate as ItemTemplate;

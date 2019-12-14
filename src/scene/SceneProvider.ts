@@ -1,19 +1,22 @@
 import { injectable, singleton } from 'tsyringe';
 import Scene = Phaser.Scene;
-import { BaseGameObject } from '../actors/BaseGameObject';
+
 import Point = Phaser.Geom.Point;
-import { CollisionGroup } from '../collision/CollisionGroup';
+
+import Collider = Phaser.Physics.Arcade.Collider;
+import Key = Phaser.Input.Keyboard.Key;
+import { BaseGameObject } from '../actors/BaseGameObject';
 
 @singleton()
 @injectable()
 export class SceneProvider {
     private scene: Scene;
 
-    initialize = (scene: Phaser.Scene) => {
+    initialize = (scene: Phaser.Scene): void => {
         this.scene = scene;
     };
 
-    addToScene = (obj: BaseGameObject, pos: Point) => {
+    addToScene = (obj: BaseGameObject, pos: Point): BaseGameObject => {
         const sprite = this.scene.physics.add.sprite(
             pos.x,
             pos.y,
@@ -23,7 +26,11 @@ export class SceneProvider {
         return obj;
     };
 
-    addCollider = (obj: BaseGameObject, obj2: BaseGameObject, onCollide) => {
+    addCollider = (
+        obj: BaseGameObject,
+        obj2: BaseGameObject,
+        onCollide
+    ): Collider => {
         return this.scene.physics.add.collider(
             obj.getSprite(),
             obj2.getSprite(),
@@ -31,7 +38,7 @@ export class SceneProvider {
         );
     };
 
-    addKey = (keyCode: number) => {
+    addKey = (keyCode: number): Key => {
         return this.scene.input.keyboard.addKey(keyCode);
     };
 }

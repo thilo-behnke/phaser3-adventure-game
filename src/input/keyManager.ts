@@ -1,7 +1,6 @@
 import Key = Phaser.Input.Keyboard.Key;
 import Scene = Phaser.Scene;
 import { injectable, singleton } from 'tsyringe';
-import SceneManager = Phaser.Scenes.SceneManager;
 import { SceneProvider } from '../scene/SceneProvider';
 
 export enum Action {
@@ -36,7 +35,7 @@ export class KeyManager {
         };
     }
 
-    isDown = (action: Action) => {
+    isDown = (action: Action): boolean => {
         return this.actions[action].isDown;
     };
 }

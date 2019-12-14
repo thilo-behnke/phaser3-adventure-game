@@ -1,8 +1,10 @@
 import { BaseGameObject } from './BaseGameObject';
-import GameObject = Phaser.GameObjects.GameObject;
 
 export class Player extends BaseGameObject {
-    static create = (scene: Phaser.Scene, initialPos: Phaser.Geom.Point) => {
+    static create = (
+        scene: Phaser.Scene,
+        initialPos: Phaser.Geom.Point
+    ): Player => {
         const player = new Player('player');
         player.sprite = scene.physics.add.sprite(
             initialPos.x,
@@ -13,7 +15,9 @@ export class Player extends BaseGameObject {
         return player;
     };
 
-    update = (delta: number) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    update = (delta: number): void => {
         // TODO: Implement.
+        return;
     };
 }

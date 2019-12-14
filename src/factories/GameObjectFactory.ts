@@ -1,11 +1,9 @@
-import { IGameObjectFactory } from './IGameObjectFactory';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import Point = Phaser.Geom.Point;
-import { SceneProvider } from '../scene/SceneProvider';
-import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
-import { BaseGameObject } from '../actors/BaseGameObject';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
+import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
+import { SceneProvider } from '../scene/SceneProvider';
+import { IGameObjectFactory } from './IGameObjectFactory';
+import { BaseGameObject } from '../actors/BaseGameObject';
 
 export abstract class GameObjectFactory<T extends BaseGameObject>
     implements IGameObjectFactory {
@@ -19,7 +17,7 @@ export abstract class GameObjectFactory<T extends BaseGameObject>
 
     protected abstract generateObject(seed: number): T;
 
-    addToScene(pos: Point, seed: number) {
+    addToScene(pos: Point, seed: number): void {
         const obj = this.generateObject(seed),
             id = obj.id;
 

@@ -1,6 +1,6 @@
 import 'phaser';
 import * as player from '../../assets/graphics/green-knight.png';
-import { Player } from '../actors/player';
+import { Player } from '../actors/Player';
 import { Direction } from '../global/direction';
 import { Action, KeyManager } from '../input/keyManager';
 import { container } from 'tsyringe';
@@ -9,6 +9,7 @@ import { MonsterSpawner } from '../spawner/MonsterSpawner';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import Point = Phaser.Geom.Point;
 import { ItemSpawner } from '../spawner/ItemSpawner';
+import { ExplorationMap } from '../map/ExplorationMap';
 
 export default class ExplorationScene extends Phaser.Scene {
     private player: Player;
@@ -22,11 +23,11 @@ export default class ExplorationScene extends Phaser.Scene {
         super('demo');
     }
 
-    preload() {
+    preload(): void {
         this.load.image('player', player);
     }
 
-    create() {
+    create(): void {
         // TODO: Why does constructor autowiring not work here?
         this.sceneProvider = container.resolve(SceneProvider);
         this.sceneProvider.initialize(this);
@@ -38,8 +39,8 @@ export default class ExplorationScene extends Phaser.Scene {
         this.gameObjectRegistry.setPlayer(this.player);
 
         /*        const itemObjects = [Capsule.create(this, new Point(20, 200))];*/
-        this.monsterSpawner.spawn({} as any);
-        this.itemSpawner.spawn({} as any);
+        this.monsterSpawner.spawn(new ExplorationMap());
+        this.itemSpawner.spawn(new ExplorationMap());
 
         /*        this.physics.add.overlap(
             this.player.getSprite(),
@@ -57,6 +58,7 @@ export default class ExplorationScene extends Phaser.Scene {
         );*/
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update(time: number, delta: number): void {
         // Update player position.
         if (this.keyManager.isDown(Action.LEFT)) {

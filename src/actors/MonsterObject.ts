@@ -26,7 +26,10 @@ export class MonsterObject extends BaseGameObject {
         this.stats = stats;
     }
 
-    update = (delta: number) => {};
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    update = (delta: number): void => {
+        return;
+    };
 
-    getStats = () => this.stats;
+    getStats = (): MonsterStats => this.stats;
 }

@@ -1,6 +1,4 @@
-import GameObject = Phaser.GameObjects.GameObject;
 import { Direction } from '../global/direction';
-import Point = Phaser.Geom.Point;
 import Sprite = Phaser.GameObjects.Sprite;
 
 export abstract class BaseGameObject {
@@ -14,31 +12,31 @@ export abstract class BaseGameObject {
         return this._id;
     }
 
-    public setSprite = (sprite: Sprite) => {
+    public setSprite = (sprite: Sprite): void => {
         this.sprite = sprite;
     };
 
-    public getSprite = () => this.sprite;
+    public getSprite = (): Sprite => this.sprite;
 
     // TODO: Is there a more performant way?
-    public destroySprite = () => {
+    public destroySprite = (): void => {
         this.sprite.destroy(true);
         this.sprite = undefined;
     };
 
-    private setPos = (pos: Phaser.Geom.Point) => {
+    private setPos = (pos: Phaser.Geom.Point): void => {
         this.sprite.setPosition(pos.x, pos.y);
     };
 
-    private setPosX = (x: number) => {
+    private setPosX = (x: number): void => {
         this.sprite.setPosition(x, this.sprite.y);
     };
 
-    private setPosY = (y: number) => {
+    private setPosY = (y: number): void => {
         this.sprite.setPosition(this.sprite.x, y);
     };
 
-    public move = (direction: Direction) => {
+    public move = (direction: Direction): void => {
         switch (direction) {
             case Direction.DOWN:
                 this.setPosY(this.sprite.y + 1);

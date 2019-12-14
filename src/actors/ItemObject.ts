@@ -15,11 +15,16 @@ export const NUMBER_OF_ITEMS = Object.keys(ItemType).length;
 @CollisionGroupDef(CollisionGroup.PLAYER)
 export class ItemObject extends BaseGameObject {
     private stats: ItemStats;
+    private type: ItemType;
 
     constructor(id: string, stats: ItemStats, type: ItemType) {
         super(id);
         this.stats = stats;
+        this.type = type;
     }
 
-    update = (delta: number) => {};
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    update = (delta: number): void => {
+        return;
+    };
 }

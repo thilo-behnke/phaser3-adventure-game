@@ -1,16 +1,16 @@
 import { GameObjectFactory } from './GameObjectFactory';
 import {
     MonsterObject,
-    MonsterType,
     MonsterStats,
+    MonsterType,
     NUMBER_OF_MONSTERS,
 } from '../actors/MonsterObject';
-import { autoInjectable, injectable, singleton } from 'tsyringe';
-import { SceneProvider } from '../scene/SceneProvider';
-import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
-import { GameObjectRegistry } from '../registry/GameObjectRegistry';
+import { injectable } from 'tsyringe';
 
 import * as wolfTemplate from '../../assets/data/monsters/wolf.json';
+import { GameObjectRegistry } from '../registry/GameObjectRegistry';
+import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
+import { SceneProvider } from '../scene/SceneProvider';
 
 type MonsterTemplate = {
     type: MonsterType;
@@ -27,7 +27,8 @@ export class MonsterFactory extends GameObjectFactory<MonsterObject> {
         super(sceneProvider, collisionDetectionManager, gameObjectRegistry);
     }
 
-    private getMonsterBySeed(n: number) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    private getMonsterBySeed(n: number): MonsterTemplate {
         // Determine the monster.
         // TODO: Implement random mechanism.
         return wolfTemplate as MonsterTemplate;

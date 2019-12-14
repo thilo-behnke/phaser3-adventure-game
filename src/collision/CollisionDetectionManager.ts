@@ -1,9 +1,9 @@
 import { injectable, singleton } from 'tsyringe';
-import { BaseGameObject } from '../actors/BaseGameObject';
-import SceneManager = Phaser.Scenes.SceneManager;
-import { SceneProvider } from '../scene/SceneProvider';
+
 import { COLLISION_GROUP_PROP } from './CollisionGroupDef';
+import { SceneProvider } from '../scene/SceneProvider';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
+import { BaseGameObject } from '../actors/BaseGameObject';
 
 @singleton()
 @injectable()
@@ -13,7 +13,7 @@ export class CollisionDetectionManager {
         private gameObjectRegistry: GameObjectRegistry
     ) {}
 
-    register = (gameObject: BaseGameObject) => {
+    register = (gameObject: BaseGameObject): void => {
         const collisionGroup =
             COLLISION_GROUP_PROP in gameObject
                 ? gameObject['collisionGroup']
