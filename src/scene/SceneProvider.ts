@@ -1,6 +1,6 @@
 import {injectable, singleton} from "tsyringe";
 import Scene = Phaser.Scene;
-import {BaseGameObject} from "../actors/baseGameObject";
+import {BaseGameObject} from "../actors/BaseGameObject";
 import Point = Phaser.Geom.Point;
 import {CollisionGroup} from "../collision/CollisionGroup";
 
@@ -16,7 +16,7 @@ export class SceneProvider {
     };
 
     addToScene = (obj: BaseGameObject, pos: Point) => {
-        const sprite = this.scene.add.sprite(
+        const sprite = this.scene.physics.add.sprite(
             pos.x,
             pos.y,
             obj.id.toString()
@@ -26,7 +26,7 @@ export class SceneProvider {
     };
 
     addCollider = (obj: BaseGameObject, obj2: BaseGameObject, onCollide) => {
-        return this.scene.physics.add.collider(obj.getSprite(), null, onCollide);
+        return this.scene.physics.add.collider(obj.getSprite(), obj2.getSprite(), onCollide);
     };
 
     addKey = (keyCode: number) => {

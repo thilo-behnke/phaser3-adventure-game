@@ -1,0 +1,8 @@
+{
+  "type": "WOLF",
+  "baseStats": {
+    "health": 100,
+    "strength": 100,
+    "agility": 100
+  }
+}

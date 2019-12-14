@@ -1,4 +1,4 @@
-import { BaseGameObject } from './baseGameObject';
+import { BaseGameObject } from './BaseGameObject';
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class Player extends BaseGameObject {

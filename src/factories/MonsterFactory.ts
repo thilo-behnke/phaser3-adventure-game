@@ -1,30 +1,34 @@
 import {GameObjectFactory} from "./GameObjectFactory";
-import {CollectableMonsterObject, Monster} from "../actors/collectableMonsterObject";
+import {MonsterObject, MonsterType, MonsterStats} from "../actors/MonsterObject";
 import {NUMBER_OF_MONSTERS} from "../shared/constants";
 import {autoInjectable, injectable, singleton} from "tsyringe";
 import {SceneProvider} from "../scene/SceneProvider";
 import {CollisionDetectionManager} from "../collision/CollisionDetectionManager";
+import {GameObjectRegistry} from "../registry/GameObjectRegistry";
 
-/*@singleton()*/
+import * as wolfTemplate from '../../assets/data/monsters/wolf.json'
+
+type MonsterTemplate = {
+    type: MonsterType;
+    baseStats: MonsterStats;
+}
+
 @injectable()
-export class MonsterFactory extends GameObjectFactory<CollectableMonsterObject> {
-
-    constructor(sceneProvider: SceneProvider, collisionDetectionManager: CollisionDetectionManager) {
-        super(sceneProvider, collisionDetectionManager);
+export class MonsterFactory extends GameObjectFactory<MonsterObject> {
+    constructor(sceneProvider: SceneProvider, collisionDetectionManager: CollisionDetectionManager, gameObjectRegistry: GameObjectRegistry) {
+        super(sceneProvider, collisionDetectionManager, gameObjectRegistry);
     }
 
-    protected generateObject (): [number, CollectableMonsterObject] {
+    private getMonsterBySeed(n: number) {
         // Determine the monster.
-        // TODO: Implement: The seed most come in as an input (e.g. from a capsule)
-        const seed = Date.now();
+        // TODO: Implement random mechanism.
+        return wolfTemplate as MonsterTemplate;
+    }
+
+    protected generateObject(seed: number): MonsterObject {
         const mod = seed % NUMBER_OF_MONSTERS;
-        const stats = {
-            type: Monster.WOLF,
-            health: 100,
-            strength: 100,
-            agility: 100,
-        };
-        return [seed, CollectableMonsterObject.generate(seed, stats)];
+        const monsterTemplate = this.getMonsterBySeed(mod);
+        return new MonsterObject(seed.toString(), monsterTemplate.baseStats, monsterTemplate.type);
     }
 
 }

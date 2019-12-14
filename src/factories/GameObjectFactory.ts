@@ -1,40 +1,34 @@
-import {IGameObjectFactory} from './IGameObjectFactory';
-import {IGameObjectProvider} from './IGameObjectProvider';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {BaseGameObject} from '../actors/baseGameObject';
-import {filter} from "rxjs/operators";
+import { IGameObjectFactory } from './IGameObjectFactory';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import Point = Phaser.Geom.Point;
-import {SceneProvider} from "../scene/SceneProvider";
-import {injectable} from "tsyringe";
-import {CollisionDetectionManager} from "../collision/CollisionDetectionManager";
+import { SceneProvider } from '../scene/SceneProvider';
+import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
+import { BaseGameObject } from '../actors/BaseGameObject';
+import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 
 export abstract class GameObjectFactory<T extends BaseGameObject>
     implements IGameObjectFactory {
     private registry: { [key: number]: T } = {};
 
-    protected constructor(protected sceneProvider: SceneProvider, protected collisionDetectionManager: CollisionDetectionManager) {
-    }
+    protected constructor(
+        protected sceneProvider: SceneProvider,
+        protected collisionDetectionManager: CollisionDetectionManager,
+        protected gameObjectRegistry: GameObjectRegistry
+    ) {}
 
-    protected abstract generateObject(): [number, T];
+    protected abstract generateObject(seed: number): T;
 
-    generate = (addToScene?: Point) => {
-        const [id, obj] = this.generateObject();
+    addToScene(pos: Point, seed: number) {
+        const obj = this.generateObject(seed),
+            id = obj.id;
+
+        this.gameObjectRegistry.add(id, obj);
         this.registry[id] = obj;
-        if(addToScene) {
-            this.addToScene(id, addToScene);
-        }
-        return id;
-    };
-
-    addToScene(id: number, pos: Point) {
-        const gameObject = this.registry[id];
-        if (!gameObject) {
+        if (!obj) {
             throw new Error(`GameObject with id ${id} not found!`);
         }
-        this.sceneProvider.addToScene(
-            gameObject,
-            pos
-        );
-        this.collisionDetectionManager.register(gameObject);
+        this.sceneProvider.addToScene(obj, pos);
+        this.collisionDetectionManager.register(obj);
     }
 }

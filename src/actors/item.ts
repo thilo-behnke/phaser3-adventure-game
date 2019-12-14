@@ -1,4 +1,4 @@
-import { BaseGameObject } from './baseGameObject';
+import { BaseGameObject } from './BaseGameObject';
 import {CollisionGroupDef} from "../collision/CollisionGroupDef";
 import {CollisionGroup} from "../collision/CollisionGroup";
 

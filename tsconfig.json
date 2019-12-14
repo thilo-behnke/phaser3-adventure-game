@@ -4,7 +4,13 @@
         "sourceMap": true,
         "module": "CommonJs",
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "emitDecoratorMetadata": true,
+        "baseUrl": ".",
+        "paths": {
+            "*": ["node_modules/*"],
+            "app/*": ["src/app/*"],
+            "data/*": ["assets/data/*"]
+        }
     },
     "exclude": [
         "node_modules",

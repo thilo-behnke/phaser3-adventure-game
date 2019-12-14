@@ -1,28 +1,28 @@
-import {BaseGameObject} from './baseGameObject';
+import {BaseGameObject} from './BaseGameObject';
 import {CollisionGroupDef} from "../collision/CollisionGroupDef";
 import {CollisionGroup} from "../collision/CollisionGroup";
 
-export enum Monster {
+export enum MonsterType {
     WOLF = 'WOLF',
+    SHEEP = 'SHEEP'
 }
 
 export type MonsterStats = {
-    type: Monster;
-
     health: number;
     strength: number;
     agility: number;
 };
 
 @CollisionGroupDef(CollisionGroup.PLAYER)
-export class CollectableMonsterObject extends BaseGameObject {
+export class MonsterObject extends BaseGameObject {
+    private type: MonsterType;
     private stats: MonsterStats;
 
-    static generate = (id: number, stats: MonsterStats) => {
-        const monster = new CollectableMonsterObject(stats.type);
-        monster.stats = stats;
-        return monster;
-    };
+    constructor(id: string, stats: MonsterStats, type: MonsterType) {
+        super(id);
+        this.type = type;
+        this.stats = stats;
+    }
 
     update = (delta: number) => {};
 
