@@ -24,10 +24,23 @@ export default class ExplorationScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.image('player', player);
+        this.load.spritesheet('player', player, {
+            frameWidth: 20,
+            frameHeight: 29,
+        });
     }
 
     create(): void {
+        this.anims.create({
+            key: 'player-idle',
+            frames: this.anims.generateFrameNames('player', {
+                start: 0,
+                end: 3,
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
+
         // TODO: Why does constructor autowiring not work here?
         this.sceneProvider = container.resolve(SceneProvider);
         this.sceneProvider.initialize(this);

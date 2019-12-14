@@ -12,6 +12,7 @@ export class Player extends BaseGameObject {
             'player',
             0
         );
+        player.sprite.anims.play('player-idle');
         return player;
     };
 
