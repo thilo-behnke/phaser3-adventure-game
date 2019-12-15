@@ -10,14 +10,19 @@ import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import { ItemSpawner } from '../spawner/ItemSpawner';
 import { ExplorationMap } from '../map/ExplorationMap';
 import Point = Phaser.Geom.Point;
+import { Inventory } from '../inventory/Inventory';
+import Image = Phaser.GameObjects.Image;
 
 export default class ExplorationScene extends Phaser.Scene {
     private player: Player;
     private keyManager: KeyManager;
     private gameObjectRegistry: GameObjectRegistry;
+    private inventory: Inventory;
     private sceneProvider: SceneProvider;
     private monsterSpawner: MonsterSpawner;
     private itemSpawner: ItemSpawner;
+
+    private renderedInventory: Image[] = [];
 
     constructor() {
         super('demo');
@@ -28,6 +33,7 @@ export default class ExplorationScene extends Phaser.Scene {
             frameWidth: 20,
             frameHeight: 29,
         });
+        this.load.image('gem', 'assets/gem.png');
     }
 
     create(): void {
@@ -40,9 +46,24 @@ export default class ExplorationScene extends Phaser.Scene {
         this.keyManager = container.resolve(KeyManager);
         this.player = Player.create(this, new Point(100, 100));
         this.gameObjectRegistry.setPlayer(this.player);
+        this.inventory = container.resolve(Inventory);
 
         this.monsterSpawner.spawn(new ExplorationMap());
         this.itemSpawner.spawn(new ExplorationMap());
+
+        // Render inventory.
+        // TODO: Render capsule sprite, destroy sprite when opened.
+        this.inventory.getItems().subscribe(items => {
+            // Delete old inventory, rerender (inefficient?).
+            this.renderedInventory.forEach(image => image.destroy());
+            Object.entries(items).forEach(([id], i) => {
+                const image = this.add
+                    .image(500 + i * 10, 500 + i * 10, 'gem')
+                    .setInteractive();
+                image.on('pointerdown', () => this.inventory.use(id));
+                this.renderedInventory.push(image);
+            });
+        });
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

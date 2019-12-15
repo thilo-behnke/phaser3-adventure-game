@@ -59,7 +59,7 @@ export class CollisionDetectionManager {
         );
         otherObjects.forEach(obj => {
             const callback = this.getCallback(gameObject, obj);
-            const collider = this.sceneProvider.addCollisionByType(
+            this.sceneProvider.addCollisionByType(
                 gameObject,
                 obj,
                 callback,
