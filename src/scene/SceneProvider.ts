@@ -26,6 +26,7 @@ export class SceneProvider {
         return obj;
     };
 
+    // TODO: Why does this not work as collide but as overlap?
     addCollider = (
         obj: BaseGameObject,
         obj2: BaseGameObject,

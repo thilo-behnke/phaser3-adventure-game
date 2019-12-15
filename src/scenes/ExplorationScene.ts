@@ -51,24 +51,8 @@ export default class ExplorationScene extends Phaser.Scene {
         this.player = Player.create(this, new Point(100, 100));
         this.gameObjectRegistry.setPlayer(this.player);
 
-        /*        const itemObjects = [Capsule.create(this, new Point(20, 200))];*/
         this.monsterSpawner.spawn(new ExplorationMap());
         this.itemSpawner.spawn(new ExplorationMap());
-
-        /*        this.physics.add.overlap(
-            this.player.getSprite(),
-            itemObjects[0].getSprite(),
-            () => console.log('overlap'),
-            console.log,
-            this
-        );
-        this.physics.add.collider(
-            this.player.getSprite(),
-            itemObjects[0].getSprite(),
-            () => console.log('overlap'),
-            console.log,
-            this
-        );*/
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
