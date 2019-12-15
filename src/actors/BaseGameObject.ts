@@ -39,16 +39,16 @@ export abstract class BaseGameObject {
     public move = (direction: Direction): void => {
         switch (direction) {
             case Direction.DOWN:
-                this.setPosY(this.sprite.y + 1);
+                this.setPosY(this.sprite.y + 5);
                 break;
             case Direction.UP:
-                this.setPosY(this.sprite.y - 1);
+                this.setPosY(this.sprite.y - 5);
                 break;
             case Direction.LEFT:
-                this.setPosX(this.sprite.x - 1);
+                this.setPosX(this.sprite.x - 5);
                 break;
             case Direction.RIGHT:
-                this.setPosX(this.sprite.x + 1);
+                this.setPosX(this.sprite.x + 5);
                 break;
         }
     };
