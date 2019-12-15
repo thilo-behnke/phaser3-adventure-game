@@ -40,6 +40,15 @@ export default class ExplorationScene extends Phaser.Scene {
             frameRate: 3,
             repeat: -1,
         });
+        this.anims.create({
+            key: 'player-walking',
+            frames: this.anims.generateFrameNames('player', {
+                start: 4,
+                end: 6,
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
 
         // TODO: Why does constructor autowiring not work here?
         this.sceneProvider = container.resolve(SceneProvider);
@@ -59,16 +68,7 @@ export default class ExplorationScene extends Phaser.Scene {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update(time: number, delta: number): void {
-        const leftDown = this.keyManager.isDown(Action.LEFT),
-            rightDown = this.keyManager.isDown(Action.RIGHT),
-            upDown = this.keyManager.isDown(Action.UP),
-            downDown = this.keyManager.isDown(Action.DOWN);
         // Update player position.
-        this.player.accelerate([
-            (leftDown && Direction.LEFT) ||
-                (rightDown && Direction.RIGHT) ||
-                null,
-            (upDown && Direction.UP) || (downDown && Direction.DOWN) || null,
-        ]);
+        this.player.update(delta);
     }
 }

@@ -2,6 +2,7 @@ import Key = Phaser.Input.Keyboard.Key;
 import Scene = Phaser.Scene;
 import { injectable, singleton } from 'tsyringe';
 import { SceneProvider } from '../scene/SceneProvider';
+import { Direction } from '../global/direction';
 
 export enum Action {
     LEFT = 'LEFT',
@@ -9,6 +10,13 @@ export enum Action {
     DOWN = 'DOWN',
     UP = 'UP',
 }
+
+export type ActiveActions = {
+    directions: {
+        x: Direction | null;
+        y: Direction | null;
+    };
+};
 
 @singleton()
 @injectable()
@@ -37,5 +45,24 @@ export class KeyManager {
 
     isDown = (action: Action): boolean => {
         return this.actions[action].isDown;
+    };
+
+    getActions = (): ActiveActions => {
+        const leftDown = this.isDown(Action.LEFT),
+            rightDown = this.isDown(Action.RIGHT),
+            upDown = this.isDown(Action.UP),
+            downDown = this.isDown(Action.DOWN);
+        return {
+            directions: {
+                x:
+                    (leftDown && Direction.LEFT) ||
+                    (rightDown && Direction.RIGHT) ||
+                    null,
+                y:
+                    (upDown && Direction.UP) ||
+                    (downDown && Direction.DOWN) ||
+                    null,
+            },
+        };
     };
 }
