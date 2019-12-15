@@ -1,11 +1,11 @@
-import { CollisionGroup } from '../../collision/CollisionGroup';
+import { CollisionGroup, CollisionType } from '../../collision/CollisionGroup';
 import { CollisionGroupDef } from '../../collision/CollisionGroupDef';
 import { ItemObject } from './ItemObject';
 import { MonsterFactory } from '../../factories/MonsterFactory';
 import { MonsterObject } from '../MonsterObject';
 import { container } from 'tsyringe';
 
-@CollisionGroupDef(CollisionGroup.PLAYER)
+@CollisionGroupDef(CollisionGroup.PLAYER, CollisionType.OVERLAP)
 export class Capsule extends ItemObject {
     private rarity: number;
 

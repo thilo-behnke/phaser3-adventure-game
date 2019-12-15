@@ -7,9 +7,9 @@ import { container } from 'tsyringe';
 import { SceneProvider } from '../scene/SceneProvider';
 import { MonsterSpawner } from '../spawner/MonsterSpawner';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
-import Point = Phaser.Geom.Point;
 import { ItemSpawner } from '../spawner/ItemSpawner';
 import { ExplorationMap } from '../map/ExplorationMap';
+import Point = Phaser.Geom.Point;
 
 export default class ExplorationScene extends Phaser.Scene {
     private player: Player;
@@ -53,19 +53,22 @@ export default class ExplorationScene extends Phaser.Scene {
 
         this.monsterSpawner.spawn(new ExplorationMap());
         this.itemSpawner.spawn(new ExplorationMap());
+
+        /*        this.physics.world.setBoundsCollision(true, true, true, false)*/
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update(time: number, delta: number): void {
+        const leftDown = this.keyManager.isDown(Action.LEFT),
+            rightDown = this.keyManager.isDown(Action.RIGHT),
+            upDown = this.keyManager.isDown(Action.UP),
+            downDown = this.keyManager.isDown(Action.DOWN);
         // Update player position.
-        if (this.keyManager.isDown(Action.LEFT)) {
-            this.player.move(Direction.LEFT);
-        } else if (this.keyManager.isDown(Action.RIGHT)) {
-            this.player.move(Direction.RIGHT);
-        } else if (this.keyManager.isDown(Action.DOWN)) {
-            this.player.move(Direction.DOWN);
-        } else if (this.keyManager.isDown(Action.UP)) {
-            this.player.move(Direction.UP);
-        }
+        this.player.accelerate([
+            (leftDown && Direction.LEFT) ||
+                (rightDown && Direction.RIGHT) ||
+                null,
+            (upDown && Direction.UP) || (downDown && Direction.DOWN) || null,
+        ]);
     }
 }

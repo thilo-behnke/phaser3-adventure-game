@@ -1,14 +1,14 @@
-import { injectable, singleton } from 'tsyringe';
+import { singleton } from 'tsyringe';
+import { BaseGameObject } from '../actors/BaseGameObject';
+import { CollisionType } from '../collision/CollisionGroup';
 import Scene = Phaser.Scene;
 
 import Point = Phaser.Geom.Point;
 
 import Collider = Phaser.Physics.Arcade.Collider;
 import Key = Phaser.Input.Keyboard.Key;
-import { BaseGameObject } from '../actors/BaseGameObject';
 
 @singleton()
-@injectable()
 export class SceneProvider {
     private scene: Scene;
 
@@ -17,25 +17,28 @@ export class SceneProvider {
     };
 
     addToScene = (obj: BaseGameObject, pos: Point): BaseGameObject => {
-        const sprite = this.scene.physics.add.sprite(
-            pos.x,
-            pos.y,
-            obj.id.toString()
-        );
+        const sprite = this.scene.physics.add.sprite(pos.x, pos.y, 'player');
         obj.setSprite(sprite);
+        obj.getSprite().setImmovable(true);
         return obj;
     };
 
-    // TODO: Why does this not work as collide but as overlap?
-    addCollider = (
+    addCollisionByType = (
         obj: BaseGameObject,
         obj2: BaseGameObject,
-        onCollide
+        onCollide,
+        type: CollisionType
     ): Collider => {
-        return this.scene.physics.add.collider(
+        const collisionFunc =
+            type === CollisionType.OVERLAP
+                ? this.scene.physics.add.overlap
+                : this.scene.physics.add.collider;
+        return collisionFunc.bind(this.scene.physics)(
             obj.getSprite(),
             obj2.getSprite(),
-            onCollide
+            onCollide,
+            null,
+            this.scene
         );
     };
 

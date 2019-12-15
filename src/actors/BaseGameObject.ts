@@ -1,8 +1,8 @@
 import { Direction } from '../global/direction';
-import Sprite = Phaser.GameObjects.Sprite;
+import Sprite = Phaser.Physics.Arcade.Sprite;
 
 export abstract class BaseGameObject {
-    protected sprite?: Phaser.GameObjects.Sprite; // Sprite might not available when not on screen.
+    protected sprite?: Phaser.Physics.Arcade.Sprite; // Sprite might not available when not on screen.
 
     abstract update: (delta: number) => void;
 
@@ -12,7 +12,7 @@ export abstract class BaseGameObject {
         return this._id;
     }
 
-    public setSprite = (sprite: Sprite): void => {
+    public setSprite = (sprite: Phaser.Physics.Arcade.Sprite): void => {
         this.sprite = sprite;
     };
 
@@ -36,20 +36,12 @@ export abstract class BaseGameObject {
         this.sprite.setPosition(this.sprite.x, y);
     };
 
-    public move = (direction: Direction): void => {
-        switch (direction) {
-            case Direction.DOWN:
-                this.setPosY(this.sprite.y + 5);
-                break;
-            case Direction.UP:
-                this.setPosY(this.sprite.y - 5);
-                break;
-            case Direction.LEFT:
-                this.setPosX(this.sprite.x - 5);
-                break;
-            case Direction.RIGHT:
-                this.setPosX(this.sprite.x + 5);
-                break;
-        }
+    public accelerate = (directions: [Direction | null, Direction | null]): void => {
+        const [dirX, dirY] = directions;
+        const accX =
+            dirX === Direction.LEFT ? -100 : dirX === Direction.RIGHT ? 100 : 0;
+        const accY =
+            dirY === Direction.UP ? -100 : dirY === Direction.DOWN ? 100 : 0;
+        this.getSprite().setAcceleration(accX, accY);
     };
 }

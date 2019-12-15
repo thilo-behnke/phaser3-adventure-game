@@ -1,6 +1,6 @@
 import { BaseGameObject } from './BaseGameObject';
 import { CollisionGroupDef } from '../collision/CollisionGroupDef';
-import { CollisionGroup } from '../collision/CollisionGroup';
+import { CollisionGroup, CollisionType } from '../collision/CollisionGroup';
 
 export enum MonsterType {
     WOLF = 'WOLF',
@@ -15,7 +15,7 @@ export type MonsterStats = {
     agility: number;
 };
 
-@CollisionGroupDef(CollisionGroup.PLAYER)
+@CollisionGroupDef(CollisionGroup.PLAYER, CollisionType.COLLIDE)
 export class MonsterObject extends BaseGameObject {
     private _hp: number;
     private type: MonsterType;

@@ -1,6 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 
-import { COLLISION_GROUP_PROP } from './CollisionGroupDef';
+import { COLLISION_GROUP_PROP, COLLISION_TYPE_PROP } from './CollisionGroupDef';
 import { SceneProvider } from '../scene/SceneProvider';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import { BaseGameObject } from '../actors/BaseGameObject';
@@ -43,12 +43,29 @@ export class CollisionDetectionManager {
                     ' without a collision group!'
             );
         }
+        const collisionType =
+            COLLISION_TYPE_PROP in gameObject
+                ? gameObject['collisionType']
+                : null;
+        if (!collisionType) {
+            throw new Error(
+                "Can't register collision for obj " +
+                    gameObject.id +
+                    ' without a collision type (collide, overlap)!'
+            );
+        }
         const otherObjects = this.gameObjectRegistry.getByCollisionGroup(
             collisionGroup
         );
         otherObjects.forEach(obj => {
             const callback = this.getCallback(gameObject, obj);
-            this.sceneProvider.addCollider(gameObject, obj, callback);
+            const collider = this.sceneProvider.addCollisionByType(
+                gameObject,
+                obj,
+                callback,
+                collisionType
+            );
+            console.log(collider);
         });
     };
 }
