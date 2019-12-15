@@ -31,25 +31,6 @@ export default class ExplorationScene extends Phaser.Scene {
     }
 
     create(): void {
-        this.anims.create({
-            key: 'player-idle',
-            frames: this.anims.generateFrameNames('player', {
-                start: 0,
-                end: 3,
-            }),
-            frameRate: 3,
-            repeat: -1,
-        });
-        this.anims.create({
-            key: 'player-walking',
-            frames: this.anims.generateFrameNames('player', {
-                start: 4,
-                end: 6,
-            }),
-            frameRate: 3,
-            repeat: -1,
-        });
-
         // TODO: Why does constructor autowiring not work here?
         this.sceneProvider = container.resolve(SceneProvider);
         this.sceneProvider.initialize(this);
@@ -62,8 +43,6 @@ export default class ExplorationScene extends Phaser.Scene {
 
         this.monsterSpawner.spawn(new ExplorationMap());
         this.itemSpawner.spawn(new ExplorationMap());
-
-        /*        this.physics.world.setBoundsCollision(true, true, true, false)*/
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

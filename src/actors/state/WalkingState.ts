@@ -9,7 +9,6 @@ export class WalkingState implements State {
         obj.playWalkingAnim();
     };
     update = (obj: DynamicGameObject, actions: ActiveActions): State => {
-        console.log(obj.getSprite().body.velocity);
         if (
             actions.directions.x ||
             actions.directions.y ||

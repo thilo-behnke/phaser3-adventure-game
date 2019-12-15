@@ -65,7 +65,6 @@ export class CollisionDetectionManager {
                 callback,
                 collisionType
             );
-            console.log(collider);
         });
     };
 }
