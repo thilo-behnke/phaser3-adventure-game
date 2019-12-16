@@ -3,6 +3,8 @@ import Sprite = Phaser.Physics.Arcade.Sprite;
 import Point = Phaser.Geom.Point;
 
 export abstract class BaseGameObject {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    protected _type: any;
     protected sprite?: Phaser.Physics.Arcade.Sprite; // Sprite might not available when not on screen.
 
     protected acceleration: Point;
@@ -26,4 +28,9 @@ export abstract class BaseGameObject {
         this.sprite.destroy(true);
         this.sprite = undefined;
     };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    get type(): any {
+        return this._type;
+    }
 }

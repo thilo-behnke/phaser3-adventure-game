@@ -17,7 +17,7 @@ export class SceneProvider {
     };
 
     addToScene = (obj: BaseGameObject, pos: Point): BaseGameObject => {
-        const sprite = this.scene.physics.add.sprite(pos.x, pos.y, 'player');
+        const sprite = this.scene.physics.add.sprite(pos.x, pos.y, obj.type);
         obj.setSprite(sprite);
         obj.getSprite().setImmovable(true);
         return obj;
@@ -44,5 +44,9 @@ export class SceneProvider {
 
     addKey = (keyCode: number): Key => {
         return this.scene.input.keyboard.addKey(keyCode);
+    };
+
+    addImage = (x: number, y: number, texture: string) => {
+        return this.scene.add.image(x, y, texture);
     };
 }

@@ -9,6 +9,7 @@ export enum Action {
     RIGHT = 'RIGHT',
     DOWN = 'DOWN',
     UP = 'UP',
+    INVENTORY = 'INVENTORY',
 }
 
 export type ActiveActions = {
@@ -40,8 +41,15 @@ export class KeyManager {
             [Action.DOWN]: sceneProvider.addKey(
                 Phaser.Input.Keyboard.KeyCodes.DOWN
             ),
+            [Action.INVENTORY]: sceneProvider.addKey(
+                Phaser.Input.Keyboard.KeyCodes.I
+            ),
         };
     }
+
+    assignAction = (action: Action, callback): void => {
+        this.actions[action].on('down', callback);
+    };
 
     isDown = (action: Action): boolean => {
         return this.actions[action].isDown;

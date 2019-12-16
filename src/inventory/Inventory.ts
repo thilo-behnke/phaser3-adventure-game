@@ -9,9 +9,18 @@ type ItemStorage = { [id: string]: ItemObject };
 
 @singleton()
 export class Inventory {
+    // TODO: This should be subject to change.
+    private _inventoryDef = {
+        capsules: 3,
+    };
+
     private items: ItemStorage = {};
     private itemSubject = new BehaviorSubject<ItemStorage>(this.items);
     private monsters: { [id: string]: MonsterObject } = {};
+
+    get inventoryDef(): { capsules: number } {
+        return this._inventoryDef;
+    }
 
     add(item: ItemObject): void {
         this.items[item.id] = item;

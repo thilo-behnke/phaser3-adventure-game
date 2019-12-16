@@ -18,12 +18,12 @@ export type MonsterStats = {
 @CollisionGroupDef(CollisionGroup.PLAYER, CollisionType.COLLIDE)
 export class MonsterObject extends BaseGameObject {
     private _hp: number;
-    private type: MonsterType;
+    protected _type: MonsterType;
     private stats: MonsterStats;
 
     constructor(id: string, stats: MonsterStats, type: MonsterType) {
         super(id);
-        this.type = type;
+        this._type = type;
         this.stats = stats;
     }
 
