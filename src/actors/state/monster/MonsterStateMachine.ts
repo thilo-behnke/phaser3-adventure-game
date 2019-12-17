@@ -13,6 +13,7 @@ export class MonsterStateMachine implements IMonsterStateMachine {
     currentState: MonsterState;
 
     constructor(monster: MonsterObject) {
+        console.log("state machine created for monster", monster)
         this.currentState = new IdleState();
         this.currentState.enter(monster);
     }

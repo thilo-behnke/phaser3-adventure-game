@@ -27,6 +27,7 @@ export class MonsterFactory implements IGameObjectFactory<MonsterObject> {
         const mod = rarity % NUMBER_OF_MONSTERS;
         const monsterTemplate = this.getMonsterBySeed(mod);
         return new MonsterObject(
+            // TODO: The id must be unique!
             rarity.toString(),
             monsterTemplate.baseStats,
             monsterTemplate.type
