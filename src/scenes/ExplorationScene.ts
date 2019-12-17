@@ -48,12 +48,12 @@ export default class ExplorationScene extends Phaser.Scene {
         // TODO: Why does constructor autowiring not work here?
         this.sceneProvider = container.resolve(SceneProvider);
         this.sceneProvider.initialize(this);
-        this.monsterSpawner = container.resolve(MonsterSpawner);
-        this.itemSpawner = container.resolve(ItemSpawner);
         this.gameObjectRegistry = container.resolve(GameObjectRegistry);
         this.keyManager = container.resolve(KeyManager);
         this.player = Player.create(this, new Point(100, 100));
         this.gameObjectRegistry.setPlayer(this.player);
+        this.monsterSpawner = container.resolve(MonsterSpawner);
+        this.itemSpawner = container.resolve(ItemSpawner);
         this.inventory = container.resolve(Inventory);
 
         this.monsterSpawner.spawn(new ExplorationMap());
@@ -71,5 +71,6 @@ export default class ExplorationScene extends Phaser.Scene {
     update(time: number, delta: number): void {
         // Update player position.
         this.player.update(delta);
+        this.gameObjectRegistry.getObjects().forEach(obj => obj.update(delta));
     }
 }

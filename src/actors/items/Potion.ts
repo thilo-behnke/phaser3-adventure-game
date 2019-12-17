@@ -7,4 +7,8 @@ export class Potion extends ItemObject {
     heal(monsterObj: MonsterObject): void {
         monsterObj.hp += this.healAmount;
     }
+
+    handlePlayerCollision = (): void => {
+        return;
+    };
 }

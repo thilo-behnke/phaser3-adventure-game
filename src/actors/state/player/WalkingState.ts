@@ -1,14 +1,16 @@
-import { State } from './State';
-import { BaseGameObject } from '../BaseGameObject';
-import { DynamicGameObject } from '../DynamicGameObject';
-import { ActiveActions } from '../../input/keyManager';
+import { State } from '../State';
+import { BaseGameObject } from '../../BaseGameObject';
+import { DynamicGameObject } from '../../DynamicGameObject';
+import { ActiveActions } from '../../../input/keyManager';
 import { IdleState } from './IdleState';
+import { Player } from '../../Player';
+import { PlayerState } from './PlayerState';
 
-export class WalkingState implements State {
-    enter = (obj: DynamicGameObject): void => {
+export class WalkingState implements PlayerState {
+    enter = (obj: Player): void => {
         obj.playWalkingAnim();
     };
-    update = (obj: DynamicGameObject, actions: ActiveActions): State => {
+    update = (obj: Player, actions: ActiveActions): PlayerState => {
         if (
             actions.directions.x ||
             actions.directions.y ||

@@ -1,10 +1,11 @@
-import { BaseGameObject } from './BaseGameObject';
-import Point = Phaser.Geom.Point;
 import { DynamicGameObject } from './DynamicGameObject';
 import { PlayerStateMachine } from './state/PlayerStateMachine';
 import { KeyManager } from '../input/keyManager';
 import { container } from 'tsyringe';
+import Point = Phaser.Geom.Point;
 import Scene = Phaser.Scene;
+import { Direction } from '../global/direction';
+import { SceneProvider } from '../scene/SceneProvider';
 
 export class Player extends DynamicGameObject {
     protected acceleration = new Point(100, 100);
@@ -23,7 +24,7 @@ export class Player extends DynamicGameObject {
             .setFriction(100, 100)
             .setDrag(50, 50);
         player.sprite.setCollideWorldBounds(true);
-        player.stateMachine = new PlayerStateMachine(player);
+        player.onAddToScene();
         return player;
     };
 
@@ -46,7 +47,12 @@ export class Player extends DynamicGameObject {
             frameRate: 3,
             repeat: -1,
         });
-    }
+    };
+
+    onAddToScene = (): void => {
+        this.stateMachine = new PlayerStateMachine(this);
+        return;
+    };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update = (delta: number): void => {
@@ -54,6 +60,26 @@ export class Player extends DynamicGameObject {
         this.stateMachine.update(delta, this, keyManager.getActions());
 
         return;
+    };
+
+    public accelerate = (directions: {
+        x: Direction | null;
+        y: Direction | null;
+    }): void => {
+        const { x: dirX, y: dirY } = directions;
+        const accX =
+            dirX === Direction.LEFT
+                ? -this.acceleration.x
+                : dirX === Direction.RIGHT
+                ? this.acceleration.x
+                : 0;
+        const accY =
+            dirY === Direction.UP
+                ? -this.acceleration.y
+                : dirY === Direction.DOWN
+                ? this.acceleration.y
+                : 0;
+        this.getSprite().setAcceleration(accX, accY);
     };
 
     playIdleAnim = (): void => {

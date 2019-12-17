@@ -1,7 +1,7 @@
 import { BaseGameObject } from '../BaseGameObject';
 
-export interface State {
+export interface State<T> {
     enter: (obj: BaseGameObject) => void;
-    update: (obj: BaseGameObject, actions) => State;
+    update: (obj: BaseGameObject, directive: T) => State<T>;
     exit: (obj: BaseGameObject) => void;
 }

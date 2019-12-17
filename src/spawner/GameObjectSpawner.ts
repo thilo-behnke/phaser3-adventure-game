@@ -21,7 +21,7 @@ export abstract class GameObjectSpawner {
         spawns.forEach(([pos, obj]) => this.addToScene(pos, obj));
     }
 
-    protected addToScene(pos: Point, obj: BaseGameObject): void {
+    addToScene(pos: Point, obj: BaseGameObject): void {
         const id = obj.id;
 
         this.gameObjectRegistry.add(id, obj);

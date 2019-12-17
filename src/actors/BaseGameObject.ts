@@ -9,6 +9,8 @@ export abstract class BaseGameObject {
 
     protected acceleration: Point;
 
+    // Lifecycle hooks.
+    abstract onAddToScene: () => void;
     abstract update: (delta: number) => void;
 
     constructor(private _id: string) {}

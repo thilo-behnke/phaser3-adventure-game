@@ -1,9 +1,12 @@
 import { singleton } from 'tsyringe';
 import { ItemObject } from '../actors/items/ItemObject';
-import { MonsterObject } from '../actors/MonsterObject';
+import { MonsterObject, MonsterStats } from '../actors/MonsterObject';
 import { Capsule } from '../actors/items/Capsule';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { SceneProvider } from '../scene/SceneProvider';
+import { MonsterSpawner } from '../spawner/MonsterSpawner';
+import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 
 type ItemStorage = { [id: string]: ItemObject };
 
@@ -17,6 +20,11 @@ export class Inventory {
     private items: ItemStorage = {};
     private itemSubject = new BehaviorSubject<ItemStorage>(this.items);
     private monsters: { [id: string]: MonsterObject } = {};
+
+    constructor(
+        private monsterSpawner: MonsterSpawner,
+        private gameObjectRegistry: GameObjectRegistry
+    ) {}
 
     get inventoryDef(): { capsules: number } {
         return this._inventoryDef;
@@ -44,6 +52,10 @@ export class Inventory {
             const monster = item.open();
             this.monsters[monster.id] = monster;
             this.remove(item.id);
+            this.monsterSpawner.addToScene(
+                this.gameObjectRegistry.getPlayerPos(),
+                monster
+            );
             console.log(
                 'Capsule was opened, monster added to inventory',
                 this.items,

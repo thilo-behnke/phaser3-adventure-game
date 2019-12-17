@@ -20,6 +20,7 @@ export class SceneProvider {
         const sprite = this.scene.physics.add.sprite(pos.x, pos.y, obj.type);
         obj.setSprite(sprite);
         obj.getSprite().setImmovable(true);
+        obj.onAddToScene();
         return obj;
     };
 

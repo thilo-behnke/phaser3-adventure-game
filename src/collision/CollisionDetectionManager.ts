@@ -4,7 +4,6 @@ import { COLLISION_GROUP_PROP, COLLISION_TYPE_PROP } from './CollisionGroupDef';
 import { SceneProvider } from '../scene/SceneProvider';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import { BaseGameObject } from '../actors/BaseGameObject';
-import { Inventory } from '../inventory/Inventory';
 import { ItemObject } from '../actors/items/ItemObject';
 import { Player } from '../actors/Player';
 
@@ -13,8 +12,7 @@ import { Player } from '../actors/Player';
 export class CollisionDetectionManager {
     constructor(
         private sceneProvider: SceneProvider,
-        private gameObjectRegistry: GameObjectRegistry,
-        private inventory: Inventory
+        private gameObjectRegistry: GameObjectRegistry
     ) {}
 
     private getCallback = (
@@ -22,13 +20,9 @@ export class CollisionDetectionManager {
         obj2: BaseGameObject
     ): Function => {
         if (obj instanceof ItemObject && obj2 instanceof Player) {
-            return (): void => {
-                console.log('Player picked up item: ', obj);
-                this.inventory.add(obj);
-                obj.destroySprite();
-            };
+            return obj.handlePlayerCollision;
         }
-        return console.log;
+        return () => {};
     };
 
     register = (gameObject: BaseGameObject): void => {

@@ -4,6 +4,7 @@ import { ItemObject, ItemType } from './ItemObject';
 import { MonsterFactory } from '../../factories/MonsterFactory';
 import { MonsterObject } from '../MonsterObject';
 import { container } from 'tsyringe';
+import { Inventory } from '../../inventory/Inventory';
 
 @CollisionGroupDef(CollisionGroup.PLAYER, CollisionType.OVERLAP)
 export class Capsule extends ItemObject {
@@ -18,5 +19,12 @@ export class Capsule extends ItemObject {
     open = (): MonsterObject => {
         const monsterFactory = container.resolve(MonsterFactory);
         return monsterFactory.generateObject(this.rarity);
+    };
+
+    handlePlayerCollision = (): void => {
+        console.log('Player picked up item: ', this);
+        const inventory = container.resolve(Inventory);
+        inventory.add(this);
+        this.destroySprite();
     };
 }
