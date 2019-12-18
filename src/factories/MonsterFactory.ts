@@ -8,6 +8,7 @@ import {
 import { singleton } from 'tsyringe';
 
 import * as wolfTemplate from '../../assets/data/monsters/wolf.json';
+import {generateUUID} from "../util/random";
 
 type MonsterTemplate = {
     type: MonsterType;
@@ -27,8 +28,7 @@ export class MonsterFactory implements IGameObjectFactory<MonsterObject> {
         const mod = rarity % NUMBER_OF_MONSTERS;
         const monsterTemplate = this.getMonsterBySeed(mod);
         return new MonsterObject(
-            // TODO: The id must be unique!
-            rarity.toString(),
+            generateUUID(),
             monsterTemplate.baseStats,
             monsterTemplate.type
         );
