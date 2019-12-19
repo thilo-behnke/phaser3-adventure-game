@@ -62,6 +62,7 @@ export class ObservingState implements MonsterState {
             this.debugSub = this.debugService.drawPoint(this.movingTo);
             this.counter--;
         }
+        // TODO: Must slow down the acceleration to actually reach the point?
         monster.accelerateTowards(this.movingTo);
         return this;
     };
