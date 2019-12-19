@@ -1,9 +1,5 @@
 import { IGameObjectFactory } from './IGameObjectFactory';
-import {
-    MonsterObject,
-    MonsterStats,
-    MonsterType,
-} from '../actors/MonsterObject';
+import { MonsterObject, MonsterStats, MonsterType } from '../actors/MonsterObject';
 import { singleton } from 'tsyringe';
 
 import * as wolfTemplate from '../../assets/data/monsters/wolf.json';
@@ -29,18 +25,12 @@ export class MonsterFactory implements IGameObjectFactory<MonsterObject> {
             );
         }
         // Determine the monster.
-        return monstersForRarityLevel[
-            parseInt(seed, 16) % monstersForRarityLevel.length
-        ];
+        return monstersForRarityLevel[parseInt(seed, 16) % monstersForRarityLevel.length];
     }
 
     generateObject(rarity: number): MonsterObject {
         const seed = generateUUID();
         const monsterTemplate = this.getMonsterByRarity(rarity, seed);
-        return new MonsterObject(
-            generateUUID(),
-            monsterTemplate.baseStats,
-            monsterTemplate.type
-        );
+        return new MonsterObject(generateUUID(), monsterTemplate.baseStats, monsterTemplate.type);
     }
 }

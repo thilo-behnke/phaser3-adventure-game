@@ -52,10 +52,7 @@ export class Inventory {
             const monster = item.open();
             this.monsters[monster.id] = monster;
             this.remove(item.id);
-            this.monsterSpawner.addToScene(
-                this.gameObjectRegistry.getPlayerPos(),
-                monster
-            );
+            this.monsterSpawner.addToScene(this.gameObjectRegistry.getPlayerPos(), monster);
             console.log(
                 'Capsule was opened, monster added to inventory',
                 this.items,

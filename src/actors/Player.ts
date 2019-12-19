@@ -11,10 +11,7 @@ export class Player extends DynamicGameObject {
     protected acceleration = new Point(100, 100);
     protected stateMachine: PlayerStateMachine;
 
-    static create = (
-        scene: Phaser.Scene,
-        initialPos: Phaser.Geom.Point
-    ): Player => {
+    static create = (scene: Phaser.Scene, initialPos: Phaser.Geom.Point): Player => {
         const player = new Player('player');
         player.createAnimations(scene);
         player._sprite = scene.physics.add
@@ -62,10 +59,7 @@ export class Player extends DynamicGameObject {
         return;
     };
 
-    public accelerate = (directions: {
-        x: Direction | null;
-        y: Direction | null;
-    }): void => {
+    public accelerate = (directions: { x: Direction | null; y: Direction | null }): void => {
         const { x: dirX, y: dirY } = directions;
         const accX =
             dirX === Direction.LEFT

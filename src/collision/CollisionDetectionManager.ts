@@ -15,10 +15,7 @@ export class CollisionDetectionManager {
         private gameObjectRegistry: GameObjectRegistry
     ) {}
 
-    private getCallback = (
-        obj: BaseGameObject,
-        obj2: BaseGameObject
-    ): Function => {
+    private getCallback = (obj: BaseGameObject, obj2: BaseGameObject): Function => {
         if (obj instanceof ItemObject && obj2 instanceof Player) {
             return obj.handlePlayerCollision;
         }
@@ -27,20 +24,14 @@ export class CollisionDetectionManager {
 
     register = (gameObject: BaseGameObject): void => {
         const collisionGroup =
-            COLLISION_GROUP_PROP in gameObject
-                ? gameObject['collisionGroup']
-                : null;
+            COLLISION_GROUP_PROP in gameObject ? gameObject['collisionGroup'] : null;
         if (!collisionGroup) {
             throw new Error(
-                "Can't register collision for obj " +
-                    gameObject.id +
-                    ' without a collision group!'
+                "Can't register collision for obj " + gameObject.id + ' without a collision group!'
             );
         }
         const collisionType =
-            COLLISION_TYPE_PROP in gameObject
-                ? gameObject['collisionType']
-                : null;
+            COLLISION_TYPE_PROP in gameObject ? gameObject['collisionType'] : null;
         if (!collisionType) {
             throw new Error(
                 "Can't register collision for obj " +
@@ -48,17 +39,10 @@ export class CollisionDetectionManager {
                     ' without a collision type (collide, overlap)!'
             );
         }
-        const otherObjects = this.gameObjectRegistry.getByCollisionGroup(
-            collisionGroup
-        );
+        const otherObjects = this.gameObjectRegistry.getByCollisionGroup(collisionGroup);
         otherObjects.forEach(obj => {
             const callback = this.getCallback(gameObject, obj);
-            this.sceneProvider.addCollisionByType(
-                gameObject,
-                obj,
-                callback,
-                collisionType
-            );
+            this.sceneProvider.addCollisionByType(gameObject, obj, callback, collisionType);
         });
     };
 }

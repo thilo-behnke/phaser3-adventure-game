@@ -12,9 +12,7 @@ export abstract class GameObjectSpawner {
         protected gameObjectRegistry: GameObjectRegistry
     ) {}
 
-    protected abstract generateSpawns: (
-        map: ExplorationMap
-    ) => Array<[Point, BaseGameObject]>;
+    protected abstract generateSpawns: (map: ExplorationMap) => Array<[Point, BaseGameObject]>;
 
     spawn(map: ExplorationMap): void {
         const spawns: Array<[Point, BaseGameObject]> = this.generateSpawns(map);

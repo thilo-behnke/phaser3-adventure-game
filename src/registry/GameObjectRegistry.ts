@@ -34,10 +34,7 @@ export class GameObjectRegistry {
             return [this.player];
         }
         return Object.values(this.registry).filter(gameObject => {
-            const group =
-                COLLISION_GROUP_PROP in gameObject
-                    ? gameObject['collisionGroup']
-                    : null;
+            const group = COLLISION_GROUP_PROP in gameObject ? gameObject['collisionGroup'] : null;
             return group && group === collisionGroup;
         });
     }

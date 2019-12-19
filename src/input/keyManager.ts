@@ -29,21 +29,11 @@ export class KeyManager {
 
     constructor(private sceneProvider: SceneProvider) {
         this.actions = {
-            [Action.LEFT]: sceneProvider.addKey(
-                Phaser.Input.Keyboard.KeyCodes.LEFT
-            ),
-            [Action.RIGHT]: sceneProvider.addKey(
-                Phaser.Input.Keyboard.KeyCodes.RIGHT
-            ),
-            [Action.UP]: sceneProvider.addKey(
-                Phaser.Input.Keyboard.KeyCodes.UP
-            ),
-            [Action.DOWN]: sceneProvider.addKey(
-                Phaser.Input.Keyboard.KeyCodes.DOWN
-            ),
-            [Action.INVENTORY]: sceneProvider.addKey(
-                Phaser.Input.Keyboard.KeyCodes.I
-            ),
+            [Action.LEFT]: sceneProvider.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
+            [Action.RIGHT]: sceneProvider.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
+            [Action.UP]: sceneProvider.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
+            [Action.DOWN]: sceneProvider.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
+            [Action.INVENTORY]: sceneProvider.addKey(Phaser.Input.Keyboard.KeyCodes.I),
         };
     }
 
@@ -62,14 +52,8 @@ export class KeyManager {
             downDown = this.isDown(Action.DOWN);
         return {
             directions: {
-                x:
-                    (leftDown && Direction.LEFT) ||
-                    (rightDown && Direction.RIGHT) ||
-                    null,
-                y:
-                    (upDown && Direction.UP) ||
-                    (downDown && Direction.DOWN) ||
-                    null,
+                x: (leftDown && Direction.LEFT) || (rightDown && Direction.RIGHT) || null,
+                y: (upDown && Direction.UP) || (downDown && Direction.DOWN) || null,
             },
         };
     };

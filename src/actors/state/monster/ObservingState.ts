@@ -41,10 +41,7 @@ export class ObservingState implements MonsterState {
             return new FollowingState(preferredObj.value);
         }
         // Walk to a random point in the nearer area.
-        if (
-            !this.movingTo ||
-            this.movingTo.subtract(monster.sprite.getCenter()).length() < 10
-        ) {
+        if (!this.movingTo || this.movingTo.subtract(monster.sprite.getCenter()).length() < 10) {
             // TODO: Radius not correctly aligned.
             const radius = getNumberBetween(360);
             const distance = getNumberBetween(20, 120);
@@ -54,22 +51,14 @@ export class ObservingState implements MonsterState {
                 { distance },
                 monster.sprite
                     .getCenter()
-                    .add(
-                        new Vector2(Math.cos(radius), Math.sin(radius)).scale(
-                            distance
-                        )
-                    )
+                    .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance))
             );
             if (this.debugSub) {
                 this.debugSub.next();
             }
             this.movingTo = monster.sprite
                 .getCenter()
-                .add(
-                    new Vector2(Math.cos(radius), Math.sin(radius)).scale(
-                        distance
-                    )
-                );
+                .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance));
             this.debugSub = this.debugService.drawPoint(this.movingTo);
             this.counter--;
         }

@@ -20,14 +20,10 @@ export class InventoryUi {
 
     private show = false;
 
-    constructor(
-        private inventory: Inventory,
-        private sceneProvider: SceneProvider
-    ) {
+    constructor(private inventory: Inventory, private sceneProvider: SceneProvider) {
         this.INVENTORY_START_POS_HOR =
             SCREEN_WIDTH -
-            this.inventory.inventoryDef.capsules *
-                (this.CAPSULE_WIDTH + this.CAPSULE_PADDING_HOR);
+            this.inventory.inventoryDef.capsules * (this.CAPSULE_WIDTH + this.CAPSULE_PADDING_HOR);
         this.INVENTORY_START_POS_VER =
             SCREEN_HEIGHT - this.CAPSULE_HEIGHT + this.CAPSULE_PADDING_VER;
         // Render inventory.
@@ -52,8 +48,7 @@ export class InventoryUi {
         this.destroyInventory();
         Object.entries(this.inventoryItems).forEach(([id], i) => {
             const image = this.createCapsuleImg(
-                this.INVENTORY_START_POS_HOR +
-                    i * (this.CAPSULE_WIDTH + this.CAPSULE_PADDING_HOR),
+                this.INVENTORY_START_POS_HOR + i * (this.CAPSULE_WIDTH + this.CAPSULE_PADDING_HOR),
                 this.INVENTORY_START_POS_VER,
                 true
             );
@@ -61,8 +56,7 @@ export class InventoryUi {
             image.on('pointerdown', () => this.inventory.use(id));
         });
         range(
-            this.inventory.inventoryDef.capsules -
-                Object.keys(this.inventoryItems).length
+            this.inventory.inventoryDef.capsules - Object.keys(this.inventoryItems).length
         ).forEach((emptyItem, i) => {
             this.createCapsuleImg(
                 this.INVENTORY_START_POS_HOR +
@@ -78,16 +72,8 @@ export class InventoryUi {
         this.renderedInventory.forEach(image => image.destroy());
     };
 
-    private createCapsuleImg = (
-        x: number,
-        y: number,
-        active = false
-    ): Image => {
-        const image = this.sceneProvider.addImage(
-            x,
-            y,
-            active ? 'CAPSULE' : 'CAPSULE_INACTIVE'
-        );
+    private createCapsuleImg = (x: number, y: number, active = false): Image => {
+        const image = this.sceneProvider.addImage(x, y, active ? 'CAPSULE' : 'CAPSULE_INACTIVE');
         this.renderedInventory.push(image);
         return image;
     };

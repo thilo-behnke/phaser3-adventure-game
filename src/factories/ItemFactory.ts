@@ -1,8 +1,4 @@
-import {
-    ItemObject,
-    MAX_ITEM_RARITY,
-    NUMBER_OF_ITEMS,
-} from '../actors/items/ItemObject';
+import { ItemObject, MAX_ITEM_RARITY, NUMBER_OF_ITEMS } from '../actors/items/ItemObject';
 
 import { IGameObjectFactory } from './IGameObjectFactory';
 import { injectable } from 'tsyringe';
