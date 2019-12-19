@@ -8,6 +8,7 @@ export class DebugService {
     constructor(private sceneProvider: SceneProvider) {}
 
     drawPoint(pos: Vector2): Subject<void> {
+        // TODO: Better add line with right angle (=cross).
         const circle = this.sceneProvider.addCircle(pos.x, pos.y);
         const destroyCircle = new Subject<void>();
         // TODO: Does not work.
