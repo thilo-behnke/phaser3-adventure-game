@@ -14,8 +14,8 @@ export class WalkingState implements PlayerState {
         if (
             actions.directions.x ||
             actions.directions.y ||
-            Math.abs(obj.getSprite().body.velocity.x) > 10 ||
-            Math.abs(obj.getSprite().body.velocity.y) > 10
+            Math.abs(obj.sprite.body.velocity.x) > 10 ||
+            Math.abs(obj.sprite.body.velocity.y) > 10
         ) {
             obj.accelerate(actions.directions);
             return this;

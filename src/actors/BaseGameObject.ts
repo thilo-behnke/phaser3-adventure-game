@@ -5,7 +5,7 @@ import Point = Phaser.Geom.Point;
 export abstract class BaseGameObject {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     protected _type: any;
-    protected sprite?: Phaser.Physics.Arcade.Sprite; // Sprite might not available when not on screen.
+    protected _sprite?: Phaser.Physics.Arcade.Sprite; // Sprite might not available when not on screen.
 
     protected acceleration: Point;
 
@@ -20,15 +20,17 @@ export abstract class BaseGameObject {
     }
 
     public setSprite = (sprite: Phaser.Physics.Arcade.Sprite): void => {
-        this.sprite = sprite;
+        this._sprite = sprite;
     };
 
-    public getSprite = (): Sprite => this.sprite;
+    get sprite(): Sprite {
+        return this._sprite;
+    }
 
     // TODO: Is there a more performant way?
     public destroySprite = (): void => {
-        this.sprite.destroy(true);
-        this.sprite = undefined;
+        this._sprite.destroy(true);
+        this._sprite = undefined;
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

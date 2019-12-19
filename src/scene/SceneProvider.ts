@@ -19,7 +19,7 @@ export class SceneProvider {
     addToScene = (obj: BaseGameObject, pos: Point): BaseGameObject => {
         const sprite = this.scene.physics.add.sprite(pos.x, pos.y, obj.type);
         obj.setSprite(sprite);
-        obj.getSprite().setImmovable(true);
+        obj.sprite.setImmovable(true);
         obj.onAddToScene();
         return obj;
     };
@@ -35,8 +35,8 @@ export class SceneProvider {
                 ? this.scene.physics.add.overlap
                 : this.scene.physics.add.collider;
         return collisionFunc.bind(this.scene.physics)(
-            obj.getSprite(),
-            obj2.getSprite(),
+            obj.sprite,
+            obj2.sprite,
             onCollide,
             null,
             this.scene

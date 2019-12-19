@@ -8,8 +8,8 @@ import { FollowingState } from './FollowingState';
 
 export class IdleState implements MonsterState {
     enter = (monster: MonsterObject): void => {
-        monster.getSprite().setAcceleration(0, 0);
-        monster.getSprite().setVelocity(0, 0);
+        monster.sprite.setAcceleration(0, 0);
+        monster.sprite.setVelocity(0, 0);
         monster.playIdleAnim();
     };
     update = (

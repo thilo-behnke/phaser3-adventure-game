@@ -21,7 +21,7 @@ export class GameObjectRegistry {
 
     getPlayerPos = (): Point => {
         // TODO: Maybe we should just use Vector2 in general?
-        const { x, y } = this.player.getSprite().getCenter();
+        const { x, y } = this.player.sprite.getCenter();
         return new Point(x, y);
     };
 

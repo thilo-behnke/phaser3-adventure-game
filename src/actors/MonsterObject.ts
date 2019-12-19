@@ -14,9 +14,12 @@ export enum MonsterType {
 export const NUMBER_OF_MONSTERS = Object.keys(MonsterType).length;
 
 export type MonsterStats = {
+    // Fight stats.
     health: number;
     strength: number;
     agility: number;
+    // Other.
+    attentionRadius: number;
 };
 
 @CollisionGroupDef(CollisionGroup.PLAYER, CollisionType.COLLIDE)
@@ -47,7 +50,7 @@ export class MonsterObject extends DynamicGameObject {
     }
 
     onAddToScene = (): void => {
-        this.getSprite().setMaxVelocity(50, 50);
+        this.sprite.setMaxVelocity(50, 50);
         this.stateMachine = new MonsterStateMachine(this);
     };
 
@@ -58,8 +61,8 @@ export class MonsterObject extends DynamicGameObject {
     };
 
     accelerateTowards = (pos: Vector2): void => {
-        const dir = pos.subtract(this.getSprite().getCenter());
-        this.getSprite().setAcceleration(dir.x, dir.y);
+        const dir = pos.subtract(this.sprite.getCenter());
+        this.sprite.setAcceleration(dir.x, dir.y);
     };
 
     getStats = (): MonsterStats => this.stats;

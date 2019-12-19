@@ -3,7 +3,8 @@
   "baseStats": {
     "health": 100,
     "strength": 100,
-    "agility": 100
+    "agility": 100,
+    "attentionRadius": 200
   },
   "rarity": 20
 }

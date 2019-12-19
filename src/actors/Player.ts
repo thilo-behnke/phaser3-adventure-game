@@ -17,13 +17,13 @@ export class Player extends DynamicGameObject {
     ): Player => {
         const player = new Player('player');
         player.createAnimations(scene);
-        player.sprite = scene.physics.add
+        player._sprite = scene.physics.add
             .sprite(initialPos.x, initialPos.y, 'player', 0)
             .setMass(50)
             .setMaxVelocity(100, 100)
             .setFriction(100, 100)
             .setDrag(50, 50);
-        player.sprite.setCollideWorldBounds(true);
+        player._sprite.setCollideWorldBounds(true);
         player.onAddToScene();
         return player;
     };
@@ -79,14 +79,14 @@ export class Player extends DynamicGameObject {
                 : dirY === Direction.DOWN
                 ? this.acceleration.y
                 : 0;
-        this.getSprite().setAcceleration(accX, accY);
+        this.sprite.setAcceleration(accX, accY);
     };
 
     playIdleAnim = (): void => {
-        this.sprite.anims.play('player-idle');
+        this._sprite.anims.play('player-idle');
     };
 
     playWalkingAnim = (): void => {
-        this.sprite.anims.play('player-walking');
+        this._sprite.anims.play('player-walking');
     };
 }

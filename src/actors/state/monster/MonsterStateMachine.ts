@@ -13,14 +13,19 @@ export class MonsterStateMachine implements IMonsterStateMachine {
     currentState: MonsterState;
 
     constructor(monster: MonsterObject) {
-        console.log("state machine created for monster", monster)
+        console.log('state machine created for monster', monster);
         this.currentState = new IdleState();
         this.currentState.enter(monster);
     }
 
     update = (delta: number, monster: MonsterObject): void => {
         const registry = container.resolve(GameObjectRegistry);
-        const objs = [registry.getPlayer()];
+        const { attentionRadius } = monster.getStats();
+        const monsterPos = monster.sprite.getCenter();
+        const objs = [registry.getPlayer()].filter(({ sprite }) => {
+            const objPos = sprite.getCenter();
+            return objPos.subtract(monsterPos).length() <= attentionRadius;
+        });
         const newState = this.currentState.update(monster, objs);
         if (newState !== this.currentState) {
             console.log('Monster State has changed!', newState, monster);
