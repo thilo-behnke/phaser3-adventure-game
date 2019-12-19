@@ -7,6 +7,7 @@ export enum ItemType {
 }
 
 export const NUMBER_OF_ITEMS = Object.keys(ItemType).length;
+export const MAX_ITEM_RARITY = 100;
 
 export abstract class ItemObject extends BaseGameObject {
     protected _type: ItemType;

@@ -3,30 +3,40 @@ import {
     MonsterObject,
     MonsterStats,
     MonsterType,
-    NUMBER_OF_MONSTERS,
 } from '../actors/MonsterObject';
 import { singleton } from 'tsyringe';
 
 import * as wolfTemplate from '../../assets/data/monsters/wolf.json';
-import {generateUUID} from "../util/random";
+import { generateUUID } from '../util/random';
 
 type MonsterTemplate = {
     type: MonsterType;
     baseStats: MonsterStats;
+    rarity: number;
 };
 
 @singleton()
 export class MonsterFactory implements IGameObjectFactory<MonsterObject> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private getMonsterBySeed(n: number): MonsterTemplate {
+    private getMonsterByRarity(rarity: number, seed: string): MonsterTemplate {
+        const allMonsters = [wolfTemplate];
+        const monstersForRarityLevel = allMonsters.filter(
+            ({ rarity: mRarity }) => mRarity === rarity
+        );
+        if (!monstersForRarityLevel.length) {
+            throw new Error(
+                `No monster available for rarity level ${rarity}! Unable to spawn monster.`
+            );
+        }
         // Determine the monster.
-        // TODO: Implement random mechanism.
-        return wolfTemplate as MonsterTemplate;
+        return monstersForRarityLevel[
+            parseInt(seed, 16) % monstersForRarityLevel.length
+        ];
     }
 
     generateObject(rarity: number): MonsterObject {
-        const mod = rarity % NUMBER_OF_MONSTERS;
-        const monsterTemplate = this.getMonsterBySeed(mod);
+        const seed = generateUUID();
+        const monsterTemplate = this.getMonsterByRarity(rarity, seed);
         return new MonsterObject(
             generateUUID(),
             monsterTemplate.baseStats,

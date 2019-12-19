@@ -4,5 +4,6 @@
     "health": 100,
     "strength": 100,
     "agility": 100
-  }
+  },
+  "rarity": 20
 }

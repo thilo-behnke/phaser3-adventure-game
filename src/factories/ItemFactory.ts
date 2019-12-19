@@ -1,13 +1,22 @@
-import { ItemObject, NUMBER_OF_ITEMS } from '../actors/items/ItemObject';
+import {
+    ItemObject,
+    MAX_ITEM_RARITY,
+    NUMBER_OF_ITEMS,
+} from '../actors/items/ItemObject';
 
 import { IGameObjectFactory } from './IGameObjectFactory';
 import { injectable } from 'tsyringe';
 import { Capsule } from '../actors/items/Capsule';
+import { generateUUID } from '../util/random';
 
 @injectable()
 export class ItemFactory implements IGameObjectFactory<ItemObject> {
-    generateObject(seed: number): ItemObject {
-        const mod = seed % NUMBER_OF_ITEMS;
-        return new Capsule(seed.toString(), mod);
+    generateObject(rarity: number): ItemObject {
+        // TODO: Remove hard coding...
+        const mod = 20;
+        if (rarity) {
+            // TODO: Implement generation...
+        }
+        return new Capsule(generateUUID(), mod);
     }
 }

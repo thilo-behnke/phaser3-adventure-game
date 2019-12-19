@@ -8,6 +8,7 @@ import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
 import { SceneProvider } from '../scene/SceneProvider';
 import { BaseGameObject } from '../actors/BaseGameObject';
+import { generateUUID } from '../util/random';
 
 @injectable()
 export class ItemSpawner extends GameObjectSpawner {
@@ -23,8 +24,7 @@ export class ItemSpawner extends GameObjectSpawner {
     // TODO: Evaluate map, determine item positions...
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     generateSpawns = (map: ExplorationMap): Array<[Point, BaseGameObject]> => {
-        const seed = Date.now();
-        const obj = this.itemFactory.generateObject(seed);
+        const obj = this.itemFactory.generateObject(20);
         return [[new Point(400, 200), obj]];
     };
 }
