@@ -5,6 +5,7 @@ import { MonsterState } from './MonsterState';
 import { DynamicGameObject } from '../../DynamicGameObject';
 import { MonsterObject } from '../../MonsterObject';
 import { FollowingState } from './FollowingState';
+import { getClosestObj } from '../../../util/vector';
 
 export class IdleState implements MonsterState {
     enter = (monster: MonsterObject): void => {
@@ -21,8 +22,11 @@ export class IdleState implements MonsterState {
             return this;
         }
         // TODO: Evaluate objects, maybe most dangerous?
-        const preferredObj = objs[0];
-        return new FollowingState(preferredObj);
+        const preferredObj = getClosestObj(monster, objs);
+        if (preferredObj.isEmpty()) {
+            return this;
+        }
+        return new FollowingState(preferredObj.value);
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     exit = (monster: MonsterObject) => {

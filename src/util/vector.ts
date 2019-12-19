@@ -1,7 +1,7 @@
 import { BaseGameObject } from '../actors/BaseGameObject';
 import { Optional } from './fp';
 
-export const getClosesTObj = (
+export const getClosestObj = (
     obj: BaseGameObject,
     other: BaseGameObject[]
 ): Optional<BaseGameObject> => {

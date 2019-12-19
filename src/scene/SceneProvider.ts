@@ -50,4 +50,8 @@ export class SceneProvider {
     addImage = (x: number, y: number, texture: string) => {
         return this.scene.add.image(x, y, texture);
     };
+
+    addCircle = (x: number, y: number) => {
+        return this.scene.add.circle(x, y, 2, 44);
+    };
 }

@@ -4,7 +4,8 @@ import { State } from '../State';
 import { BaseGameObject } from '../../BaseGameObject';
 import { MonsterObject } from '../../MonsterObject';
 import { IdleState } from './IdleState';
-import { getClosesTObj } from '../../../util/vector';
+import { getClosestObj } from '../../../util/vector';
+import { ObservingState } from './ObservingState';
 
 export class FollowingState implements MonsterState {
     constructor(private following: BaseGameObject | null) {}
@@ -16,9 +17,9 @@ export class FollowingState implements MonsterState {
         monster: MonsterObject,
         objs: DynamicGameObject[]
     ): MonsterState => {
-        const closestObj = getClosesTObj(monster, objs);
+        const closestObj = getClosestObj(monster, objs);
         if (closestObj.isEmpty()) {
-            return new IdleState();
+            return new ObservingState();
         }
         this.following = closestObj.value;
         monster.accelerateTowards(this.following.sprite.getCenter());
