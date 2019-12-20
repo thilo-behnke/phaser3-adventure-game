@@ -7,6 +7,8 @@ import Point = Phaser.Geom.Point;
 
 import Collider = Phaser.Physics.Arcade.Collider;
 import Key = Phaser.Input.Keyboard.Key;
+import Vector2 = Phaser.Math.Vector2;
+import { Vector } from 'phaser/types/matter';
 
 @singleton()
 export class SceneProvider {
@@ -53,5 +55,13 @@ export class SceneProvider {
 
     addCircle = (x: number, y: number) => {
         return this.scene.add.circle(x, y, 2, 44);
+    };
+
+    addVector = (from: Vector2, to: Vector2) => {
+        return this.scene.add.line(from.x, from.y, from.x, from.y, to.x, to.y, 44);
+    };
+
+    addText = (x: number, y: number, text: string) => {
+        return this.scene.add.text(x, y, text);
     };
 }

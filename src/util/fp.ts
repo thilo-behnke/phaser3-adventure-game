@@ -10,6 +10,9 @@ export class Optional<T> {
     }
 
     static of<S>(value: S) {
+        if (value === null || value === undefined) {
+            return new Optional(null);
+        }
         return new Optional(value);
     }
 

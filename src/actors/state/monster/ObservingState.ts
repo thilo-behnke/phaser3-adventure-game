@@ -11,6 +11,7 @@ import { IdleState } from './IdleState';
 import { Subject } from 'rxjs';
 import { DebugService } from '../../../util/DebugService';
 import { container } from 'tsyringe';
+import { SCREEN_HEIGHT } from '../../../shared/constants';
 
 export class ObservingState implements MonsterState {
     private movingTo: Vector2 | undefined;
@@ -43,7 +44,7 @@ export class ObservingState implements MonsterState {
         // Walk to a random point in the nearer area.
         if (!this.movingTo || this.movingTo.subtract(monster.sprite.getCenter()).length() < 10) {
             // TODO: Radius not correctly aligned.
-            const radius = getNumberBetween(360);
+            const radius = getNumberBetween(450, 90);
             const distance = getNumberBetween(20, 120);
             console.log(
                 'new point to move to: ',
@@ -56,10 +57,16 @@ export class ObservingState implements MonsterState {
             if (this.debugSub) {
                 this.debugSub.next();
             }
+            console.log(SCREEN_HEIGHT - Math.sin(radius));
             this.movingTo = monster.sprite
                 .getCenter()
                 .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance));
-            this.debugSub = this.debugService.drawPoint(this.movingTo);
+            this.debugSub = this.debugService.drawVector(monster.sprite.getCenter(), this.movingTo);
+            this.debugSub = this.debugService.drawPoint(monster.sprite.getCenter());
+            console.log(
+                console.log(radius),
+                new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance)
+            );
             this.counter--;
         }
         // TODO: Must slow down the acceleration to actually reach the point?

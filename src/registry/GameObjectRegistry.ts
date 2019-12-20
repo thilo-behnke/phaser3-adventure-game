@@ -5,6 +5,7 @@ import { BaseGameObject } from '../actors/BaseGameObject';
 import { Player } from '../actors/Player';
 import Vector2 = Phaser.Math.Vector2;
 import Point = Phaser.Geom.Point;
+import { Optional } from '../util/fp';
 
 @singleton()
 export class GameObjectRegistry {
@@ -41,5 +42,10 @@ export class GameObjectRegistry {
 
     getObjects = (): BaseGameObject[] => {
         return Object.values(this.registry);
+    };
+
+    getById = (id: string): Optional<BaseGameObject> => {
+        const obj = this.registry[id];
+        return Optional.of(obj);
     };
 }

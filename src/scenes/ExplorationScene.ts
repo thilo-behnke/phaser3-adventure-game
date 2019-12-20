@@ -13,8 +13,10 @@ import Point = Phaser.Geom.Point;
 import { Inventory } from '../inventory/Inventory';
 import Image = Phaser.GameObjects.Image;
 import { InventoryUi } from '../inventory/InventoryUi';
+import { DebugService } from '../util/DebugService';
 
 export default class ExplorationScene extends Phaser.Scene {
+    private debugService: DebugService;
     private player: Player;
     private keyManager: KeyManager;
     private gameObjectRegistry: GameObjectRegistry;
@@ -48,6 +50,7 @@ export default class ExplorationScene extends Phaser.Scene {
         // TODO: Why does constructor autowiring not work here?
         this.sceneProvider = container.resolve(SceneProvider);
         this.sceneProvider.initialize(this);
+        this.debugService = container.resolve(DebugService);
         this.gameObjectRegistry = container.resolve(GameObjectRegistry);
         this.keyManager = container.resolve(KeyManager);
         this.player = Player.create(this, new Point(100, 100));
@@ -63,6 +66,9 @@ export default class ExplorationScene extends Phaser.Scene {
         this.inventoryUi = container.resolve(InventoryUi);
         // Initialize Controls
         this.keyManager.assignAction(Action.INVENTORY, () => this.inventoryUi.toggle());
+        // Debugging.
+        this.debugService.showPlayerPos();
+        this.debugService.showObjectPos(this.gameObjectRegistry.getObjects()[0].id);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -70,5 +76,6 @@ export default class ExplorationScene extends Phaser.Scene {
         // Update player position.
         this.player.update(delta);
         this.gameObjectRegistry.getObjects().forEach(obj => obj.update(delta));
+        this.debugService.update();
     }
 }
