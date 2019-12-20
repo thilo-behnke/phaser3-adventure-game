@@ -2,6 +2,7 @@ import { injectable } from 'tsyringe';
 import { SceneProvider } from '../scene/SceneProvider';
 import Vector2 = Phaser.Math.Vector2;
 import { Subject } from 'rxjs';
+import { range } from 'lodash';
 import Shape = Phaser.GameObjects.Shape;
 import { BaseGameObject } from '../actors/BaseGameObject';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
@@ -21,6 +22,17 @@ export class DebugService {
 
     update() {
         this.updatingElements.forEach(func => func());
+    }
+
+    showGrid() {
+        const gridLen = 50;
+        range(1, SCREEN_WIDTH / gridLen).forEach(pos => {
+            const grid = pos * gridLen;
+            // Vertical lines.
+            this.sceneProvider.addLine(new Vector2(grid, 0), new Vector2(grid, SCREEN_HEIGHT));
+            // Horizontal lines.
+            this.sceneProvider.addLine(new Vector2(0, grid), new Vector2(SCREEN_WIDTH, grid));
+        });
     }
 
     showPlayerPos() {
@@ -58,21 +70,40 @@ export class DebugService {
         });
     }
 
+    drawShapeFromObject(id: string, callback: (obj: BaseGameObject) => Subject<void>) {
+        let destructor;
+        this.updatingElements.push(() => {
+            if (destructor) {
+                destructor.next();
+            }
+            const obj = this.gameObjectRegistry.getById(id);
+            if (obj.isEmpty()) {
+                return;
+            }
+            destructor = callback(obj.value);
+        });
+    }
+
     drawPoint(pos: Vector2): Subject<void> {
         // TODO: Better add line with right angle (=cross).
         const circle = this.sceneProvider.addCircle(pos.x, pos.y);
         return this.createDestructor(circle);
     }
 
-    drawVector(from: Vector2, to: Vector2) {
-        const vector = this.sceneProvider.addVector(from, to);
-        return this.createDestructor(vector);
+    drawCircle(center: Vector2, radius: number) {
+        const circle = this.sceneProvider.addCircle(center.x, center.y, radius, 112);
+        return this.createDestructor(circle);
     }
 
-    private createDestructor = (s: Shape) => {
+    drawVector(from: Vector2, to: Vector2) {
+        const vector = this.sceneProvider.addVector(from, to);
+        const point = this.sceneProvider.addCircle(to.x, to.y);
+        return this.createDestructor(vector, point);
+    }
+
+    private createDestructor = (...shapes: Shape[]) => {
         const destructor = new Subject<void>();
-        // TODO: Does not work.
-        destructor.subscribe(() => s.destroy(true));
+        destructor.subscribe(() => shapes.forEach(s => s.destroy(true)));
         return destructor;
     };
 }

@@ -13,10 +13,7 @@ export class FollowingState implements MonsterState {
     enter = (obj: MonsterObject): void => {
         obj.playWalkingAnim();
     };
-    update = (
-        monster: MonsterObject,
-        objs: DynamicGameObject[]
-    ): MonsterState => {
+    update = (time: number, monster: MonsterObject, objs: DynamicGameObject[]): MonsterState => {
         const closestObj = getClosestObj(monster, objs);
         if (closestObj.isEmpty()) {
             return new ObservingState();

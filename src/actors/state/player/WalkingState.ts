@@ -10,7 +10,7 @@ export class WalkingState implements PlayerState {
     enter = (obj: Player): void => {
         obj.playWalkingAnim();
     };
-    update = (obj: Player, actions: ActiveActions): PlayerState => {
+    update = (time: number, obj: Player, actions: ActiveActions): PlayerState => {
         if (
             actions.directions.x ||
             actions.directions.y ||

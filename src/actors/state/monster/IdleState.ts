@@ -13,10 +13,7 @@ export class IdleState implements MonsterState {
         monster.sprite.setVelocity(0, 0);
         monster.playIdleAnim();
     };
-    update = (
-        monster: MonsterObject,
-        objs: DynamicGameObject[]
-    ): MonsterState => {
+    update = (time: number, monster: MonsterObject, objs: DynamicGameObject[]): MonsterState => {
         // Don't do anything if there is nothing in the nearer area.
         if (!objs.length) {
             return this;

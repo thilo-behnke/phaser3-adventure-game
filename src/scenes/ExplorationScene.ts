@@ -14,6 +14,7 @@ import { Inventory } from '../inventory/Inventory';
 import Image = Phaser.GameObjects.Image;
 import { InventoryUi } from '../inventory/InventoryUi';
 import { DebugService } from '../util/DebugService';
+import { MonsterObject } from '../actors/MonsterObject';
 
 export default class ExplorationScene extends Phaser.Scene {
     private debugService: DebugService;
@@ -67,15 +68,20 @@ export default class ExplorationScene extends Phaser.Scene {
         // Initialize Controls
         this.keyManager.assignAction(Action.INVENTORY, () => this.inventoryUi.toggle());
         // Debugging.
+        this.debugService.showGrid();
         this.debugService.showPlayerPos();
-        this.debugService.showObjectPos(this.gameObjectRegistry.getObjects()[0].id);
+        const monster = this.gameObjectRegistry.getObjects()[0];
+        this.debugService.showObjectPos(monster.id);
+        this.debugService.drawShapeFromObject(monster.id, (obj: MonsterObject) =>
+            this.debugService.drawCircle(obj.sprite.getCenter(), obj.getStats().attentionRadius)
+        );
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update(time: number, delta: number): void {
         // Update player position.
         this.player.update(delta);
-        this.gameObjectRegistry.getObjects().forEach(obj => obj.update(delta));
+        this.gameObjectRegistry.getObjects().forEach(obj => obj.update(time));
         this.debugService.update();
     }
 }

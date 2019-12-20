@@ -18,7 +18,7 @@ export class MonsterStateMachine implements IMonsterStateMachine {
         this.currentState.enter(monster);
     }
 
-    update = (delta: number, monster: MonsterObject): void => {
+    update = (time: number, monster: MonsterObject): void => {
         const registry = container.resolve(GameObjectRegistry);
         const { attentionRadius } = monster.getStats();
         const monsterPos = monster.sprite.getCenter();
@@ -26,7 +26,7 @@ export class MonsterStateMachine implements IMonsterStateMachine {
             const objPos = sprite.getCenter();
             return objPos.subtract(monsterPos).length() <= attentionRadius;
         });
-        const newState = this.currentState.update(monster, objs);
+        const newState = this.currentState.update(time, monster, objs);
         if (newState !== this.currentState) {
             console.log('Monster State has changed!', newState, monster);
             this.currentState = newState;

@@ -53,12 +53,16 @@ export class SceneProvider {
         return this.scene.add.image(x, y, texture);
     };
 
-    addCircle = (x: number, y: number) => {
-        return this.scene.add.circle(x, y, 2, 44);
+    addCircle = (x: number, y: number, radius = 2, color = 44) => {
+        return this.scene.add.circle(x, y, radius, color);
     };
 
     addVector = (from: Vector2, to: Vector2) => {
-        return this.scene.add.line(from.x, from.y, from.x, from.y, to.x, to.y, 44);
+        return this.scene.add.line(0, 0, from.x, from.y, to.x, to.y, 44).setOrigin(0, 0);
+    };
+
+    addLine = (from: Vector2, to: Vector2) => {
+        return this.scene.add.line(0, 0, from.x, from.y, to.x, to.y, 44).setOrigin(0, 0);
     };
 
     addText = (x: number, y: number, text: string) => {

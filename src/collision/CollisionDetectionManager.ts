@@ -6,6 +6,7 @@ import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import { BaseGameObject } from '../actors/BaseGameObject';
 import { ItemObject } from '../actors/items/ItemObject';
 import { Player } from '../actors/Player';
+import { MonsterObject } from '../actors/MonsterObject';
 
 @singleton()
 @injectable()
@@ -39,10 +40,15 @@ export class CollisionDetectionManager {
                     ' without a collision type (collide, overlap)!'
             );
         }
+        // Set collisions with other sprite objects.
         const otherObjects = this.gameObjectRegistry.getByCollisionGroup(collisionGroup);
         otherObjects.forEach(obj => {
             const callback = this.getCallback(gameObject, obj);
             this.sceneProvider.addCollisionByType(gameObject, obj, callback, collisionType);
         });
+        // Set collision with world bounds.
+        if (gameObject instanceof MonsterObject) {
+            gameObject.sprite.setCollideWorldBounds(true);
+        }
     };
 }

@@ -5,6 +5,8 @@ import { DynamicGameObject } from './DynamicGameObject';
 import { MonsterStateMachine } from './state/monster/MonsterStateMachine';
 import { IMonsterStateMachine } from './state/monster/IMonsterStateMachine';
 import Vector2 = Phaser.Math.Vector2;
+import { container } from 'tsyringe';
+import { DebugService } from '../util/DebugService';
 
 export enum MonsterType {
     WOLF = 'WOLF',
@@ -55,14 +57,18 @@ export class MonsterObject extends DynamicGameObject {
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    update = (delta: number): void => {
-        this.stateMachine.update(delta, this);
+    update = (time: number): void => {
+        this.stateMachine.update(time, this);
         return;
     };
 
     accelerateTowards = (pos: Vector2): void => {
-        const dir = pos.subtract(this.sprite.getCenter());
+        const dir = pos.clone().subtract(this.sprite.getCenter());
         this.sprite.setAcceleration(dir.x, dir.y);
+    };
+
+    break = () => {
+        this.sprite.setVelocity(0, 0);
     };
 
     getStats = (): MonsterStats => this.stats;

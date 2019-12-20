@@ -14,9 +14,11 @@ import { container } from 'tsyringe';
 import { SCREEN_HEIGHT } from '../../../shared/constants';
 
 export class ObservingState implements MonsterState {
+    private OBSERVING_TIME_MS = 1500;
     private movingTo: Vector2 | undefined;
+    private startedObserving = null;
     // How long to observe.
-    private counter = 3;
+    private counter = 5;
 
     private debugSub: Subject<void>;
     private debugService: DebugService;
@@ -29,10 +31,7 @@ export class ObservingState implements MonsterState {
         monster.playWalkingAnim();
     };
 
-    update = (monster: MonsterObject, objs: DynamicGameObject[]) => {
-        if (this.counter <= 0) {
-            return new IdleState();
-        }
+    update = (time: number, monster: MonsterObject, objs: DynamicGameObject[]) => {
         if (objs.length) {
             // TODO: Evaluate objects, maybe most dangerous?
             const preferredObj = getClosestObj(monster, objs);
@@ -42,35 +41,37 @@ export class ObservingState implements MonsterState {
             return new FollowingState(preferredObj.value);
         }
         // Walk to a random point in the nearer area.
-        if (!this.movingTo || this.movingTo.subtract(monster.sprite.getCenter()).length() < 10) {
-            // TODO: Radius not correctly aligned.
+        if (
+            (!this.movingTo && !this.startedObserving) ||
+            (!this.movingTo &&
+                this.startedObserving &&
+                time - this.startedObserving >= this.OBSERVING_TIME_MS)
+        ) {
+            this.startedObserving = null;
+            this.counter--;
+            if (this.counter <= 0) {
+                return new IdleState();
+            }
             const radius = getNumberBetween(450, 90);
-            const distance = getNumberBetween(20, 120);
-            console.log(
-                'new point to move to: ',
-                { radius },
-                { distance },
-                monster.sprite
-                    .getCenter()
-                    .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance))
-            );
+            const distance = getNumberBetween(100, 200);
+            this.movingTo = monster.sprite
+                .getCenter()
+                .clone()
+                .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance));
             if (this.debugSub) {
                 this.debugSub.next();
             }
-            console.log(SCREEN_HEIGHT - Math.sin(radius));
-            this.movingTo = monster.sprite
-                .getCenter()
-                .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance));
             this.debugSub = this.debugService.drawVector(monster.sprite.getCenter(), this.movingTo);
-            this.debugSub = this.debugService.drawPoint(monster.sprite.getCenter());
-            console.log(
-                console.log(radius),
-                new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance)
-            );
-            this.counter--;
+            // Wait for a bit before moving to the next point.
+        } else if (this.movingTo && this.movingTo.distance(monster.sprite.getCenter()) < 30) {
+            this.startedObserving = time;
+            this.movingTo = null;
+            monster.break();
         }
         // TODO: Must slow down the acceleration to actually reach the point?
-        monster.accelerateTowards(this.movingTo);
+        if (this.movingTo) {
+            monster.accelerateTowards(this.movingTo);
+        }
         return this;
     };
 

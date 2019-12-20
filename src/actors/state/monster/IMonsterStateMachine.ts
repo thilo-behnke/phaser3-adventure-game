@@ -5,5 +5,5 @@ import { DynamicGameObject } from '../../DynamicGameObject';
 export interface IMonsterStateMachine {
     currentState: MonsterState;
 
-    update: (delta: number, monster: MonsterObject) => void;
+    update: (time: number, monster: MonsterObject) => void;
 }
