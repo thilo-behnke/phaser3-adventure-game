@@ -68,4 +68,8 @@ export class SceneProvider {
     addText = (x: number, y: number, text: string) => {
         return this.scene.add.text(x, y, text);
     };
+
+    addGrid = (width: number, height: number, gridHor: number, gridVer: number) => {
+        return this.scene.add.grid(0, 0, width, height, gridHor, gridVer);
+    };
 }

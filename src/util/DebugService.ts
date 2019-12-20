@@ -26,6 +26,7 @@ export class DebugService {
 
     showGrid() {
         const gridLen = 50;
+        /*        this.sceneProvider.addGrid(SCREEN_WIDTH, SCREEN_HEIGHT, 32, 32);*/
         range(1, SCREEN_WIDTH / gridLen).forEach(pos => {
             const grid = pos * gridLen;
             // Vertical lines.
