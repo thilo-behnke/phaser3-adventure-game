@@ -63,8 +63,19 @@ export class MonsterObject extends DynamicGameObject {
     };
 
     accelerateTowards = (pos: Vector2): void => {
-        const dir = pos.clone().subtract(this.sprite.getCenter());
-        this.sprite.setAcceleration(dir.x, dir.y);
+        const dir = pos
+            .clone()
+            .subtract(this.sprite.getCenter())
+            .normalize();
+        const angleBetweenCurrentAndNewDir = Math.acos(
+            this.sprite.body.velocity
+                .clone()
+                .normalize()
+                .dot(dir.clone())
+        );
+        // Increase the acceleration towards the goal if the the current direction is far away.
+        const newAcc = angleBetweenCurrentAndNewDir >= 0.5 ? dir.scale(100) : dir.scale(50);
+        this.sprite.setAcceleration(newAcc.x, newAcc.y);
     };
 
     break = () => {

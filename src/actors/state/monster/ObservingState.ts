@@ -11,7 +11,7 @@ import { IdleState } from './IdleState';
 import { Subject } from 'rxjs';
 import { DebugService } from '../../../util/DebugService';
 import { container } from 'tsyringe';
-import { SCREEN_HEIGHT } from '../../../shared/constants';
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../shared/constants';
 
 export class ObservingState implements MonsterState {
     private OBSERVING_TIME_MS = 1500;
@@ -58,6 +58,11 @@ export class ObservingState implements MonsterState {
                 .getCenter()
                 .clone()
                 .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance));
+            // Don't allow point outside of screen.
+            this.movingTo = new Vector2(
+                Math.min(this.movingTo.x, SCREEN_WIDTH),
+                Math.min(this.movingTo.y, SCREEN_HEIGHT)
+            );
             if (this.debugSub) {
                 this.debugSub.next();
             }
