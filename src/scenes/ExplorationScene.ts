@@ -71,14 +71,8 @@ export default class ExplorationScene extends Phaser.Scene {
         this.debugService.showPlayerPos();
         const monster = this.gameObjectRegistry.getObjects()[0];
         this.debugService.showObjectPos(monster.id);
-        this.debugService.drawShapeFromObject(monster.id, (obj: MonsterObject) =>
-            this.debugService.drawCircle(
-                obj.sprite.getCenter(),
-                obj.getStats().attentionRadius,
-                Color.BLACK,
-                0.2
-            )
-        );
+        // TODO: Does not work when new monsters are spawned.
+        this.gameObjectRegistry.getMonsters().forEach(this.drawAttentionRadius);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -88,4 +82,15 @@ export default class ExplorationScene extends Phaser.Scene {
         this.gameObjectRegistry.getObjects().forEach(obj => obj.update(time));
         this.debugService.update();
     }
+
+    private drawAttentionRadius = (monster: MonsterObject) => {
+        this.debugService.drawShapeFromObject(monster.id, (obj: MonsterObject) =>
+            this.debugService.drawCircle(
+                obj.sprite.getCenter(),
+                obj.getStats().attentionRadius,
+                Color.BLACK,
+                0.2
+            )
+        );
+    };
 }

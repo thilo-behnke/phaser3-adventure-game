@@ -6,6 +6,7 @@ import { Player } from '../actors/Player';
 import Vector2 = Phaser.Math.Vector2;
 import Point = Phaser.Geom.Point;
 import { Optional } from '../util/fp';
+import { MonsterObject } from '../actors/MonsterObject';
 
 @singleton()
 export class GameObjectRegistry {
@@ -42,6 +43,12 @@ export class GameObjectRegistry {
 
     getObjects = (): BaseGameObject[] => {
         return Object.values(this.registry);
+    };
+
+    getMonsters = (): MonsterObject[] => {
+        return Object.values(this.registry)
+            .filter(obj => obj instanceof MonsterObject)
+            .map(obj => obj as MonsterObject);
     };
 
     getById = (id: string): Optional<BaseGameObject> => {
