@@ -1,7 +1,6 @@
 import 'phaser';
 import * as player from '../../assets/graphics/green-knight.png';
 import { Player } from '../actors/Player';
-import { Direction } from '../global/direction';
 import { Action, KeyManager } from '../input/keyManager';
 import { container } from 'tsyringe';
 import { SceneProvider } from '../scene/SceneProvider';
@@ -9,12 +8,12 @@ import { MonsterSpawner } from '../spawner/MonsterSpawner';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import { ItemSpawner } from '../spawner/ItemSpawner';
 import { ExplorationMap } from '../map/ExplorationMap';
-import Point = Phaser.Geom.Point;
 import { Inventory } from '../inventory/Inventory';
-import Image = Phaser.GameObjects.Image;
 import { InventoryUi } from '../inventory/InventoryUi';
 import { DebugService } from '../util/DebugService';
 import { MonsterObject } from '../actors/MonsterObject';
+import { Color } from '../shared/constants';
+import Point = Phaser.Geom.Point;
 
 export default class ExplorationScene extends Phaser.Scene {
     private debugService: DebugService;
@@ -73,7 +72,12 @@ export default class ExplorationScene extends Phaser.Scene {
         const monster = this.gameObjectRegistry.getObjects()[0];
         this.debugService.showObjectPos(monster.id);
         this.debugService.drawShapeFromObject(monster.id, (obj: MonsterObject) =>
-            this.debugService.drawCircle(obj.sprite.getCenter(), obj.getStats().attentionRadius)
+            this.debugService.drawCircle(
+                obj.sprite.getCenter(),
+                obj.getStats().attentionRadius,
+                Color.BLACK,
+                0.2
+            )
         );
     }
 

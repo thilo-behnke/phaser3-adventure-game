@@ -1,12 +1,13 @@
 import { injectable } from 'tsyringe';
 import { SceneProvider } from '../scene/SceneProvider';
-import Vector2 = Phaser.Math.Vector2;
 import { Subject } from 'rxjs';
 import { range } from 'lodash';
-import Shape = Phaser.GameObjects.Shape;
 import { BaseGameObject } from '../actors/BaseGameObject';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../shared/constants';
+import { Color, SCREEN_HEIGHT, SCREEN_WIDTH } from '../shared/constants';
+import { cartesianProduct } from './general';
+import Vector2 = Phaser.Math.Vector2;
+import Shape = Phaser.GameObjects.Shape;
 
 @injectable()
 export class DebugService {
@@ -24,16 +25,40 @@ export class DebugService {
         this.updatingElements.forEach(func => func());
     }
 
-    showGrid() {
-        const gridLen = 50;
-        /*        this.sceneProvider.addGrid(SCREEN_WIDTH, SCREEN_HEIGHT, 32, 32);*/
+    showGrid(showTileCoordinates = false) {
+        const gridLen = 50,
+            gridColor = Color.GREY,
+            gridAlpha = 0.2;
         range(1, SCREEN_WIDTH / gridLen).forEach(pos => {
             const grid = pos * gridLen;
             // Vertical lines.
-            this.sceneProvider.addLine(new Vector2(grid, 0), new Vector2(grid, SCREEN_HEIGHT));
-            // Horizontal lines.
-            this.sceneProvider.addLine(new Vector2(0, grid), new Vector2(SCREEN_WIDTH, grid));
+            this.sceneProvider.addLine(
+                new Vector2(grid, 0),
+                new Vector2(grid, SCREEN_HEIGHT),
+                gridColor,
+                gridAlpha
+            );
         });
+        range(1, SCREEN_HEIGHT / gridLen).forEach(pos => {
+            const grid = pos * gridLen;
+            // Horizontal lines.
+            this.sceneProvider.addLine(
+                new Vector2(0, grid),
+                new Vector2(SCREEN_WIDTH, grid),
+                gridColor,
+                gridAlpha
+            );
+        });
+        if (showTileCoordinates) {
+            const gridTiles = cartesianProduct(
+                range(SCREEN_HEIGHT / gridLen),
+                range(SCREEN_WIDTH / gridLen)
+            );
+            gridTiles.forEach(tilePos => {
+                const [x, y] = tilePos;
+                this.sceneProvider.addText(x * gridLen, y * gridLen, `${x}/${y}`, Color.GREY);
+            });
+        }
     }
 
     showPlayerPos() {
@@ -41,7 +66,13 @@ export class DebugService {
             const playerPos = this.gameObjectRegistry.getPlayer().sprite.getCenter();
             const newText = `Player - x: ${playerPos.x.toFixed(2)}, y: ${playerPos.y.toFixed(2)}`;
             if (!this.playerPosText) {
-                this.playerPosText = this.sceneProvider.addText(SCREEN_WIDTH - 300, 100, newText);
+                this.playerPosText = this.sceneProvider.addText(
+                    SCREEN_WIDTH - 300,
+                    100,
+                    newText,
+                    Color.WHITE,
+                    16
+                );
                 return;
             }
             this.playerPosText.setText(newText);
@@ -62,7 +93,9 @@ export class DebugService {
                 this.objPosText[id] = this.sceneProvider.addText(
                     SCREEN_WIDTH - 300,
                     this.updatingElements.length * 20 + 100,
-                    newText
+                    newText,
+                    Color.WHITE,
+                    16
                 );
                 return;
             }
@@ -87,18 +120,18 @@ export class DebugService {
 
     drawPoint(pos: Vector2): Subject<void> {
         // TODO: Better add line with right angle (=cross).
-        const circle = this.sceneProvider.addCircle(pos.x, pos.y);
+        const circle = this.sceneProvider.addCircle(pos.x, pos.y, 2);
         return this.createDestructor(circle);
     }
 
-    drawCircle(center: Vector2, radius: number) {
-        const circle = this.sceneProvider.addCircle(center.x, center.y, radius, 112);
+    drawCircle(center: Vector2, radius: number, color = Color.BLACK, alpha = 1) {
+        const circle = this.sceneProvider.addCircle(center.x, center.y, radius, color, alpha);
         return this.createDestructor(circle);
     }
 
     drawVector(from: Vector2, to: Vector2) {
         const vector = this.sceneProvider.addVector(from, to);
-        const point = this.sceneProvider.addCircle(to.x, to.y);
+        const point = this.sceneProvider.addCircle(to.x, to.y, Color.BLACK);
         return this.createDestructor(vector, point);
     }
 

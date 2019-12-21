@@ -9,6 +9,7 @@ import Collider = Phaser.Physics.Arcade.Collider;
 import Key = Phaser.Input.Keyboard.Key;
 import Vector2 = Phaser.Math.Vector2;
 import { Vector } from 'phaser/types/matter';
+import { Color } from '../shared/constants';
 
 @singleton()
 export class SceneProvider {
@@ -53,20 +54,20 @@ export class SceneProvider {
         return this.scene.add.image(x, y, texture);
     };
 
-    addCircle = (x: number, y: number, radius = 2, color = 44) => {
-        return this.scene.add.circle(x, y, radius, color);
+    addCircle = (x: number, y: number, radius: number, color = Color.BLACK, alpha = 1) => {
+        return this.scene.add.circle(x, y, radius, color, alpha);
     };
 
     addVector = (from: Vector2, to: Vector2) => {
         return this.scene.add.line(0, 0, from.x, from.y, to.x, to.y, 44).setOrigin(0, 0);
     };
 
-    addLine = (from: Vector2, to: Vector2) => {
-        return this.scene.add.line(0, 0, from.x, from.y, to.x, to.y, 44).setOrigin(0, 0);
+    addLine = (from: Vector2, to: Vector2, color = Color.BLACK, alpha = 1) => {
+        return this.scene.add.line(0, 0, from.x, from.y, to.x, to.y, color, alpha).setOrigin(0, 0);
     };
 
-    addText = (x: number, y: number, text: string) => {
-        return this.scene.add.text(x, y, text);
+    addText = (x: number, y: number, text: string, fontColor = Color.WHITE, fontSize = 12) => {
+        return this.scene.add.text(x, y, text, { fontColor, fontSize });
     };
 
     addGrid = (width: number, height: number, gridHor: number, gridVer: number) => {
