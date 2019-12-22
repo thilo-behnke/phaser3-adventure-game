@@ -16,6 +16,7 @@ export class PlayerStateMachine implements IPlayerStateMachine {
     }
 
     update = (time: number, obj: Player, actions: ActiveActions): void => {
+        obj.direction = [actions.directions.y, actions.directions.x];
         const newState = this.currentState.update(time, obj, actions);
         if (newState !== this.currentState) {
             console.log('Player State has changed!', newState, obj);

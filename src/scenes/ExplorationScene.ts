@@ -1,5 +1,6 @@
 import 'phaser';
 import * as player from '../../assets/graphics/green-knight.png';
+import * as playerAtlas from '../../assets/graphics/green-knight-atlas.json';
 import { Player } from '../actors/Player';
 import { Action, KeyManager } from '../input/keyManager';
 import { container } from 'tsyringe';
@@ -33,10 +34,11 @@ export default class ExplorationScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.spritesheet('player', player, {
+        this.load.atlas('player-atlas', player, playerAtlas);
+        /*        this.load.spritesheet('player', player, {
             frameWidth: 20,
-            frameHeight: 29,
-        });
+            frameHeight: 30,
+        });*/
         // TODO: Replace with proper spritesheet.
         this.load.spritesheet('WOLF', player, {
             frameWidth: 20,

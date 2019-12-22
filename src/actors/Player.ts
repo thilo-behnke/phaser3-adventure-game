@@ -2,14 +2,24 @@ import { DynamicGameObject } from './DynamicGameObject';
 import { PlayerStateMachine } from './state/PlayerStateMachine';
 import { KeyManager } from '../input/keyManager';
 import { container } from 'tsyringe';
+import { Direction } from '../global/direction';
 import Point = Phaser.Geom.Point;
 import Scene = Phaser.Scene;
-import { Direction } from '../global/direction';
-import { SceneProvider } from '../scene/SceneProvider';
 
 export class Player extends DynamicGameObject {
     protected acceleration = new Point(100, 100);
     protected stateMachine: PlayerStateMachine;
+
+    private _direction: [Direction | null, Direction | null] = [Direction.DOWN, null]; // [VER, HOR]
+
+    get direction(): [Direction, Direction] {
+        return this._direction;
+    }
+
+    set direction(value: [Direction, Direction]) {
+        const [ver, hor] = value;
+        this._direction = [ver || this.direction[0], hor];
+    }
 
     static create = (scene: Phaser.Scene, initialPos: Phaser.Geom.Point): Player => {
         const player = new Player('player');
@@ -27,23 +37,81 @@ export class Player extends DynamicGameObject {
 
     private createAnimations = (scene: Scene): void => {
         scene.anims.create({
-            key: 'player-idle',
-            frames: scene.anims.generateFrameNames('player', {
-                start: 0,
+            key: 'player-idle--DOWN',
+            frames: scene.anims.generateFrameNames('player-atlas', {
+                prefix: 'player-idle--DOWN.',
+                start: 2,
                 end: 3,
+                zeroPad: 3,
+            }),
+            frameRate: 1,
+            repeat: -1,
+        });
+        scene.anims.create({
+            key: 'player-walking--DOWN',
+            frames: scene.anims.generateFrameNames('player-atlas', {
+                prefix: 'player-walking--DOWN.',
+                start: 2,
+                end: 3,
+                zeroPad: 3,
+            }),
+            frameRate: 1,
+            repeat: -1,
+        });
+        /*        scene.anims.create({
+            key: 'player-idle--UP',
+            frames: scene.anims.generateFrameNames('player', {
+                start: 11,
+                end: 12,
             }),
             frameRate: 3,
             repeat: -1,
         });
         scene.anims.create({
-            key: 'player-walking',
+            key: 'player-walking--UP',
             frames: scene.anims.generateFrameNames('player', {
-                start: 4,
-                end: 6,
+                start: 12,
+                end: 13,
             }),
             frameRate: 3,
             repeat: -1,
         });
+        scene.anims.create({
+            key: 'player-idle--LEFT',
+            frames: scene.anims.generateFrameNames('player', {
+                start: 10,
+                end: 11,
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
+        scene.anims.create({
+            key: 'player-walking--LEFT',
+            frames: scene.anims.generateFrameNames('player', {
+                start: 9,
+                end: 10,
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
+        scene.anims.create({
+            key: 'player-idle--RIGHT',
+            frames: scene.anims.generateFrameNames('player', {
+                start: 6,
+                end: 7,
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
+        scene.anims.create({
+            key: 'player-walking--RIGHT',
+            frames: scene.anims.generateFrameNames('player', {
+                start: 5,
+                end: 6,
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });*/
     };
 
     onAddToScene = (): void => {
@@ -76,11 +144,24 @@ export class Player extends DynamicGameObject {
         this.sprite.setAcceleration(accX, accY);
     };
 
+    // TODO: Refactor into one method.
     playIdleAnim = (): void => {
-        this._sprite.anims.play('player-idle');
+        const [ver, hor] = this.direction;
+        const dominantDir = ver || hor;
+        if (!dominantDir) {
+            throw new Error(`Player does not have a valid direction! ${this.direction}`);
+        }
+        console.log({ dominantDir });
+        this._sprite.anims.play(`player-idle--${dominantDir}`);
     };
 
     playWalkingAnim = (): void => {
-        this._sprite.anims.play('player-walking');
+        const [ver, hor] = this.direction;
+        const dominantDir = ver || hor;
+        if (!dominantDir) {
+            throw new Error(`Player does not have a valid direction! ${this.direction}`);
+        }
+        console.log({ dominantDir });
+        this._sprite.anims.play(`player-walking--${dominantDir}`);
     };
 }
