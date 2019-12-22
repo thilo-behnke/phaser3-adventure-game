@@ -73,7 +73,11 @@ export class InventoryUi {
     };
 
     private createCapsuleImg = (x: number, y: number, active = false): Image => {
-        const image = this.sceneProvider.addImage(x, y, active ? 'CAPSULE' : 'CAPSULE_INACTIVE');
+        const image = this.sceneProvider.addImage(
+            x,
+            y,
+            active ? 'CAPSULE_INVENTORY' : 'CAPSULE_INVENTORY_INACTIVE'
+        );
         this.renderedInventory.push(image);
         return image;
     };

@@ -4,6 +4,7 @@ import { BaseGameObject } from '../../BaseGameObject';
 import { MonsterObject } from '../../MonsterObject';
 import { getClosestObj } from '../../../util/vector';
 import { ObservingState } from './ObservingState';
+import { isCloseTo } from '../../../util/collision';
 
 export class FollowingState implements MonsterState {
     constructor(public following: BaseGameObject | null) {}
@@ -18,7 +19,12 @@ export class FollowingState implements MonsterState {
             return new ObservingState();
         }
         this.following = closestObj.value;
-        monster.accelerateTowards(this.following.sprite.getCenter());
+        // Stop following when very close to the obj.
+        if (isCloseTo(monster, this.following)) {
+            monster.break();
+        } else {
+            monster.accelerateTowards(this.following.sprite.getCenter());
+        }
         return this;
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

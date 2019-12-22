@@ -137,17 +137,20 @@ export class DebugService {
                     const updatingElementsWithoutRemoved = differenceWith(
                         Object.entries(this.updatingElements),
                         objs,
-                        (id, monster) => monster.id === id[0]
+                        (existing, monster) => monster.id === existing[0].split('--debug')[0]
                     );
                     const toAdd = differenceWith(
                         objs,
-                        Object.keys(this.updatingElements),
+                        Object.keys(this.updatingElements).map(id => id.split('--debug')[0]),
                         (monster, id) => monster.id === id
                     ).map(obj => {
                         const debugInfoItems = obj
                             .drawDebugInformation()
                             .map(debugInfo => this.translateDebugInformation(debugInfo));
-                        return debugInfoItems.map((item, index) => [`${obj.id}-${index}`, item]);
+                        return debugInfoItems.map((item, index) => [
+                            `${obj.id}--debug--${index}`,
+                            item,
+                        ]);
                     });
                     return fromPairs([...updatingElementsWithoutRemoved, ...flatten(toAdd)]);
                 }),

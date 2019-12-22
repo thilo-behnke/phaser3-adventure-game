@@ -6,6 +6,7 @@ import { Player } from '../../Player';
 import { GameObjectRegistry } from '../../../registry/GameObjectRegistry';
 import { ObservingState } from './ObservingState';
 import { container } from 'tsyringe';
+import { FollowingPlayerState } from './FollowingPlayerState';
 
 export class CaughtMonsterStateMachine extends IMonsterStateMachine {
     currentState: MonsterState;
@@ -14,8 +15,7 @@ export class CaughtMonsterStateMachine extends IMonsterStateMachine {
         super();
         console.log('state machine created for monster', monster);
         const registry = container.resolve(GameObjectRegistry);
-        // TODO: Maybe there needs to be another state "PlayerFollowingState"...
-        this.currentState = new FollowingState(registry.getPlayer());
+        this.currentState = new FollowingPlayerState(registry.getPlayer());
         this.currentState.enter(monster);
     }
 
