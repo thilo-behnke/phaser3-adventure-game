@@ -16,6 +16,8 @@ import {
 import Vector2 = Phaser.Math.Vector2;
 import Shape = Phaser.GameObjects.Shape;
 import Text = Phaser.GameObjects.Text;
+import { BaseGameObject } from '../actors/BaseGameObject';
+import get = Reflect.get;
 
 enum DebugElement {
     PLAYER_POS = 'PLAYER_POS',
@@ -76,16 +78,14 @@ export class DebugService {
     showPlayerPos() {
         const playerPos = this.gameObjectRegistry.getPlayer().sprite.getCenter();
         const newText = `Player - x: ${playerPos.x.toFixed(2)}, y: ${playerPos.y.toFixed(2)}`;
-        const playerPosText = this.sceneProvider.addText(
-            SCREEN_WIDTH - 300,
-            100,
-            newText,
-            Color.WHITE,
-            16
-        );
+        const playerPosText = this.sceneProvider.addText(0, 0, newText, Color.WHITE, 16);
         this.updatingElements[DebugElement.PLAYER_POS] = {
             shape: playerPosText,
             update: () => {
+                const playerPos = this.gameObjectRegistry.getPlayer().sprite.getCenter();
+                const newText = `Player - x: ${playerPos.x.toFixed(2)}, y: ${playerPos.y.toFixed(
+                    2
+                )}`;
                 playerPosText.setText(newText);
                 playerPosText.updateText();
             },
@@ -94,23 +94,32 @@ export class DebugService {
     }
 
     showObjectPos(id: string) {
-        const obj = this.gameObjectRegistry.getById(id);
+        const getObj = () => {
+            return this.gameObjectRegistry.getById(id);
+        };
+        const generateText = (obj: BaseGameObject) => {
+            return `Obj - x: ${obj.sprite.x.toFixed(2)}, y: ${obj.sprite.y.toFixed(2)}`;
+        };
+        const obj = getObj();
         if (obj.isEmpty()) {
             return;
         }
-        const newText = `Obj - x: ${obj.value.sprite.x.toFixed(2)}, y: ${obj.value.sprite.y.toFixed(
-            2
-        )}`;
+        const initialText = generateText(obj.value);
         const objPosText = this.sceneProvider.addText(
-            SCREEN_WIDTH - 300,
-            size(this.updatingElements) * 20 + 100,
-            newText,
+            0,
+            size(this.updatingElements) * 20,
+            initialText,
             Color.WHITE,
             16
         );
         this.updatingElements[`${id}-${DebugElement.OBJ_POS}`] = {
             shape: objPosText,
             update: () => {
+                const obj = getObj();
+                if (obj.isEmpty()) {
+                    return;
+                }
+                const newText = generateText(obj.value);
                 objPosText.setText(newText);
                 objPosText.updateText();
             },
