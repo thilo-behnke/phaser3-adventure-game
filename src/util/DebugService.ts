@@ -1,16 +1,20 @@
 import { injectable } from 'tsyringe';
 import { SceneProvider } from '../scene/SceneProvider';
 import { Subject } from 'rxjs';
-import { range, size, differenceWith, fromPairs } from 'lodash';
-import { BaseGameObject } from '../actors/BaseGameObject';
+import { differenceWith, flatten, fromPairs, range, size } from 'lodash';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import { Color, SCREEN_HEIGHT, SCREEN_WIDTH } from '../shared/constants';
 import { cartesianProduct } from './general';
+import { distinctUntilChanged, map, tap } from 'rxjs/internal/operators';
+import { MonsterObject } from '../actors/MonsterObject';
+import {
+    CircleDebugInfo,
+    DebugInformation,
+    DebugShape,
+    VectorDebugInfo,
+} from '../actors/Debuggable';
 import Vector2 = Phaser.Math.Vector2;
 import Shape = Phaser.GameObjects.Shape;
-import { distinctUntilChanged, filter, map, tap } from 'rxjs/internal/operators';
-import { MonsterObject } from '../actors/MonsterObject';
-import { CircleDebugInfo, DebugInformation, DebugShape } from '../actors/Debuggable';
 import Text = Phaser.GameObjects.Text;
 
 enum DebugElement {
@@ -131,12 +135,12 @@ export class DebugService {
                         Object.keys(this.updatingElements),
                         (monster, id) => monster.id === id
                     ).map(obj => {
-                        const debugInfo = this.translateDebugInformation(
-                            obj.drawDebugInformation()
-                        );
-                        return [obj.id, debugInfo];
+                        const debugInfoItems = obj
+                            .drawDebugInformation()
+                            .map(debugInfo => this.translateDebugInformation(debugInfo));
+                        return debugInfoItems.map((item, index) => [`${obj.id}-${index}`, item]);
                     });
-                    return fromPairs([...updatingElementsWithoutRemoved, ...toAdd]);
+                    return fromPairs([...updatingElementsWithoutRemoved, ...flatten(toAdd)]);
                 }),
                 tap(updatingElements => {
                     this.updatingElements = updatingElements;
@@ -166,6 +170,18 @@ export class DebugService {
                 },
                 destroy: () => circle.destroy(),
             };
+        } else if (type === DebugShape.VECTOR) {
+            const typeInfo = info as VectorDebugInfo;
+            const vector = this.drawVector(typeInfo.start(), typeInfo.end());
+            return {
+                shape: vector,
+                update: () => {
+                    const { x: startX, y: startY } = typeInfo.start();
+                    const { x: endX, y: endY } = typeInfo.end();
+                    vector.setTo(startX, startY, endX, endY);
+                },
+                destroy: () => vector.destroy(),
+            };
         }
     };
 
@@ -181,8 +197,8 @@ export class DebugService {
 
     drawVector(from: Vector2, to: Vector2) {
         const vector = this.sceneProvider.addVector(from, to);
-        const point = this.sceneProvider.addCircle(to.x, to.y, Color.BLACK);
-        return this.createDestructor(vector, point);
+        return vector;
+        /*        const point = this.sceneProvider.addCircle(to.x, to.y, Color.BLACK);*/
     }
 
     private createDestructor = (...shapes: Shape[]) => {

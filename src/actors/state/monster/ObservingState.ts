@@ -15,7 +15,7 @@ import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../shared/constants';
 
 export class ObservingState implements MonsterState {
     private OBSERVING_TIME_MS = 1500;
-    private movingTo: Vector2 | undefined;
+    public movingTo: Vector2 | undefined;
     private startedObserving = null;
     // How long to observe.
     private counter = 5;
@@ -41,6 +41,7 @@ export class ObservingState implements MonsterState {
             return new FollowingState(preferredObj.value);
         }
         // Walk to a random point in the nearer area.
+        // Wait for a bit before moving to the next point.
         if (
             (!this.movingTo && !this.startedObserving) ||
             (!this.movingTo &&
@@ -60,14 +61,14 @@ export class ObservingState implements MonsterState {
                 .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance));
             // Don't allow point outside of screen.
             this.movingTo = new Vector2(
-                Math.min(this.movingTo.x, SCREEN_WIDTH),
-                Math.min(this.movingTo.y, SCREEN_HEIGHT)
+                Math.max(0, Math.min(this.movingTo.x, SCREEN_WIDTH)),
+                Math.max(0, Math.min(this.movingTo.y, SCREEN_HEIGHT))
             );
             if (this.debugSub) {
                 this.debugSub.next();
             }
-            this.debugSub = this.debugService.drawVector(monster.sprite.getCenter(), this.movingTo);
-            // Wait for a bit before moving to the next point.
+            /*            this.debugSub = this.debugService.drawVector(monster.sprite.getCenter(), this.movingTo);*/
+            // Break when having reached the point to get rid of the current momentum.
         } else if (this.movingTo && this.movingTo.distance(monster.sprite.getCenter()) < 30) {
             this.startedObserving = time;
             this.movingTo = null;

@@ -3,7 +3,7 @@ import { Color } from '../shared/constants';
 
 export enum DebugShape {
     CIRCLE = 'CIRCLE',
-    LINE = 'LINE',
+    VECTOR = 'VECTOR',
 }
 
 export type CircleDebugInfo = {
@@ -12,12 +12,12 @@ export type CircleDebugInfo = {
     color: () => Color;
     alpha: () => number;
 };
-export type LineDebugInfo = { start: () => Vector2; length: () => number };
+export type VectorDebugInfo = { start: () => Vector2; end: () => Vector2 };
 
 export type DebugInformation =
     | [DebugShape.CIRCLE, CircleDebugInfo]
-    | [DebugShape.LINE, LineDebugInfo];
+    | [DebugShape.VECTOR, VectorDebugInfo];
 
 export interface Debuggable {
-    drawDebugInformation: () => DebugInformation;
+    drawDebugInformation: () => DebugInformation[];
 }

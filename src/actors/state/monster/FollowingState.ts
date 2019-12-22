@@ -1,16 +1,15 @@
 import { MonsterState } from './MonsterState';
 import { DynamicGameObject } from '../../DynamicGameObject';
-import { State } from '../State';
 import { BaseGameObject } from '../../BaseGameObject';
 import { MonsterObject } from '../../MonsterObject';
-import { IdleState } from './IdleState';
 import { getClosestObj } from '../../../util/vector';
 import { ObservingState } from './ObservingState';
 
 export class FollowingState implements MonsterState {
-    constructor(private following: BaseGameObject | null) {}
+    constructor(public following: BaseGameObject | null) {}
 
     enter = (obj: MonsterObject): void => {
+        obj.attentionRadius = obj.baseStats.attentionRadius * 2;
         obj.playWalkingAnim();
     };
     update = (time: number, monster: MonsterObject, objs: DynamicGameObject[]): MonsterState => {
@@ -24,6 +23,7 @@ export class FollowingState implements MonsterState {
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     exit = (monster: MonsterObject): void => {
+        monster.attentionRadius = monster.baseStats.attentionRadius;
         return;
     };
 }

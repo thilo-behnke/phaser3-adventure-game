@@ -30,12 +30,15 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
     protected _type: MonsterType;
     private stats: MonsterStats;
 
+    private _attentionRadius: number;
+
     protected stateMachine: IMonsterStateMachine;
 
     constructor(id: string, stats: MonsterStats, type: MonsterType) {
         super(id);
         this._type = type;
         this.stats = stats;
+        this._attentionRadius = stats.attentionRadius;
     }
 
     get hp(): number {
@@ -49,6 +52,14 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
             this.onDeath();
         }
         this._hp = correctedHp;
+    }
+
+    get attentionRadius(): number {
+        return this._attentionRadius;
+    }
+
+    set attentionRadius(value: number) {
+        this._attentionRadius = value;
     }
 
     onAddToScene = (): void => {
@@ -75,14 +86,17 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
         );
         // Increase the acceleration towards the goal if the the current direction is far away.
         const newAcc = angleBetweenCurrentAndNewDir >= 0.5 ? dir.scale(100) : dir.scale(50);
-        this.sprite.setAcceleration(newAcc.x, newAcc.y);
+        // TODO: It would be better to accelerate here instead of directly setting the velocity, however this looks/feels weird.
+        this.sprite.setVelocity(newAcc.x, newAcc.y);
     };
 
     break = () => {
         this.sprite.setVelocity(0, 0);
     };
 
-    getStats = (): MonsterStats => this.stats;
+    get baseStats() {
+        return this.stats;
+    }
 
     onDeath = (): void => {
         return;
@@ -96,18 +110,27 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
         console.log('play walking anim');
     };
 
-    drawDebugInformation = (): DebugInformation => {
+    drawDebugInformation = (): DebugInformation[] => {
         return [
-            DebugShape.CIRCLE,
-            {
-                center: () => this.sprite.getCenter(),
-                radius: () => this.getStats().attentionRadius,
-                color: () =>
-                    this.stateMachine.currentState instanceof FollowingState
-                        ? Color.RED
-                        : Color.BLACK,
-                alpha: () => 0.2,
-            },
+            [
+                DebugShape.CIRCLE,
+                {
+                    center: () => this.sprite.getCenter(),
+                    radius: () => this._attentionRadius,
+                    color: () =>
+                        this.stateMachine.currentState instanceof FollowingState
+                            ? Color.RED
+                            : Color.BLACK,
+                    alpha: () => 0.2,
+                },
+            ],
+            [
+                DebugShape.VECTOR,
+                {
+                    start: () => this.sprite.getCenter(),
+                    end: () => this.stateMachine.isMovingTowardsPos() || this.sprite.getCenter(),
+                },
+            ],
         ];
     };
 }
