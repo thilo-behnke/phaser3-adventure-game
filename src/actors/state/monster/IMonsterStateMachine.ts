@@ -4,6 +4,7 @@ import { DynamicGameObject } from '../../DynamicGameObject';
 import Vector2 = Phaser.Math.Vector2;
 import { FollowingState } from './FollowingState';
 import { ObservingState } from './ObservingState';
+import { FollowingPlayerState } from './FollowingPlayerState';
 
 export abstract class IMonsterStateMachine {
     currentState: MonsterState;
@@ -15,6 +16,8 @@ export abstract class IMonsterStateMachine {
             return this.currentState.following.sprite.getCenter();
         } else if (this.currentState instanceof ObservingState) {
             return this.currentState.movingTo;
+        } else if (this.currentState instanceof FollowingPlayerState) {
+            return this.currentState.player.sprite.getCenter();
         }
         return null;
     };

@@ -43,7 +43,8 @@ export default class ExplorationScene extends Phaser.Scene {
             frameHeight: 29,
         });
         this.load.image('CAPSULE', 'assets/CAPSULE.png');
-        this.load.image('CAPSULE_INACTIVE', 'assets/CAPSULE_INACTIVE.png');
+        this.load.image('CAPSULE_INVENTORY', 'assets/CAPSULE_INVENTORY.png');
+        this.load.image('CAPSULE_INVENTORY_INACTIVE', 'assets/CAPSUL_INVENTORY_INACTIVE.png');
     }
 
     create(): void {
