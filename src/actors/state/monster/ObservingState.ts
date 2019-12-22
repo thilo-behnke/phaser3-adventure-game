@@ -67,7 +67,6 @@ export class ObservingState implements MonsterState {
             if (this.debugSub) {
                 this.debugSub.next();
             }
-            /*            this.debugSub = this.debugService.drawVector(monster.sprite.getCenter(), this.movingTo);*/
             // Break when having reached the point to get rid of the current momentum.
         } else if (this.movingTo && this.movingTo.distance(monster.sprite.getCenter()) < 30) {
             this.startedObserving = time;
