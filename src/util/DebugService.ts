@@ -38,7 +38,7 @@ export class DebugService {
     }
 
     showGrid(showTileCoordinates = false) {
-        const gridLen = 50,
+        const gridLen = 32,
             gridColor = Color.GREY,
             gridAlpha = 0.2;
         range(1, SCREEN_WIDTH / gridLen).forEach(pos => {

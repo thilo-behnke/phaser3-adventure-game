@@ -1,12 +1,13 @@
 import { CollisionGroupDef } from '../collision/CollisionGroupDef';
 import { CollisionGroup, CollisionType } from '../collision/CollisionGroup';
 import { DynamicGameObject } from './DynamicGameObject';
-import { MonsterStateMachine } from './state/monster/MonsterStateMachine';
+import { WildMonsterStateMachine } from './state/monster/WildMonsterStateMachine';
 import { IMonsterStateMachine } from './state/monster/IMonsterStateMachine';
 import { Debuggable, DebugInformation, DebugShape } from './Debuggable';
 import { Color } from '../shared/constants';
 import { FollowingState } from './state/monster/FollowingState';
 import Vector2 = Phaser.Math.Vector2;
+import { CaughtMonsterStateMachine } from './state/monster/CaughtMonsterStateMachine';
 
 export enum MonsterType {
     WOLF = 'WOLF',
@@ -30,6 +31,7 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
     protected _type: MonsterType;
     private stats: MonsterStats;
 
+    private _caught = false;
     private _attentionRadius: number;
 
     protected stateMachine: IMonsterStateMachine;
@@ -54,6 +56,14 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
         this._hp = correctedHp;
     }
 
+    get caught(): boolean {
+        return this._caught;
+    }
+
+    set caught(value: boolean) {
+        this._caught = value;
+    }
+
     get attentionRadius(): number {
         return this._attentionRadius;
     }
@@ -64,7 +74,11 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
 
     onAddToScene = (): void => {
         this.sprite.setMaxVelocity(50, 50);
-        this.stateMachine = new MonsterStateMachine(this);
+        if (this.caught) {
+            this.stateMachine = new CaughtMonsterStateMachine(this);
+        } else {
+            this.stateMachine = new WildMonsterStateMachine(this);
+        }
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -118,7 +132,7 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
                     center: () => this.sprite.getCenter(),
                     radius: () => this._attentionRadius,
                     color: () =>
-                        this.stateMachine.currentState instanceof FollowingState
+                        this.stateMachine.currentState instanceof FollowingState && !this.caught
                             ? Color.RED
                             : Color.BLACK,
                     alpha: () => 0.2,

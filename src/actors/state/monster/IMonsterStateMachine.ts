@@ -2,10 +2,20 @@ import { MonsterState } from './MonsterState';
 import { MonsterObject } from '../../MonsterObject';
 import { DynamicGameObject } from '../../DynamicGameObject';
 import Vector2 = Phaser.Math.Vector2;
+import { FollowingState } from './FollowingState';
+import { ObservingState } from './ObservingState';
 
-export interface IMonsterStateMachine {
+export abstract class IMonsterStateMachine {
     currentState: MonsterState;
 
-    update: (time: number, monster: MonsterObject) => void;
-    isMovingTowardsPos: () => Vector2 | null;
+    abstract update: (time: number, monster: MonsterObject) => void;
+
+    isMovingTowardsPos = () => {
+        if (this.currentState instanceof FollowingState) {
+            return this.currentState.following.sprite.getCenter();
+        } else if (this.currentState instanceof ObservingState) {
+            return this.currentState.movingTo;
+        }
+        return null;
+    };
 }

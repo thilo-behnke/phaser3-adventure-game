@@ -11,10 +11,11 @@ import { GameObjectRegistry } from '../../../registry/GameObjectRegistry';
 import { FollowingState } from './FollowingState';
 import { ObservingState } from './ObservingState';
 
-export class MonsterStateMachine implements IMonsterStateMachine {
+export class WildMonsterStateMachine extends IMonsterStateMachine {
     currentState: MonsterState;
 
     constructor(monster: MonsterObject) {
+        super();
         console.log('state machine created for monster', monster);
         this.currentState = new IdleState();
         this.currentState.enter(monster);
@@ -34,14 +35,5 @@ export class MonsterStateMachine implements IMonsterStateMachine {
             this.currentState = newState;
             newState.enter(monster);
         }
-    };
-
-    isMovingTowardsPos = () => {
-        if (this.currentState instanceof FollowingState) {
-            return this.currentState.following.sprite.getCenter();
-        } else if (this.currentState instanceof ObservingState) {
-            return this.currentState.movingTo;
-        }
-        return null;
     };
 }

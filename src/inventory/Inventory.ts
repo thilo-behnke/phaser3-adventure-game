@@ -50,6 +50,7 @@ export class Inventory {
         const item = this.items[itemId];
         if (item instanceof Capsule) {
             const monster = item.open();
+            monster.caught = true;
             this.monsters[monster.id] = monster;
             this.remove(item.id);
             this.monsterSpawner.addToScene(this.gameObjectRegistry.getPlayerPos(), monster);
