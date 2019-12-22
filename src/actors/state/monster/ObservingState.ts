@@ -28,10 +28,14 @@ export class ObservingState implements MonsterState {
     }
 
     enter = (monster: MonsterObject) => {
-        monster.playWalkingAnim();
+        monster.break();
     };
 
     update = (time: number, monster: MonsterObject, objs: DynamicGameObject[]) => {
+        if (!this.movingTo && !this.startedObserving) {
+            this.startedObserving = time;
+            return this;
+        }
         if (objs.length) {
             // TODO: Evaluate objects, maybe most dangerous?
             const preferredObj = getClosestObj(monster, objs);
@@ -42,12 +46,7 @@ export class ObservingState implements MonsterState {
         }
         // Walk to a random point in the nearer area.
         // Wait for a bit before moving to the next point.
-        if (
-            (!this.movingTo && !this.startedObserving) ||
-            (!this.movingTo &&
-                this.startedObserving &&
-                time - this.startedObserving >= this.OBSERVING_TIME_MS)
-        ) {
+        if (!this.movingTo && time - this.startedObserving >= this.OBSERVING_TIME_MS) {
             this.startedObserving = null;
             this.counter--;
             if (this.counter <= 0) {
@@ -64,10 +63,7 @@ export class ObservingState implements MonsterState {
                 Math.max(0, Math.min(this.movingTo.x, SCREEN_WIDTH)),
                 Math.max(0, Math.min(this.movingTo.y, SCREEN_HEIGHT))
             );
-            if (this.debugSub) {
-                this.debugSub.next();
-            }
-            // Break when having reached the point to get rid of the current momentum.
+            monster.playWalkingAnim();
         } else if (this.movingTo && this.movingTo.distance(monster.sprite.getCenter()) < 30) {
             this.startedObserving = time;
             this.movingTo = null;
