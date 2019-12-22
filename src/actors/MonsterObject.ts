@@ -1,14 +1,12 @@
-import { BaseGameObject } from './BaseGameObject';
 import { CollisionGroupDef } from '../collision/CollisionGroupDef';
 import { CollisionGroup, CollisionType } from '../collision/CollisionGroup';
 import { DynamicGameObject } from './DynamicGameObject';
 import { MonsterStateMachine } from './state/monster/MonsterStateMachine';
 import { IMonsterStateMachine } from './state/monster/IMonsterStateMachine';
-import Vector2 = Phaser.Math.Vector2;
-import { container } from 'tsyringe';
-import { DebugService } from '../util/DebugService';
 import { Debuggable, DebugInformation, DebugShape } from './Debuggable';
 import { Color } from '../shared/constants';
+import { FollowingState } from './state/monster/FollowingState';
+import Vector2 = Phaser.Math.Vector2;
 
 export enum MonsterType {
     WOLF = 'WOLF',
@@ -104,7 +102,10 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
             {
                 center: () => this.sprite.getCenter(),
                 radius: () => this.getStats().attentionRadius,
-                color: () => Color.BLACK,
+                color: () =>
+                    this.stateMachine.currentState instanceof FollowingState
+                        ? Color.RED
+                        : Color.BLACK,
                 alpha: () => 0.2,
             },
         ];

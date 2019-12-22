@@ -11,13 +11,18 @@ import Shape = Phaser.GameObjects.Shape;
 import { distinctUntilChanged, filter, map, tap } from 'rxjs/internal/operators';
 import { MonsterObject } from '../actors/MonsterObject';
 import { CircleDebugInfo, DebugInformation, DebugShape } from '../actors/Debuggable';
+import Text = Phaser.GameObjects.Text;
+
+enum DebugElement {
+    PLAYER_POS = 'PLAYER_POS',
+    OBJ_POS = '-pos',
+}
 
 @injectable()
 export class DebugService {
-    private updatingElements: { [key: string]: Function } = {};
-
-    private playerPosText;
-    private objPosText = {};
+    private updatingElements: {
+        [key: string]: { shape: Shape | Text; update: Function; destroy: Function };
+    } = {};
 
     constructor(
         private sceneProvider: SceneProvider,
@@ -25,7 +30,7 @@ export class DebugService {
     ) {}
 
     update() {
-        Object.values(this.updatingElements).forEach(func => func());
+        Object.values(this.updatingElements).forEach(({ update }) => update());
     }
 
     showGrid(showTileCoordinates = false) {
@@ -65,45 +70,47 @@ export class DebugService {
     }
 
     showPlayerPos() {
-        this.updatingElements['player-pos'] = () => {
-            const playerPos = this.gameObjectRegistry.getPlayer().sprite.getCenter();
-            const newText = `Player - x: ${playerPos.x.toFixed(2)}, y: ${playerPos.y.toFixed(2)}`;
-            if (!this.playerPosText) {
-                this.playerPosText = this.sceneProvider.addText(
-                    SCREEN_WIDTH - 300,
-                    100,
-                    newText,
-                    Color.WHITE,
-                    16
-                );
-                return;
-            }
-            this.playerPosText.setText(newText);
-            this.playerPosText.updateText();
+        const playerPos = this.gameObjectRegistry.getPlayer().sprite.getCenter();
+        const newText = `Player - x: ${playerPos.x.toFixed(2)}, y: ${playerPos.y.toFixed(2)}`;
+        const playerPosText = this.sceneProvider.addText(
+            SCREEN_WIDTH - 300,
+            100,
+            newText,
+            Color.WHITE,
+            16
+        );
+        this.updatingElements[DebugElement.PLAYER_POS] = {
+            shape: playerPosText,
+            update: () => {
+                playerPosText.setText(newText);
+                playerPosText.updateText();
+            },
+            destroy: () => playerPosText.destroy(),
         };
     }
 
     showObjectPos(id: string) {
-        this.updatingElements[`${id}-pos`] = () => {
-            const obj = this.gameObjectRegistry.getById(id);
-            if (obj.isEmpty()) {
-                return;
-            }
-            const newText = `Obj - x: ${obj.value.sprite.x.toFixed(
-                2
-            )}, y: ${obj.value.sprite.y.toFixed(2)}`;
-            if (!this.objPosText[id]) {
-                this.objPosText[id] = this.sceneProvider.addText(
-                    SCREEN_WIDTH - 300,
-                    size(this.updatingElements) * 20 + 100,
-                    newText,
-                    Color.WHITE,
-                    16
-                );
-                return;
-            }
-            this.objPosText[id].setText(newText);
-            this.objPosText[id].updateText();
+        const obj = this.gameObjectRegistry.getById(id);
+        if (obj.isEmpty()) {
+            return;
+        }
+        const newText = `Obj - x: ${obj.value.sprite.x.toFixed(2)}, y: ${obj.value.sprite.y.toFixed(
+            2
+        )}`;
+        const objPosText = this.sceneProvider.addText(
+            SCREEN_WIDTH - 300,
+            size(this.updatingElements) * 20 + 100,
+            newText,
+            Color.WHITE,
+            16
+        );
+        this.updatingElements[`${id}-${DebugElement.OBJ_POS}`] = {
+            shape: objPosText,
+            update: () => {
+                objPosText.setText(newText);
+                objPosText.updateText();
+            },
+            destroy: () => objPosText.destroy(),
         };
     }
 
@@ -143,13 +150,21 @@ export class DebugService {
         if (type === DebugShape.CIRCLE) {
             const typeInfo = info as CircleDebugInfo;
             // TODO: This will create issues when the sprite is removed from the scene.
-            return () => {
-                return this.drawCircle(
-                    typeInfo.center(),
-                    typeInfo.radius(),
-                    typeInfo.color(),
-                    typeInfo.alpha()
-                );
+            const circle = this.drawCircle(
+                typeInfo.center(),
+                typeInfo.radius(),
+                typeInfo.color(),
+                typeInfo.alpha()
+            );
+            return {
+                shape: circle,
+                update: () => {
+                    const { x, y } = typeInfo.center();
+                    circle.setPosition(x, y);
+                    circle.setRadius(typeInfo.radius());
+                    circle.setFillStyle(typeInfo.color(), typeInfo.alpha());
+                },
+                destroy: () => circle.destroy(),
             };
         }
     };
@@ -161,8 +176,7 @@ export class DebugService {
     }
 
     drawCircle(center: Vector2, radius: number, color = Color.BLACK, alpha = 1) {
-        const circle = this.sceneProvider.addCircle(center.x, center.y, radius, color, alpha);
-        return this.createDestructor(circle);
+        return this.sceneProvider.addCircle(center.x, center.y, radius, color, alpha);
     }
 
     drawVector(from: Vector2, to: Vector2) {

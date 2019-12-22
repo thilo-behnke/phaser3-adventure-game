@@ -22,8 +22,8 @@ export abstract class GameObjectSpawner {
     addToScene(pos: Point, obj: BaseGameObject): void {
         const id = obj.id;
 
-        this.gameObjectRegistry.add(id, obj);
         this.sceneProvider.addToScene(obj, pos);
+        this.gameObjectRegistry.add(id, obj);
         this.collisionDetectionManager.register(obj);
     }
 }
