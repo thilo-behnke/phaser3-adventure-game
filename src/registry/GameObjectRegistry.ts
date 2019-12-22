@@ -7,11 +7,14 @@ import Vector2 = Phaser.Math.Vector2;
 import Point = Phaser.Geom.Point;
 import { Optional } from '../util/fp';
 import { MonsterObject } from '../actors/MonsterObject';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @singleton()
 export class GameObjectRegistry {
     private registry: { [key: string]: BaseGameObject } = {};
     private player: Player;
+
+    private subject = new BehaviorSubject(Object.values(this.registry));
 
     setPlayer(player: Player): void {
         this.player = player;
@@ -29,6 +32,12 @@ export class GameObjectRegistry {
 
     add(id: string, obj: BaseGameObject): void {
         this.registry[id] = obj;
+        this.subject.next(Object.values(this.registry));
+    }
+
+    remove(id: string): void {
+        delete this.registry[id];
+        this.subject.next(Object.values(this.registry));
     }
 
     getByCollisionGroup(collisionGroup: CollisionGroup): BaseGameObject[] {
@@ -41,8 +50,13 @@ export class GameObjectRegistry {
         });
     }
 
+    // TODO: Remove.
     getObjects = (): BaseGameObject[] => {
         return Object.values(this.registry);
+    };
+
+    subscribeObjects = (): Observable<BaseGameObject[]> => {
+        return this.subject.asObservable();
     };
 
     getMonsters = (): MonsterObject[] => {

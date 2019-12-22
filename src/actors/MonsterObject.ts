@@ -7,6 +7,8 @@ import { IMonsterStateMachine } from './state/monster/IMonsterStateMachine';
 import Vector2 = Phaser.Math.Vector2;
 import { container } from 'tsyringe';
 import { DebugService } from '../util/DebugService';
+import { Debuggable, DebugInformation, DebugShape } from './Debuggable';
+import { Color } from '../shared/constants';
 
 export enum MonsterType {
     WOLF = 'WOLF',
@@ -25,7 +27,7 @@ export type MonsterStats = {
 };
 
 @CollisionGroupDef(CollisionGroup.PLAYER, CollisionType.COLLIDE)
-export class MonsterObject extends DynamicGameObject {
+export class MonsterObject extends DynamicGameObject implements Debuggable {
     private _hp: number;
     protected _type: MonsterType;
     private stats: MonsterStats;
@@ -94,5 +96,17 @@ export class MonsterObject extends DynamicGameObject {
 
     playWalkingAnim = (): void => {
         console.log('play walking anim');
+    };
+
+    drawDebugInformation = (): DebugInformation => {
+        return [
+            DebugShape.CIRCLE,
+            {
+                center: () => this.sprite.getCenter(),
+                radius: () => this.getStats().attentionRadius,
+                color: () => Color.BLACK,
+                alpha: () => 0.2,
+            },
+        ];
     };
 }
