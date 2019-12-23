@@ -1,4 +1,6 @@
 import 'phaser';
+import * as tiles from '../../assets/graphics/tilesheet.png';
+import * as level1 from '../../assets/map/level_1.json';
 import * as playerBack from '../../assets/graphics/hero/hero-male-back-walk.png';
 import * as playerFront from '../../assets/graphics/hero/hero-male-front-walk.png';
 import * as playerLeft from '../../assets/graphics/hero/hero-male-left-walk.png';
@@ -35,6 +37,10 @@ export default class ExplorationScene extends Phaser.Scene {
     }
 
     preload(): void {
+        // Tileset + map.
+        this.load.image('tiles', tiles);
+        this.load.tilemapTiledJSON('map', level1);
+        // Object sprites.
         this.load.spritesheet('player--DOWN', playerFront, {
             frameWidth: 32,
             frameHeight: 32,
@@ -73,6 +79,19 @@ export default class ExplorationScene extends Phaser.Scene {
         this.monsterSpawner = container.resolve(MonsterSpawner);
         this.itemSpawner = container.resolve(ItemSpawner);
         this.inventory = container.resolve(Inventory);
+
+        const map = this.make.tilemap({ key: 'map' });
+        const tileset = map.addTilesetImage('tilesheet', 'tiles');
+        // TODO: Player sprite is rendered below ground layer.
+        const groundLayer = map.createStaticLayer('Ground', tileset, 0, 0);
+        groundLayer.setCollisionByProperty({ collides: true });
+        // TODO: Player bounces from wall when colliding.
+        this.physics.add.collider(this.player.sprite, groundLayer);
+
+        const camera = this.cameras.main;
+        camera.startFollow(this.player.sprite);
+        // TODO: Player can't move past the screen width / height defined in the game config.
+        camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
         this.monsterSpawner.spawn(new ExplorationMap());
         this.itemSpawner.spawn(new ExplorationMap());
