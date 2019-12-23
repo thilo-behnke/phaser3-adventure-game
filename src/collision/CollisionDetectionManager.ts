@@ -48,6 +48,7 @@ export class CollisionDetectionManager {
         });
         // Set collision with world bounds.
         if (gameObject instanceof MonsterObject) {
+            this.sceneProvider.addCollisionWithGround(gameObject);
             gameObject.sprite.setCollideWorldBounds(true);
         }
     };

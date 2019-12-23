@@ -75,7 +75,8 @@ export default class ExplorationScene extends Phaser.Scene {
 
         // TODO: Why does constructor autowiring not work here?
         this.sceneProvider = container.resolve(SceneProvider);
-        this.sceneProvider.initialize(this);
+        this.sceneProvider.initialize(this, groundLayer);
+
         this.debugService = container.resolve(DebugService);
         this.gameObjectRegistry = container.resolve(GameObjectRegistry);
         this.keyManager = container.resolve(KeyManager);
@@ -85,7 +86,7 @@ export default class ExplorationScene extends Phaser.Scene {
         this.itemSpawner = container.resolve(ItemSpawner);
         this.inventory = container.resolve(Inventory);
 
-        // TODO: Player bounces from wall when colliding.
+        // TODO: Generalize with monster collision register.
         this.physics.add.collider(this.player.sprite, groundLayer);
 
         const camera = this.cameras.main;

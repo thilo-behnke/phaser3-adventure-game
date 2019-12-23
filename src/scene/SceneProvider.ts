@@ -10,13 +10,17 @@ import Key = Phaser.Input.Keyboard.Key;
 import Vector2 = Phaser.Math.Vector2;
 import { Vector } from 'phaser/types/matter';
 import { Color } from '../shared/constants';
+import StaticTilemapLayer = Phaser.Tilemaps.StaticTilemapLayer;
+import { fromPairs } from 'lodash';
 
 @singleton()
 export class SceneProvider {
     private scene: Scene;
+    private groundLayer: StaticTilemapLayer;
 
-    initialize = (scene: Phaser.Scene): void => {
+    initialize = (scene: Phaser.Scene, groundLayer: StaticTilemapLayer): void => {
         this.scene = scene;
+        this.groundLayer = groundLayer;
     };
 
     addToScene = (obj: BaseGameObject, pos: Point): BaseGameObject => {
@@ -44,6 +48,11 @@ export class SceneProvider {
             null,
             this.scene
         );
+    };
+
+    addCollisionWithGround = (obj: BaseGameObject) => {
+        // TODO: Player bounces from wall when colliding.
+        this.scene.physics.add.collider(obj.sprite, this.groundLayer);
     };
 
     addKey = (keyCode: number): Key => {
