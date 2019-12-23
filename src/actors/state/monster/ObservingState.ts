@@ -1,17 +1,16 @@
-import { State } from '../State';
 import { MonsterState } from './MonsterState';
-import { BaseGameObject } from '../../BaseGameObject';
 import { DynamicGameObject } from '../../DynamicGameObject';
 import { MonsterObject } from '../../MonsterObject';
 import { getClosestObj } from '../../../util/vector';
 import { FollowingState } from './FollowingState';
-import Vector2 = Phaser.Math.Vector2;
 import { getNumberBetween } from '../../../util/random';
 import { IdleState } from './IdleState';
 import { Subject } from 'rxjs';
 import { DebugService } from '../../../util/DebugService';
 import { container } from 'tsyringe';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../shared/constants';
+import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
+import Vector2 = Phaser.Math.Vector2;
 
 export class ObservingState implements MonsterState {
     private OBSERVING_TIME_MS = 1500;
@@ -63,7 +62,7 @@ export class ObservingState implements MonsterState {
                 Math.max(0, Math.min(this.movingTo.x, SCREEN_WIDTH)),
                 Math.max(0, Math.min(this.movingTo.y, SCREEN_HEIGHT))
             );
-            monster.playWalkingAnim();
+            monster.activeAnim = DynamicObjectAnimation.WALKING;
         } else if (this.movingTo && this.movingTo.distance(monster.sprite.getCenter()) < 30) {
             this.startedObserving = time;
             this.movingTo = null;

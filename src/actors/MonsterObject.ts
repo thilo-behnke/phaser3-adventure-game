@@ -116,14 +116,6 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
         return;
     };
 
-    playIdleAnim = (): void => {
-        console.log('play idle anim');
-    };
-
-    playWalkingAnim = (): void => {
-        console.log('play walking anim');
-    };
-
     drawDebugInformation = (): DebugInformation[] => {
         return [
             [

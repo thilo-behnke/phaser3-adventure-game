@@ -4,12 +4,13 @@ import { MonsterObject } from '../../MonsterObject';
 import { Player } from '../../Player';
 import { DynamicGameObject } from '../../DynamicGameObject';
 import { isCloseTo } from '../../../util/collision';
+import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 
 export class FollowingPlayerState implements MonsterState {
     constructor(public player: Player) {}
 
     enter = (obj: MonsterObject): void => {
-        obj.playWalkingAnim();
+        obj.activeAnim = DynamicObjectAnimation.WALKING;
     };
     update = (time: number, monster: MonsterObject, objs: DynamicGameObject[]): MonsterState => {
         // Stop following when very close to the obj.

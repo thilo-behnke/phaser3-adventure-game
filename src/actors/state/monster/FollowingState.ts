@@ -5,13 +5,14 @@ import { MonsterObject } from '../../MonsterObject';
 import { getClosestObj } from '../../../util/vector';
 import { ObservingState } from './ObservingState';
 import { isCloseTo } from '../../../util/collision';
+import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 
 export class FollowingState implements MonsterState {
     constructor(public following: BaseGameObject | null) {}
 
     enter = (obj: MonsterObject): void => {
         obj.attentionRadius = obj.baseStats.attentionRadius * 2;
-        obj.playWalkingAnim();
+        obj.activeAnim = DynamicObjectAnimation.WALKING;
     };
     update = (time: number, monster: MonsterObject, objs: DynamicGameObject[]): MonsterState => {
         const closestObj = getClosestObj(monster, objs);

@@ -1,5 +1,9 @@
 import 'phaser';
-import * as player from '../../assets/graphics/green-knight.png';
+import * as playerBack from '../../assets/graphics/hero/hero-male-back-walk.png';
+import * as playerFront from '../../assets/graphics/hero/hero-male-front-walk.png';
+import * as playerLeft from '../../assets/graphics/hero/hero-male-left-walk.png';
+import * as playerRight from '../../assets/graphics/hero/hero-male-right-walk.png';
+import * as wolf from '../../assets/graphics/green-knight.png';
 import { Player } from '../actors/Player';
 import { Action, KeyManager } from '../input/keyManager';
 import { container } from 'tsyringe';
@@ -11,8 +15,6 @@ import { ExplorationMap } from '../map/ExplorationMap';
 import { Inventory } from '../inventory/Inventory';
 import { InventoryUi } from '../inventory/InventoryUi';
 import { DebugService } from '../util/DebugService';
-import { MonsterObject } from '../actors/MonsterObject';
-import { Color } from '../shared/constants';
 import Point = Phaser.Geom.Point;
 
 export default class ExplorationScene extends Phaser.Scene {
@@ -33,12 +35,24 @@ export default class ExplorationScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.spritesheet('player', player, {
-            frameWidth: 20,
-            frameHeight: 29,
+        this.load.spritesheet('player--DOWN', playerFront, {
+            frameWidth: 32,
+            frameHeight: 32,
+        });
+        this.load.spritesheet('player--UP', playerBack, {
+            frameWidth: 32,
+            frameHeight: 32,
+        });
+        this.load.spritesheet('player--LEFT', playerLeft, {
+            frameWidth: 32,
+            frameHeight: 32,
+        });
+        this.load.spritesheet('player--RIGHT', playerRight, {
+            frameWidth: 32,
+            frameHeight: 32,
         });
         // TODO: Replace with proper spritesheet.
-        this.load.spritesheet('WOLF', player, {
+        this.load.spritesheet('WOLF', wolf, {
             frameWidth: 20,
             frameHeight: 29,
         });

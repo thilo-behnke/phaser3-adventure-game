@@ -5,10 +5,11 @@ import { ActiveActions } from '../../../input/keyManager';
 import { IdleState } from './IdleState';
 import { Player } from '../../Player';
 import { PlayerState } from './PlayerState';
+import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 
 export class WalkingState implements PlayerState {
     enter = (obj: Player): void => {
-        obj.playWalkingAnim();
+        obj.activeAnim = DynamicObjectAnimation.WALKING;
     };
     update = (time: number, obj: Player, actions: ActiveActions): PlayerState => {
         if (

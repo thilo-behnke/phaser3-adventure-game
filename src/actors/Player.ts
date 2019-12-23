@@ -2,15 +2,14 @@ import { DynamicGameObject } from './DynamicGameObject';
 import { PlayerStateMachine } from './state/PlayerStateMachine';
 import { KeyManager } from '../input/keyManager';
 import { container } from 'tsyringe';
+import { Direction } from '../global/direction';
 import Point = Phaser.Geom.Point;
 import Scene = Phaser.Scene;
-import { Direction } from '../global/direction';
-import { SceneProvider } from '../scene/SceneProvider';
 
 export class Player extends DynamicGameObject {
+    protected _type = 'player';
     protected acceleration = new Point(100, 100);
     protected stateMachine: PlayerStateMachine;
-    private _direction: Direction;
 
     static create = (scene: Phaser.Scene, initialPos: Phaser.Geom.Point): Player => {
         const player = new Player('player');
@@ -26,32 +25,26 @@ export class Player extends DynamicGameObject {
         return player;
     };
 
-    get direction(): Direction {
-        return this._direction;
-    }
-
-    set direction(value: Direction) {
-        this._direction = value;
-    }
-
     private createAnimations = (scene: Scene): void => {
-        scene.anims.create({
-            key: 'player-idle',
-            frames: scene.anims.generateFrameNames('player', {
-                start: 0,
-                end: 3,
-            }),
-            frameRate: 3,
-            repeat: -1,
-        });
-        scene.anims.create({
-            key: 'player-walking',
-            frames: scene.anims.generateFrameNames('player', {
-                start: 4,
-                end: 6,
-            }),
-            frameRate: 3,
-            repeat: -1,
+        Object.values(Direction).forEach(direction => {
+            scene.anims.create({
+                key: `player-IDLE--${direction}`,
+                frames: scene.anims.generateFrameNames(`player--${direction}`, {
+                    start: 1,
+                    end: 2,
+                }),
+                frameRate: 1,
+                repeat: -1,
+            });
+            scene.anims.create({
+                key: `player-WALKING--${direction}`,
+                frames: scene.anims.generateFrameNames(`player--${direction}`, {
+                    start: 0,
+                    end: 5,
+                }),
+                frameRate: 6,
+                repeat: -1,
+            });
         });
     };
 
@@ -83,14 +76,5 @@ export class Player extends DynamicGameObject {
                 ? this.acceleration.y
                 : 0;
         this.sprite.setAcceleration(accX, accY);
-    };
-
-    // TODO: Refactor into 1 method.
-    playIdleAnim = (): void => {
-        this._sprite.anims.play('player-idle');
-    };
-
-    playWalkingAnim = (): void => {
-        this._sprite.anims.play('player-walking');
     };
 }
