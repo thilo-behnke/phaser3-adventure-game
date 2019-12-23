@@ -68,6 +68,11 @@ export default class ExplorationScene extends Phaser.Scene {
     }
 
     create(): void {
+        const map = this.make.tilemap({ key: 'map' });
+        const tileset = map.addTilesetImage('tilesheet', 'tiles');
+        const groundLayer = map.createStaticLayer('Ground', tileset, 0, 0);
+        groundLayer.setCollisionByProperty({ collides: true });
+
         // TODO: Why does constructor autowiring not work here?
         this.sceneProvider = container.resolve(SceneProvider);
         this.sceneProvider.initialize(this);
@@ -80,11 +85,6 @@ export default class ExplorationScene extends Phaser.Scene {
         this.itemSpawner = container.resolve(ItemSpawner);
         this.inventory = container.resolve(Inventory);
 
-        const map = this.make.tilemap({ key: 'map' });
-        const tileset = map.addTilesetImage('tilesheet', 'tiles');
-        // TODO: Player sprite is rendered below ground layer.
-        const groundLayer = map.createStaticLayer('Ground', tileset, 0, 0);
-        groundLayer.setCollisionByProperty({ collides: true });
         // TODO: Player bounces from wall when colliding.
         this.physics.add.collider(this.player.sprite, groundLayer);
 
