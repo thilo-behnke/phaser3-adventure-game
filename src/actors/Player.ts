@@ -10,6 +10,7 @@ import { SceneProvider } from '../scene/SceneProvider';
 export class Player extends DynamicGameObject {
     protected acceleration = new Point(100, 100);
     protected stateMachine: PlayerStateMachine;
+    private _direction: Direction;
 
     static create = (scene: Phaser.Scene, initialPos: Phaser.Geom.Point): Player => {
         const player = new Player('player');
@@ -24,6 +25,14 @@ export class Player extends DynamicGameObject {
         player.onAddToScene();
         return player;
     };
+
+    get direction(): Direction {
+        return this._direction;
+    }
+
+    set direction(value: Direction) {
+        this._direction = value;
+    }
 
     private createAnimations = (scene: Scene): void => {
         scene.anims.create({
@@ -76,6 +85,7 @@ export class Player extends DynamicGameObject {
         this.sprite.setAcceleration(accX, accY);
     };
 
+    // TODO: Refactor into 1 method.
     playIdleAnim = (): void => {
         this._sprite.anims.play('player-idle');
     };

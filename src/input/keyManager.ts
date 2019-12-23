@@ -14,8 +14,8 @@ export enum Action {
 
 export type ActiveActions = {
     directions: {
-        x: Direction | null;
-        y: Direction | null;
+        x: Direction.LEFT | Direction.RIGHT | null;
+        y: Direction.UP | Direction.DOWN | null;
     };
 };
 
