@@ -12,9 +12,10 @@ import { Vector } from 'phaser/types/matter';
 import { Color, TILE_SIZE } from '../shared/constants';
 import StaticTilemapLayer = Phaser.Tilemaps.StaticTilemapLayer;
 import { fromPairs } from 'lodash';
+import { compose } from 'lodash/fp';
 import { Optional } from '../util/fp';
 import { cartesianProduct } from '../util/general';
-import { segmentVector } from '../util/vector';
+import { getFirstSegmentOfVector, segmentVector } from '../util/vector';
 import Tile = Phaser.Tilemaps.Tile;
 
 @singleton()
@@ -61,7 +62,7 @@ export class SceneProvider {
     };
 
     addCollisionWithGround = (obj: BaseGameObject) => {
-        // TODO: Player bounces from wall when colliding.
+        // TODO: This should add a small distance between the 'wall' and the sprite to make sure there is no bouncing effect.
         this.scene.physics.add.collider(obj.sprite, this.groundLayer);
     };
 
@@ -69,6 +70,11 @@ export class SceneProvider {
         return this.getTilesInDirection(pos, dir).ifPresent(
             ({ properties }) => !!properties.collides
         );
+    };
+
+    getNextTileToGoal = (pos: Vector2, goal: Vector2) => {
+        const direction = goal.clone().subtract(pos);
+        return this.getTileForPos(getFirstSegmentOfVector(pos, direction)).value;
     };
 
     getTilesToGoal = (pos: Vector2, goal: Vector2) => {
@@ -86,22 +92,28 @@ export class SceneProvider {
         return tilePos;
     };
 
-    getAdjacentTilesFromPos = (pos: Vector2) => {
+    getAdjacentTilesFromPos = (pos: Vector2, includeDiagonal = false) => {
         const tileOpt = this.getTileForPos(pos);
         if (tileOpt.isEmpty()) {
             throw new Error(`No tile at position: ${pos}`);
         }
         const { x, y } = tileOpt.value;
         // TODO: This should be transferable to a function call (cross product?).
-        const adjacentTilePositions = [
+        const straightTilePositions = [
             [x, y + 1],
             [x, y - 1],
             [x + 1, y],
             [x - 1, y],
+        ];
+        const diagonalTilePositions = [
             [x - 1, y + 1],
             [x + 1, y - 1],
             [x + 1, y + 1],
             [x - 1, y - 1],
+        ];
+        const adjacentTilePositions = [
+            ...straightTilePositions,
+            ...(includeDiagonal ? diagonalTilePositions : []),
         ]
             .filter(([posX, posY]) => posX > 0 && posY > 0)
             .map(([posX, posY]) => new Vector2(posX, posY));

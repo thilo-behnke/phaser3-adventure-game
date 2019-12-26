@@ -28,6 +28,12 @@ export const getClosestObj = (
     return Optional.of(closest);
 };
 
+export const getFirstSegmentOfVector = (start: Vector2, vector: Vector2) => {
+    const vectorLength = vector.clone().length();
+    const normalizedVector = vector.clone().normalize();
+    return start.clone().add(normalizedVector.clone().scale(TILE_SIZE));
+};
+
 export const segmentVector = (start: Vector2, vector: Vector2) => {
     const vectorLength = vector.clone().length();
     const segments = Math.ceil(vectorLength / TILE_SIZE);

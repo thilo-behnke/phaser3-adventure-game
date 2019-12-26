@@ -3,6 +3,7 @@ import { MonsterObject } from '../actors/MonsterObject';
 import { injectable } from 'tsyringe';
 import { SceneProvider } from '../scene/SceneProvider';
 import Vector2 = Phaser.Math.Vector2;
+import { sortBy } from 'lodash';
 
 @injectable()
 export class GreedyPathFinding implements PathFinding {
@@ -36,10 +37,10 @@ export class GreedyPathFinding implements PathFinding {
         // If their are colliding goals in the way, the monster can't just go straight, but must evade the concerned tiles.
         // TODO: Inefficient!
         const tilesToGoal = [
-            ...this.sceneProvider.getTilesToGoal(monster.sprite.getTopLeft(), pos),
-            ...this.sceneProvider.getTilesToGoal(monster.sprite.getTopRight(), pos),
-            ...this.sceneProvider.getTilesToGoal(monster.sprite.getBottomLeft(), pos),
-            ...this.sceneProvider.getTilesToGoal(monster.sprite.getBottomRight(), pos),
+            this.sceneProvider.getNextTileToGoal(monster.sprite.getTopLeft(), pos),
+            this.sceneProvider.getNextTileToGoal(monster.sprite.getTopRight(), pos),
+            this.sceneProvider.getNextTileToGoal(monster.sprite.getBottomLeft(), pos),
+            this.sceneProvider.getNextTileToGoal(monster.sprite.getBottomRight(), pos),
         ];
         if (tilesToGoal.every(({ properties: { collides } }) => !collides)) {
             this.intermediateGoal = null;
@@ -51,13 +52,11 @@ export class GreedyPathFinding implements PathFinding {
                 .getAdjacentTilesFromPos(monster.sprite.getCenter())
                 .filter(({ properties: { collides } }) => !collides)
                 .map(tile => new Vector2(tile.pixelX, tile.pixelY));
-
             const closestTilePos = adjacentTiles.reduce((best, next) => {
                 const length = pos
                     .clone()
                     .subtract(next)
                     .length();
-                console.log(next, this.sceneProvider.getTileForPos(next), length, best.length());
                 if (
                     length <
                     pos
