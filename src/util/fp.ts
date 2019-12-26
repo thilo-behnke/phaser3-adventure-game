@@ -23,4 +23,8 @@ export class Optional<T> {
     isEmpty(): boolean {
         return this._value === null;
     }
+
+    ifPresent(callback: (T) => boolean) {
+        return this._value !== null ? callback(this.value) : false;
+    }
 }

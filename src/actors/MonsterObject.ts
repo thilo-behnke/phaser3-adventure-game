@@ -8,6 +8,9 @@ import { Color } from '../shared/constants';
 import { FollowingState } from './state/monster/FollowingState';
 import Vector2 = Phaser.Math.Vector2;
 import { CaughtMonsterStateMachine } from './state/monster/CaughtMonsterStateMachine';
+import { PathFinding } from '../ai/PathFinding';
+import { container } from 'tsyringe';
+import { GreedyPathFinding } from '../ai/GreedyPathFinding';
 
 export enum MonsterType {
     WOLF = 'WOLF',
@@ -35,12 +38,15 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
     private _attentionRadius: number;
 
     protected stateMachine: IMonsterStateMachine;
+    protected pathFinding: PathFinding;
 
     constructor(id: string, stats: MonsterStats, type: MonsterType) {
         super(id);
         this._type = type;
         this.stats = stats;
         this._attentionRadius = stats.attentionRadius;
+
+        this.pathFinding = container.resolve(GreedyPathFinding);
     }
 
     get hp(): number {
@@ -85,6 +91,10 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
     update = (time: number): void => {
         this.stateMachine.update(time, this);
         return;
+    };
+
+    moveTo = (pos: Vector2) => {
+        this.pathFinding.moveTo(this, pos);
     };
 
     accelerateTowards = (pos: Vector2): void => {

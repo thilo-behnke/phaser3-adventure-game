@@ -70,7 +70,7 @@ export class DebugService {
             );
             gridTiles.forEach(tilePos => {
                 const [x, y] = tilePos;
-                this.sceneProvider.addText(x * gridLen, y * gridLen, `${x}/${y}`, Color.GREY);
+                this.sceneProvider.addText(x * gridLen, y * gridLen, `${x}/${y}`, Color.GREY, 10);
             });
         }
     }

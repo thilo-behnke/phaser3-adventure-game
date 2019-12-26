@@ -11,6 +11,7 @@ import { container } from 'tsyringe';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../shared/constants';
 import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 import Vector2 = Phaser.Math.Vector2;
+import { SceneProvider } from '../../../scene/SceneProvider';
 
 export class ObservingState implements MonsterState {
     private OBSERVING_TIME_MS = 1500;
@@ -21,9 +22,11 @@ export class ObservingState implements MonsterState {
 
     private debugSub: Subject<void>;
     private debugService: DebugService;
+    private sceneProvider: SceneProvider;
 
     constructor() {
         this.debugService = container.resolve(DebugService);
+        this.sceneProvider = container.resolve(SceneProvider);
     }
 
     enter = (monster: MonsterObject) => {
@@ -51,17 +54,7 @@ export class ObservingState implements MonsterState {
             if (this.counter <= 0) {
                 return new IdleState();
             }
-            const radius = getNumberBetween(450, 90);
-            const distance = getNumberBetween(100, 200);
-            this.movingTo = monster.sprite
-                .getCenter()
-                .clone()
-                .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance));
-            // Don't allow point outside of screen.
-            this.movingTo = new Vector2(
-                Math.max(0, Math.min(this.movingTo.x, SCREEN_WIDTH)),
-                Math.max(0, Math.min(this.movingTo.y, SCREEN_HEIGHT))
-            );
+            this.movingTo = this.getRandomPointToMoveTo(monster);
             monster.activeAnim = DynamicObjectAnimation.WALKING;
         } else if (this.movingTo && this.movingTo.distance(monster.sprite.getCenter()) < 30) {
             this.startedObserving = time;
@@ -70,9 +63,30 @@ export class ObservingState implements MonsterState {
         }
         // TODO: Must slow down the acceleration to actually reach the point?
         if (this.movingTo) {
-            monster.accelerateTowards(this.movingTo);
+            monster.moveTo(this.movingTo);
         }
         return this;
+    };
+
+    private getRandomPointToMoveTo = (monster: MonsterObject) => {
+        const radius = getNumberBetween(450, 90);
+        const distance = getNumberBetween(100, 200);
+        // TODO: Don't allow point in colliding tile.
+        const movingTo = monster.sprite
+            .getCenter()
+            .clone()
+            .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance));
+        // Don't allow point outside of screen.
+        const movingToInsideScreen = new Vector2(
+            Math.max(0, Math.min(movingTo.x, SCREEN_WIDTH)),
+            Math.max(0, Math.min(movingTo.y, SCREEN_HEIGHT))
+        );
+        // TODO: This could create an endless loop.
+        if (this.sceneProvider.isCollidingTileForPos(movingTo)) {
+            console.debug('Monster randomly selected point in colliding tile...');
+            return this.getRandomPointToMoveTo(monster);
+        }
+        return movingToInsideScreen;
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

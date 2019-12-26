@@ -6,9 +6,15 @@ import { getClosestObj } from '../../../util/vector';
 import { ObservingState } from './ObservingState';
 import { isCloseTo } from '../../../util/collision';
 import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
+import { container } from 'tsyringe';
+import { SceneProvider } from '../../../scene/SceneProvider';
+import Scene = Phaser.Scene;
 
 export class FollowingState implements MonsterState {
-    constructor(public following: BaseGameObject | null) {}
+    private sceneProvider: SceneProvider;
+    constructor(public following: BaseGameObject | null) {
+        this.sceneProvider = container.resolve(SceneProvider);
+    }
 
     enter = (obj: MonsterObject): void => {
         obj.attentionRadius = obj.baseStats.attentionRadius * 2;
@@ -24,7 +30,7 @@ export class FollowingState implements MonsterState {
         if (isCloseTo(monster, this.following)) {
             monster.break();
         } else {
-            monster.accelerateTowards(this.following.sprite.getCenter());
+            monster.moveTo(this.following.sprite.getCenter());
         }
         return this;
     };
