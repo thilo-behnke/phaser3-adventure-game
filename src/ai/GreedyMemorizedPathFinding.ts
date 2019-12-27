@@ -29,7 +29,6 @@ export class GreedyMemorizedPathFinding implements PathFinding {
         if (hasReachedGoal) {
             return [true, path];
         }
-        // TODO: If the way is not obstructed anymore, the monster could just follow the object from here...
         const tilesToGoal = this.sceneProvider.getTilesToGoal(currentPos, goalTile.center);
         if (tilesToGoal.every((tileVector: TileVector) => !tileVector.collides())) {
             return [true, [...path, goalTile]];

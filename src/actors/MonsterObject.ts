@@ -105,6 +105,7 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
     };
 
     accelerateTowards = (pos: Vector2): void => {
+        // TODO: This works, but it would be better if the sprite would check its own height / width to properly navigate colliding tiles.
         const dir = pos
             .clone()
             .subtract(this.sprite.getCenter())

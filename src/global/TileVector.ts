@@ -11,7 +11,6 @@ export class TileVector {
     private readonly _tilePos: Vector2;
 
     constructor(private tile: Tile) {
-        // TODO: This works, but it would be better if the sprite would check its own height / width to properly navigate colliding tiles.
         this._center = new Vector2(
             tile.pixelX + tile.baseWidth / 2,
             tile.pixelY + tile.baseHeight / 2
