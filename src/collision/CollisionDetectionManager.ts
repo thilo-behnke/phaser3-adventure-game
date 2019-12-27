@@ -7,6 +7,10 @@ import { BaseGameObject } from '../actors/BaseGameObject';
 import { ItemObject } from '../actors/items/ItemObject';
 import { Player } from '../actors/Player';
 import { MonsterObject } from '../actors/MonsterObject';
+import { tileCollider } from '../util/collision';
+import GameObject = Phaser.GameObjects.GameObject;
+import Sprite = Phaser.Physics.Arcade.Sprite;
+import Tile = Phaser.Tilemaps.Tile;
 
 @singleton()
 @injectable()
@@ -48,7 +52,13 @@ export class CollisionDetectionManager {
         });
         // Set collision with world bounds.
         if (gameObject instanceof MonsterObject) {
-            this.sceneProvider.addCollisionWithGround(gameObject);
+            this.sceneProvider.addCollisionWithGround(gameObject, (objA: Sprite, objB: Tile) => {
+                const gameObject = this.gameObjectRegistry.getById(objA.name);
+                if (gameObject.isEmpty()) {
+                    return;
+                }
+                return tileCollider(gameObject.value, objB);
+            });
             gameObject.sprite.setCollideWorldBounds(true);
         }
     };

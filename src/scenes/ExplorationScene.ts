@@ -19,6 +19,7 @@ import { InventoryUi } from '../inventory/InventoryUi';
 import { DebugService } from '../util/DebugService';
 import Point = Phaser.Geom.Point;
 import { tileCollider } from '../util/collision';
+import Tile = Phaser.Tilemaps.Tile;
 
 export default class ExplorationScene extends Phaser.Scene {
     private debugService: DebugService;
@@ -88,7 +89,10 @@ export default class ExplorationScene extends Phaser.Scene {
         this.inventory = container.resolve(Inventory);
 
         // TODO: Generalize with monster collision register.
-        this.physics.add.collider(this.player.sprite, groundLayer, tileCollider);
+        this.physics.add.collider(this.player.sprite, groundLayer, (objA, objB) => {
+            const tile = objB as any;
+            return tileCollider(this.player, tile);
+        });
 
         const camera = this.cameras.main;
         camera.startFollow(this.player.sprite);

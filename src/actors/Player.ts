@@ -19,7 +19,8 @@ export class Player extends DynamicGameObject {
             .setMass(50)
             .setMaxVelocity(100, 100)
             .setFriction(100, 100)
-            .setDrag(50, 50);
+            .setDrag(50, 50)
+            .setName('player');
         player._sprite.setCollideWorldBounds(true);
         player.onAddToScene();
         return player;

@@ -40,6 +40,7 @@ export class SceneProvider {
 
     addToScene = (obj: BaseGameObject, pos: Point): BaseGameObject => {
         const sprite = this.scene.physics.add.sprite(pos.x, pos.y, obj.type);
+        sprite.setName(obj.id);
         obj.setSprite(sprite);
         obj.sprite.setImmovable(true);
         obj.onAddToScene();
@@ -65,9 +66,9 @@ export class SceneProvider {
         );
     };
 
-    addCollisionWithGround = (obj: BaseGameObject) => {
+    addCollisionWithGround = (obj: BaseGameObject, callback) => {
         // TODO: This should add a small distance between the 'wall' and the sprite to make sure there is no bouncing effect.
-        this.scene.physics.add.collider(obj.sprite, this.groundLayer, tileCollider);
+        this.scene.physics.add.collider(obj.sprite, this.groundLayer, callback);
     };
 
     collidesTileInDirection = (pos: Vector2, dir: Vector2) => {
