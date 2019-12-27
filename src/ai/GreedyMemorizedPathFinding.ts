@@ -78,34 +78,8 @@ export class GreedyMemorizedPathFinding implements PathFinding {
         }
         const goalPos = goal instanceof Vector2 ? goal : goal.getCenter();
         // If their are colliding goals in the way, the monster can't just go straight, but must evade the concerned tiles.
-        // TODO: Inefficient! At least filter duplicates.
-        const tilesToGoal =
-            goal instanceof Vector2
-                ? [
-                      this.sceneProvider.getNextTileToGoal(monster.sprite.getTopLeft(), goal),
-                      this.sceneProvider.getNextTileToGoal(monster.sprite.getTopRight(), goal),
-                      this.sceneProvider.getNextTileToGoal(monster.sprite.getBottomLeft(), goal),
-                      this.sceneProvider.getNextTileToGoal(monster.sprite.getBottomRight(), goal),
-                  ]
-                : [
-                      this.sceneProvider.getNextTileToGoal(
-                          monster.sprite.getTopLeft(),
-                          goal.getTopLeft()
-                      ),
-                      this.sceneProvider.getNextTileToGoal(
-                          monster.sprite.getTopRight(),
-                          goal.getTopRight()
-                      ),
-                      this.sceneProvider.getNextTileToGoal(
-                          monster.sprite.getBottomLeft(),
-                          goal.getBottomLeft()
-                      ),
-                      this.sceneProvider.getNextTileToGoal(
-                          monster.sprite.getBottomRight(),
-                          goal.getBottomRight()
-                      ),
-                  ];
-        if (tilesToGoal.every(({ properties: { collides } }) => !collides)) {
+        const tilesToGoal = this.sceneProvider.getNextTilesToGoal(monster.sprite, goal);
+        if (tilesToGoal.every((tileVector: TileVector) => !tileVector.collides())) {
             this.intermediateGoals = null;
             monster.accelerateTowards(goalPos);
         } else {
@@ -123,5 +97,10 @@ export class GreedyMemorizedPathFinding implements PathFinding {
 
             monster.accelerateTowards(this.intermediateGoals[this.currentIntermediateGoal].pos);
         }
+    };
+
+    reset = () => {
+        this.intermediateGoals = null;
+        this.currentIntermediateGoal = null;
     };
 }

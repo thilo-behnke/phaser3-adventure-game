@@ -19,7 +19,8 @@ import { getFirstSegmentOfVector, segmentVector } from '../util/vector';
 import Tile = Phaser.Tilemaps.Tile;
 import Sprite = Phaser.Physics.Arcade.Sprite;
 import { tileCollider } from '../util/collision';
-import { TileVector } from '../global/TileVector';
+import { TileVector, TileVectorSet } from '../global/TileVector';
+import instance from 'tsyringe/dist/typings/dependency-container';
 
 @singleton()
 export class SceneProvider {
@@ -75,9 +76,31 @@ export class SceneProvider {
         );
     };
 
-    getNextTileToGoal = (pos: Vector2, goal: Vector2) => {
+    private getFirstSegmentToGoal = (pos: Vector2, goal: Vector2): TileVector => {
         const direction = goal.clone().subtract(pos);
-        return this.getTileForPos(getFirstSegmentOfVector(pos, direction)).value;
+        return this.getTileVectorForPos(getFirstSegmentOfVector(pos, direction)).value;
+    };
+
+    getNextTilesToGoal = (sprite: Sprite, goal: Vector2 | Sprite) => {
+        const tiles = [
+            this.getFirstSegmentToGoal(
+                sprite.getTopLeft(),
+                goal instanceof Vector2 ? goal : goal.getTopLeft()
+            ),
+            this.getFirstSegmentToGoal(
+                sprite.getTopRight(),
+                goal instanceof Vector2 ? goal : goal.getTopRight()
+            ),
+            this.getFirstSegmentToGoal(
+                sprite.getBottomLeft(),
+                goal instanceof Vector2 ? goal : goal.getBottomRight()
+            ),
+            this.getFirstSegmentToGoal(
+                sprite.getBottomRight(),
+                goal instanceof Vector2 ? goal : goal.getBottomRight()
+            ),
+        ];
+        return [...TileVectorSet.from(tiles)];
     };
 
     getTilesToGoal = (pos: Vector2, goal: Vector2) => {

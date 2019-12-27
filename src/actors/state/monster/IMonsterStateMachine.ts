@@ -9,7 +9,6 @@ import { PathFinding } from '../../../ai/PathFinding';
 
 export abstract class IMonsterStateMachine {
     currentState: MonsterState;
-    protected pathFinding: PathFinding;
 
     abstract update: (time: number, monster: MonsterObject) => void;
 

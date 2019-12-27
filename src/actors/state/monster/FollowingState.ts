@@ -30,7 +30,7 @@ export class FollowingState implements MonsterState {
         this.following = closestObj.value;
         // Stop following when very close to the obj.
         if (isCloseTo(monster, this.following)) {
-            monster.break();
+            monster.stopMoveTo();
         } else {
             monster.moveTo(this.following.sprite);
         }

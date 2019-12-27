@@ -5,6 +5,7 @@ import { SceneProvider } from '../scene/SceneProvider';
 import Vector2 = Phaser.Math.Vector2;
 import Sprite = Phaser.Physics.Arcade.Sprite;
 import instance from 'tsyringe/dist/typings/dependency-container';
+import { TileVector } from '../global/TileVector';
 
 export class GreedyPathFinding implements PathFinding {
     private _intermediateGoal: Vector2 | null;
@@ -40,33 +41,8 @@ export class GreedyPathFinding implements PathFinding {
         const goalPos = goal instanceof Vector2 ? goal : goal.getCenter();
         // If their are colliding goals in the way, the monster can't just go straight, but must evade the concerned tiles.
         // TODO: Inefficient! At least filter duplicates.
-        const tilesToGoal =
-            goal instanceof Vector2
-                ? [
-                      this.sceneProvider.getNextTileToGoal(monster.sprite.getTopLeft(), goal),
-                      this.sceneProvider.getNextTileToGoal(monster.sprite.getTopRight(), goal),
-                      this.sceneProvider.getNextTileToGoal(monster.sprite.getBottomLeft(), goal),
-                      this.sceneProvider.getNextTileToGoal(monster.sprite.getBottomRight(), goal),
-                  ]
-                : [
-                      this.sceneProvider.getNextTileToGoal(
-                          monster.sprite.getTopLeft(),
-                          goal.getTopLeft()
-                      ),
-                      this.sceneProvider.getNextTileToGoal(
-                          monster.sprite.getTopRight(),
-                          goal.getTopRight()
-                      ),
-                      this.sceneProvider.getNextTileToGoal(
-                          monster.sprite.getBottomLeft(),
-                          goal.getBottomLeft()
-                      ),
-                      this.sceneProvider.getNextTileToGoal(
-                          monster.sprite.getBottomRight(),
-                          goal.getBottomRight()
-                      ),
-                  ];
-        if (tilesToGoal.every(({ properties: { collides } }) => !collides)) {
+        const tilesToGoal = this.sceneProvider.getNextTilesToGoal(monster.sprite, goal);
+        if (tilesToGoal.every((tile: TileVector) => !tile.collides())) {
             this.intermediateGoal = null;
             monster.accelerateTowards(goalPos);
         } else if (this.intermediateCounter > 0) {
@@ -104,5 +80,9 @@ export class GreedyPathFinding implements PathFinding {
             );
             monster.accelerateTowards(this.intermediateGoal);
         }
+    };
+
+    reset = () => {
+        this.intermediateGoal = null;
     };
 }

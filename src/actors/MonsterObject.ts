@@ -48,7 +48,7 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
         this.stats = stats;
         this._attentionRadius = stats.attentionRadius;
 
-        this.pathFinding = new GreedyPathFinding();
+        this.pathFinding = new GreedyMemorizedPathFinding();
     }
 
     get hp(): number {
@@ -97,6 +97,11 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
 
     moveTo = (goal: Vector2 | Sprite) => {
         this.pathFinding.moveTo(this, goal);
+    };
+
+    stopMoveTo = () => {
+        this.break();
+        this.pathFinding.reset();
     };
 
     accelerateTowards = (pos: Vector2): void => {

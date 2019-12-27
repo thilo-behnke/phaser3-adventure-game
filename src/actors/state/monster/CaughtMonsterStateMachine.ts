@@ -25,6 +25,7 @@ export class CaughtMonsterStateMachine extends IMonsterStateMachine {
         const newState = this.currentState.update(time, monster, objs);
         if (newState !== this.currentState) {
             console.log('Caught Monster State has changed!', newState, monster);
+            monster.stopMoveTo();
             this.currentState.exit(monster);
             this.currentState = newState;
             newState.enter(monster);

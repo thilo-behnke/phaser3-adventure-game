@@ -1,13 +1,16 @@
 import Tile = Phaser.Tilemaps.Tile;
 import Vector2 = Phaser.Math.Vector2;
-import { not } from '../util/fp';
 
 export class TileVector {
     private readonly _pos: Vector2;
     private readonly _tilePos: Vector2;
 
     constructor(private tile: Tile) {
-        this._pos = new Vector2(tile.pixelX, tile.pixelY);
+        // TODO: This works, but it would be better if the sprite would check its own height / width to properly navigate colliding tiles.
+        this._pos = new Vector2(
+            tile.pixelX + tile.baseWidth / 2,
+            tile.pixelY + tile.baseHeight / 2
+        );
         this._tilePos = new Vector2(tile.x, tile.y);
     }
 
@@ -17,6 +20,10 @@ export class TileVector {
 
     equals = (obj: TileVector) => {
         return obj.tilePos.equals(this.tilePos);
+    };
+
+    toKey = () => {
+        return `${this.tilePos.x}/${this.tilePos.y}`;
     };
 
     get pos(): Phaser.Math.Vector2 {
@@ -31,7 +38,13 @@ export class TileVectorSet implements Set<TileVector> {
     readonly [Symbol.toStringTag]: string;
     readonly _size: number;
 
-    private tileVectors: Map<Vector2, TileVector> = new Map();
+    private tileVectors: Map<string, TileVector> = new Map();
+
+    static from(tileVectors: TileVector[]) {
+        const set = new TileVectorSet();
+        tileVectors.forEach(tileVector => set.add(tileVector));
+        return set;
+    }
 
     get size() {
         return this.tileVectors.size;
@@ -42,11 +55,11 @@ export class TileVectorSet implements Set<TileVector> {
     }
 
     add(value: TileVector): this {
-        const existing = this.tileVectors.get(value.tilePos);
+        const existing = this.tileVectors.get(value.toKey());
         if (existing) {
             return;
         }
-        this.tileVectors.set(value.tilePos, value);
+        this.tileVectors.set(value.toKey(), value);
     }
 
     clear(): void {
@@ -54,7 +67,7 @@ export class TileVectorSet implements Set<TileVector> {
     }
 
     delete(value: TileVector): boolean {
-        return this.tileVectors.delete(value.tilePos);
+        return this.tileVectors.delete(value.toKey());
     }
 
     entries(): IterableIterator<[TileVector, TileVector]> {
@@ -72,7 +85,7 @@ export class TileVectorSet implements Set<TileVector> {
     }
 
     has(value: TileVector): boolean {
-        return !!this.tileVectors.get(value.tilePos);
+        return !!this.tileVectors.get(value.toKey());
     }
 
     keys(): IterableIterator<TileVector> {

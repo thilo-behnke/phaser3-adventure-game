@@ -4,4 +4,5 @@ import Sprite = Phaser.Physics.Arcade.Sprite;
 
 export interface PathFinding {
     moveTo: (monster: MonsterObject, goal: Vector2 | Sprite) => void;
+    reset: () => void;
 }
