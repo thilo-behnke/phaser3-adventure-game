@@ -5,13 +5,14 @@ import { TileVector, TileVectorSet } from '../global/TileVector';
 import { container } from 'tsyringe';
 import Vector2 = Phaser.Math.Vector2;
 import Sprite = Phaser.Physics.Arcade.Sprite;
+import { TILE_SIZE } from '../shared/constants';
 
 export class GreedyMemorizedPathFinding implements PathFinding {
     private intermediateGoals: TileVector[] | null = null;
     private currentIntermediateGoal: number | null;
     private sceneProvider: SceneProvider;
 
-    private PATH_FINDING_RESET_DISTANCE = 200;
+    private PATH_FINDING_RESET_DISTANCE = TILE_SIZE ** 2; // 1 Tile in distance
 
     constructor() {
         this.sceneProvider = container.resolve(SceneProvider);
