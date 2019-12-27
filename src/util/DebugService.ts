@@ -137,7 +137,11 @@ export class DebugService {
                     const updatingElementsWithoutRemoved = Object.entries(
                         this.updatingElements
                     ).filter(existing => {
-                        return objs.some(monster => monster.id === existing[0].split('--debug')[0]);
+                        if (!existing.includes('--debug')) {
+                            return true;
+                        }
+                        const debugId = existing[0].split('--debug')[0];
+                        return objs.some(monster => monster.id === debugId);
                     });
                     const toAdd = differenceWith(
                         objs,
