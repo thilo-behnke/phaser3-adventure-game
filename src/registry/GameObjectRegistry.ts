@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CollisionGroup } from '../collision/CollisionGroup';
+import { CollisionGroup, CollisionType } from '../collision/CollisionGroup';
 import { COLLISION_GROUP_PROP } from '../collision/CollisionGroupDef';
 import { BaseGameObject } from '../actors/BaseGameObject';
 import { Player } from '../actors/Player';
@@ -8,6 +8,7 @@ import Point = Phaser.Geom.Point;
 import { Optional } from '../util/fp';
 import { MonsterObject } from '../actors/MonsterObject';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { compose, filter, map, identity, flatten, fromPairs } from 'lodash/fp';
 
 @singleton()
 export class GameObjectRegistry {
@@ -44,9 +45,10 @@ export class GameObjectRegistry {
         if (collisionGroup === CollisionGroup.PLAYER) {
             return [this.player];
         }
-        return Object.values(this.registry).filter(gameObject => {
-            const group = COLLISION_GROUP_PROP in gameObject ? gameObject['collisionGroup'] : null;
-            return group && group === collisionGroup;
+        return this.getObjects().filter(gameObject => {
+            const groups: Array<[CollisionGroup, CollisionType]> =
+                COLLISION_GROUP_PROP in gameObject ? gameObject[COLLISION_GROUP_PROP] : null;
+            return !!groups && groups.some(group => group[0] === collisionGroup);
         });
     }
 

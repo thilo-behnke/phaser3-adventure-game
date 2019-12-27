@@ -8,9 +8,11 @@ import { ItemObject } from '../actors/items/ItemObject';
 import { Player } from '../actors/Player';
 import { MonsterObject } from '../actors/MonsterObject';
 import { tileCollider } from '../util/collision';
-import GameObject = Phaser.GameObjects.GameObject;
+import { noop, from } from 'rxjs';
+import { CollisionGroup, CollisionType } from './CollisionGroup';
 import Sprite = Phaser.Physics.Arcade.Sprite;
 import Tile = Phaser.Tilemaps.Tile;
+import { delay, tap, switchMap } from 'rxjs/internal/operators';
 
 @singleton()
 @injectable()
@@ -24,34 +26,32 @@ export class CollisionDetectionManager {
         if (obj instanceof ItemObject && obj2 instanceof Player) {
             return obj.handlePlayerCollision;
         }
-        return () => {};
+        return console.log;
     };
 
     register = (gameObject: BaseGameObject): void => {
-        const collisionGroup =
+        const collisionGroups: Array<[CollisionGroup, CollisionType]> =
             COLLISION_GROUP_PROP in gameObject ? gameObject['collisionGroup'] : null;
-        if (!collisionGroup) {
+        if (!collisionGroups) {
             throw new Error(
                 "Can't register collision for obj " + gameObject.id + ' without a collision group!'
             );
         }
-        const collisionType =
-            COLLISION_TYPE_PROP in gameObject ? gameObject['collisionType'] : null;
-        if (!collisionType) {
-            throw new Error(
-                "Can't register collision for obj " +
-                    gameObject.id +
-                    ' without a collision type (collide, overlap)!'
-            );
-        }
         // Set collisions with other sprite objects.
-        const otherObjects = this.gameObjectRegistry.getByCollisionGroup(collisionGroup);
-        otherObjects.forEach(obj => {
-            const callback = this.getCallback(gameObject, obj);
-            this.sceneProvider.addCollisionByType(gameObject, obj, callback, collisionType);
+        // TODO: Collisions are registered (callback is triggered), but it does not work for monsters.
+        collisionGroups.forEach(([collisionGroup, collisionType]) => {
+            const toRegister = this.gameObjectRegistry.getByCollisionGroup(collisionGroup);
+            toRegister.forEach(obj => {
+                if (obj.id === gameObject.id) {
+                    return;
+                }
+                const callback = this.getCallback(gameObject, obj);
+                this.sceneProvider.addCollisionByType(gameObject, obj, callback, collisionType);
+            });
         });
-        // Set collision with world bounds.
+
         if (gameObject instanceof MonsterObject) {
+            // Set collision with with ground (colliding tiles).
             this.sceneProvider.addCollisionWithGround(gameObject, (objA: Sprite, objB: Tile) => {
                 const gameObject = this.gameObjectRegistry.getById(objA.name);
                 if (gameObject.isEmpty()) {
@@ -59,6 +59,7 @@ export class CollisionDetectionManager {
                 }
                 return tileCollider(gameObject.value, objB);
             });
+            // Set collision with world bounds.
             gameObject.sprite.setCollideWorldBounds(true);
         }
     };

@@ -6,12 +6,10 @@ import { IMonsterStateMachine } from './state/monster/IMonsterStateMachine';
 import { Debuggable, DebugInformation, DebugShape } from './Debuggable';
 import { Color } from '../shared/constants';
 import { FollowingState } from './state/monster/FollowingState';
-import Vector2 = Phaser.Math.Vector2;
 import { CaughtMonsterStateMachine } from './state/monster/CaughtMonsterStateMachine';
 import { PathFinding } from '../ai/PathFinding';
-import { container } from 'tsyringe';
-import { GreedyPathFinding } from '../ai/GreedyPathFinding';
 import { GreedyMemorizedPathFinding } from '../ai/GreedyMemorizedPathFinding';
+import Vector2 = Phaser.Math.Vector2;
 import Sprite = Phaser.Physics.Arcade.Sprite;
 
 export enum MonsterType {
@@ -30,7 +28,10 @@ export type MonsterStats = {
     attentionRadius: number;
 };
 
-@CollisionGroupDef(CollisionGroup.PLAYER, CollisionType.COLLIDE)
+@CollisionGroupDef(
+    [CollisionGroup.PLAYER, CollisionType.COLLIDE],
+    [CollisionGroup.MONSTER, CollisionType.COLLIDE]
+)
 export class MonsterObject extends DynamicGameObject implements Debuggable {
     private _hp: number;
     protected _type: MonsterType;

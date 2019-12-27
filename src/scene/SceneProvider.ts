@@ -1,6 +1,10 @@
 import { singleton } from 'tsyringe';
 import { BaseGameObject } from '../actors/BaseGameObject';
 import { CollisionType } from '../collision/CollisionGroup';
+import { Color, TILE_SIZE } from '../shared/constants';
+import { Optional } from '../util/fp';
+import { getFirstSegmentOfVector, segmentVector } from '../util/vector';
+import { TileVector, TileVectorSet } from '../global/TileVector';
 import Scene = Phaser.Scene;
 
 import Point = Phaser.Geom.Point;
@@ -8,19 +12,9 @@ import Point = Phaser.Geom.Point;
 import Collider = Phaser.Physics.Arcade.Collider;
 import Key = Phaser.Input.Keyboard.Key;
 import Vector2 = Phaser.Math.Vector2;
-import { Vector } from 'phaser/types/matter';
-import { Color, TILE_SIZE } from '../shared/constants';
 import StaticTilemapLayer = Phaser.Tilemaps.StaticTilemapLayer;
-import { fromPairs } from 'lodash';
-import { compose } from 'lodash/fp';
-import { Optional } from '../util/fp';
-import { cartesianProduct } from '../util/general';
-import { getFirstSegmentOfVector, segmentVector } from '../util/vector';
 import Tile = Phaser.Tilemaps.Tile;
 import Sprite = Phaser.Physics.Arcade.Sprite;
-import { tileCollider } from '../util/collision';
-import { TileVector, TileVectorSet } from '../global/TileVector';
-import instance from 'tsyringe/dist/typings/dependency-container';
 
 @singleton()
 export class SceneProvider {
@@ -53,17 +47,26 @@ export class SceneProvider {
         onCollide,
         type: CollisionType
     ): Collider => {
-        const collisionFunc =
-            type === CollisionType.OVERLAP
-                ? this.scene.physics.add.overlap
-                : this.scene.physics.add.collider;
-        return collisionFunc.bind(this.scene.physics)(
-            obj.sprite,
-            obj2.sprite,
-            onCollide,
-            null,
-            this.scene
-        );
+        console.log(`Registering ${type} for objs: `, obj, obj2);
+        if (type === CollisionType.COLLIDE) {
+            return this.scene.physics.add.collider(
+                obj.sprite,
+                obj2.sprite,
+                onCollide,
+                null,
+                this.scene
+            );
+        } else if (type === CollisionType.OVERLAP) {
+            return this.scene.physics.add.overlap(
+                obj.sprite,
+                obj2.sprite,
+                onCollide,
+                null,
+                this.scene
+            );
+        } else {
+            throw new Error(`Can't set up collider for type ${type}`);
+        }
     };
 
     addCollisionWithGround = (obj: BaseGameObject, callback) => {

@@ -6,7 +6,7 @@ import { MonsterObject } from '../MonsterObject';
 import { container } from 'tsyringe';
 import { Inventory } from '../../inventory/Inventory';
 
-@CollisionGroupDef(CollisionGroup.PLAYER, CollisionType.OVERLAP)
+@CollisionGroupDef([CollisionGroup.PLAYER, CollisionType.OVERLAP])
 export class Capsule extends ItemObject {
     protected _type = ItemType.CAPSULE;
     private rarity: number;
