@@ -29,7 +29,6 @@ export const getClosestObj = (
 };
 
 export const getFirstSegmentOfVector = (start: Vector2, vector: Vector2) => {
-    const vectorLength = vector.clone().length();
     const normalizedVector = vector.clone().normalize();
     return start.clone().add(normalizedVector.clone().scale(TILE_SIZE));
 };
@@ -39,6 +38,7 @@ export const segmentVector = (start: Vector2, vector: Vector2) => {
     const segments = Math.ceil(vectorLength / TILE_SIZE);
     const normalizedVector = vector.clone().normalize();
     return range(segments).map(i => {
-        return start.clone().add(normalizedVector.clone().scale((i + 1) * TILE_SIZE));
+        const scale = i === segments - 1 ? vectorLength / TILE_SIZE : (i + 1) * TILE_SIZE;
+        return start.clone().add(normalizedVector.clone().scale(scale));
     });
 };

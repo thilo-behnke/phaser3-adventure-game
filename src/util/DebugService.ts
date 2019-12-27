@@ -201,6 +201,17 @@ export class DebugService {
         }
     };
 
+    drawPath(paths: Vector2[]): Subject<void> {
+        const vectors = [];
+        for (let i = 0; i < paths.length; i++) {
+            if (i === 0) {
+                continue;
+            }
+            vectors.push(this.drawVector(paths[i - 1], paths[i]));
+        }
+        return this.createDestructor(...vectors);
+    }
+
     drawPoint(pos: Vector2): Subject<void> {
         // TODO: Better add line with right angle (=cross).
         const circle = this.sceneProvider.addCircle(pos.x, pos.y, 2);
@@ -214,7 +225,6 @@ export class DebugService {
     drawVector(from: Vector2, to: Vector2) {
         const vector = this.sceneProvider.addVector(from, to);
         return vector;
-        /*        const point = this.sceneProvider.addCircle(to.x, to.y, Color.BLACK);*/
     }
 
     private createDestructor = (...shapes: Shape[]) => {

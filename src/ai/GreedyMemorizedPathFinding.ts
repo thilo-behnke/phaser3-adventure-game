@@ -6,16 +6,23 @@ import { container } from 'tsyringe';
 import Vector2 = Phaser.Math.Vector2;
 import Sprite = Phaser.Physics.Arcade.Sprite;
 import { TILE_SIZE } from '../shared/constants';
+import { Subject } from 'rxjs';
+import { DebugService } from '../util/DebugService';
 
 export class GreedyMemorizedPathFinding implements PathFinding {
     private intermediateGoals: TileVector[] | null = null;
     private currentIntermediateGoal: number | null;
     private sceneProvider: SceneProvider;
+    private debugService: DebugService;
 
-    private PATH_FINDING_RESET_DISTANCE = TILE_SIZE ** 2; // 1 Tile in distance
+    private debugSubject: Subject<void>;
+
+    // 1 Tile in distance
+    private PATH_FINDING_RESET_DISTANCE = TILE_SIZE * 2;
 
     constructor() {
         this.sceneProvider = container.resolve(SceneProvider);
+        this.debugService = container.resolve(DebugService);
     }
 
     private greedyFindGoal = (
@@ -110,6 +117,13 @@ export class GreedyMemorizedPathFinding implements PathFinding {
             this.intermediateGoals = path;
             this.currentIntermediateGoal = 0;
 
+            if (this.debugSubject) {
+                this.debugSubject.next();
+            }
+            this.debugSubject = this.debugService.drawPath([
+                monster.sprite.getCenter(),
+                ...this.intermediateGoals.map(tile => tile.center),
+            ]);
             monster.accelerateTowards(this.intermediateGoals[this.currentIntermediateGoal].center);
         }
     };
