@@ -17,6 +17,8 @@ import { Optional } from '../util/fp';
 import { cartesianProduct } from '../util/general';
 import { getFirstSegmentOfVector, segmentVector } from '../util/vector';
 import Tile = Phaser.Tilemaps.Tile;
+import Sprite = Phaser.Physics.Arcade.Sprite;
+import { tileCollider } from '../util/collision';
 
 @singleton()
 export class SceneProvider {
@@ -63,7 +65,7 @@ export class SceneProvider {
 
     addCollisionWithGround = (obj: BaseGameObject) => {
         // TODO: This should add a small distance between the 'wall' and the sprite to make sure there is no bouncing effect.
-        this.scene.physics.add.collider(obj.sprite, this.groundLayer);
+        this.scene.physics.add.collider(obj.sprite, this.groundLayer, tileCollider);
     };
 
     collidesTileInDirection = (pos: Vector2, dir: Vector2) => {
