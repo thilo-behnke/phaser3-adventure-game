@@ -82,7 +82,7 @@ export class ObservingState implements MonsterState {
             Math.max(0, Math.min(movingTo.y, SCREEN_HEIGHT))
         );
         // TODO: This could create an endless loop.
-        if (this.sceneProvider.isCollidingTileForPos(movingTo)) {
+        if (this.sceneProvider.isCollidingTileForPos(movingToInsideScreen)) {
             console.debug('Monster randomly selected point in colliding tile...');
             return this.getRandomPointToMoveTo(monster);
         }
