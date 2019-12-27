@@ -43,7 +43,7 @@ export class GreedyMemorizedPathFinding implements PathFinding {
 
         // Else observe the adjacent tiles and try to find the goal from choosing the next best tile.
         const adjacentTiles = this.sceneProvider
-            .getAdjacentTileVectorsFromPos(currentPos.center)
+            .getAdjacentTileVectorsFromPos(currentPos.center, true)
             // Don't revisit visited tiles.
             .filter((tile: TileVector) => !visited.has(tile) && !tile.collides());
         // If there are no more new adjacent tiles to move to, stop.
@@ -117,18 +117,26 @@ export class GreedyMemorizedPathFinding implements PathFinding {
             this.intermediateGoals = path;
             this.currentIntermediateGoal = 0;
 
-            if (this.debugSubject) {
-                this.debugSubject.next();
-            }
-            this.debugSubject = this.debugService.drawPath([
-                monster.sprite.getCenter(),
-                ...this.intermediateGoals.map(tile => tile.center),
-            ]);
             monster.accelerateTowards(this.intermediateGoals[this.currentIntermediateGoal].center);
+
+            this.drawDebugInfo(monster);
         }
     };
 
+    private drawDebugInfo = (monster: MonsterObject) => {
+        if (this.debugSubject) {
+            this.debugSubject.next();
+        }
+        this.debugSubject = this.debugService.drawPath([
+            monster.sprite.getCenter(),
+            ...this.intermediateGoals.map(tile => tile.center),
+        ]);
+    };
+
     reset = () => {
+        if (this.debugSubject) {
+            this.debugSubject.next();
+        }
         this.intermediateGoals = null;
         this.currentIntermediateGoal = null;
     };
