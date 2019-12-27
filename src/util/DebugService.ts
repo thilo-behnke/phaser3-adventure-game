@@ -134,11 +134,11 @@ export class DebugService {
                 map(objs => objs.filter(obj => obj instanceof MonsterObject)),
                 distinctUntilChanged(),
                 map((objs: MonsterObject[]) => {
-                    const updatingElementsWithoutRemoved = differenceWith(
-                        Object.entries(this.updatingElements),
-                        objs,
-                        (existing, monster) => monster.id === existing[0].split('--debug')[0]
-                    );
+                    const updatingElementsWithoutRemoved = Object.entries(
+                        this.updatingElements
+                    ).filter(existing => {
+                        return objs.some(monster => monster.id === existing[0].split('--debug')[0]);
+                    });
                     const toAdd = differenceWith(
                         objs,
                         Object.keys(this.updatingElements).map(id => id.split('--debug')[0]),
