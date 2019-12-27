@@ -1,11 +1,11 @@
 {
-  "type": "WOLF",
+  "type": "SHEEP",
   "baseStats": {
     "health": 100,
     "strength": 100,
-    "agility": 100,
+    "agility": 50,
     "attentionRadius": 200,
-    "nature": "AGGRESSIVE"
+    "nature": "SHY"
   },
-  "rarity": 20
+  "rarity": 10
 }

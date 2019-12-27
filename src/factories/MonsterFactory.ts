@@ -3,6 +3,7 @@ import { MonsterObject, MonsterStats, MonsterType } from '../actors/MonsterObjec
 import { singleton } from 'tsyringe';
 
 import * as wolfTemplate from '../../assets/data/monsters/wolf.json';
+import * as sheepTemplate from '../../assets/data/monsters/sheep.json';
 import { generateUUID } from '../util/random';
 
 type MonsterTemplate = {
@@ -15,7 +16,7 @@ type MonsterTemplate = {
 export class MonsterFactory implements IGameObjectFactory<MonsterObject> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private getMonsterByRarity(rarity: number, seed: string): MonsterTemplate {
-        const allMonsters = [wolfTemplate];
+        const allMonsters = [wolfTemplate, sheepTemplate];
         const monstersForRarityLevel = allMonsters.filter(
             ({ rarity: mRarity }) => mRarity === rarity
         );

@@ -24,10 +24,12 @@ export class WildMonsterStateMachine extends IMonsterStateMachine {
     update = (time: number, monster: MonsterObject): void => {
         const registry = container.resolve(GameObjectRegistry);
         const monsterPos = monster.sprite.getCenter();
-        const objs = [registry.getPlayer()].filter(({ sprite }) => {
-            const objPos = sprite.getCenter();
-            return objPos.subtract(monsterPos).length() <= monster.attentionRadius;
-        });
+        const objs = [registry.getPlayer(), ...registry.getMonsters()]
+            .filter(({ id }) => id !== monster.id)
+            .filter(({ sprite }) => {
+                const objPos = sprite.getCenter();
+                return objPos.subtract(monsterPos).length() <= monster.attentionRadius;
+            });
         const newState = this.currentState.update(time, monster, objs);
         if (newState !== this.currentState) {
             console.log('Monster State has changed!', newState, monster);

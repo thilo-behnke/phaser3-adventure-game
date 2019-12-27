@@ -1,9 +1,10 @@
 import { MonsterState } from './MonsterState';
 import { DynamicGameObject } from '../../DynamicGameObject';
-import { MonsterObject } from '../../MonsterObject';
+import { MonsterNature, MonsterObject } from '../../MonsterObject';
 import { FollowingState } from './FollowingState';
 import { getClosestObj } from '../../../util/vector';
 import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
+import { FleeingState } from './FleeingState';
 
 export class IdleState implements MonsterState {
     enter = (monster: MonsterObject): void => {
@@ -21,7 +22,12 @@ export class IdleState implements MonsterState {
         if (preferredObj.isEmpty()) {
             return this;
         }
-        return new FollowingState(preferredObj.value);
+        if (monster.baseStats.nature === MonsterNature.AGGRESSIVE) {
+            return new FollowingState(preferredObj.value);
+        } else if (monster.baseStats.nature === MonsterNature.SHY) {
+            return new FleeingState(preferredObj.value);
+        }
+        return this;
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     exit = (monster: MonsterObject) => {

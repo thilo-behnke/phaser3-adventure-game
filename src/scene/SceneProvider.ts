@@ -217,7 +217,7 @@ export class SceneProvider {
         return Optional.of(tile);
     };
 
-    getTileVectorForPos = (pos: Vector2) => {
+    getTileVectorForPos = (pos: Vector2): Optional<TileVector> => {
         const tile = this.groundLayer.getTileAtWorldXY(pos.x, pos.y);
         return Optional.of(new TileVector(tile));
     };

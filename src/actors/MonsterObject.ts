@@ -19,6 +19,11 @@ export enum MonsterType {
 
 export const NUMBER_OF_MONSTERS = Object.keys(MonsterType).length;
 
+export enum MonsterNature {
+    AGGRESSIVE = 'AGGRESSIVE',
+    SHY = 'SHY',
+}
+
 export type MonsterStats = {
     // Fight stats.
     health: number;
@@ -26,6 +31,7 @@ export type MonsterStats = {
     agility: number;
     // Other.
     attentionRadius: number;
+    nature: MonsterNature;
 };
 
 @CollisionGroupDef(
@@ -118,7 +124,10 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
                 .dot(dir.clone())
         );
         // Increase the acceleration towards the goal if the the current direction is far away.
-        const newAcc = angleBetweenCurrentAndNewDir >= 0.5 ? dir.scale(100) : dir.scale(50);
+        const newAcc =
+            angleBetweenCurrentAndNewDir >= 0.5
+                ? dir.scale(this.baseStats.agility)
+                : dir.scale(this.baseStats.agility / 2);
         // TODO: It would be better to accelerate here instead of directly setting the velocity, however this looks/feels weird.
         this.sprite.setVelocity(newAcc.x, newAcc.y);
     };
