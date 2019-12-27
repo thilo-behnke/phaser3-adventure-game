@@ -11,6 +11,7 @@ import { CaughtMonsterStateMachine } from './state/monster/CaughtMonsterStateMac
 import { PathFinding } from '../ai/PathFinding';
 import { container } from 'tsyringe';
 import { GreedyPathFinding } from '../ai/GreedyPathFinding';
+import { GreedyMemorizedPathFinding } from '../ai/GreedyMemorizedPathFinding';
 
 export enum MonsterType {
     WOLF = 'WOLF',
@@ -46,7 +47,7 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
         this.stats = stats;
         this._attentionRadius = stats.attentionRadius;
 
-        this.pathFinding = container.resolve(GreedyPathFinding);
+        this.pathFinding = new GreedyMemorizedPathFinding();
     }
 
     get hp(): number {

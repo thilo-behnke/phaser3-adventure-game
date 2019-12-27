@@ -1,18 +1,19 @@
 import { PathFinding } from './PathFinding';
 import { MonsterObject } from '../actors/MonsterObject';
-import { injectable } from 'tsyringe';
+import { container } from 'tsyringe';
 import { SceneProvider } from '../scene/SceneProvider';
 import Vector2 = Phaser.Math.Vector2;
-import { sortBy } from 'lodash';
 
-@injectable()
 export class GreedyPathFinding implements PathFinding {
     private _intermediateGoal: Vector2 | null;
     // Instead of recalculating an intermediateGoal every frame, only do it every couple of them.
     private _intermediateCounter: number | null;
     INTERMEDIATE_MAX_COUNTER = 20;
+    private sceneProvider: SceneProvider;
 
-    constructor(private sceneProvider: SceneProvider) {}
+    constructor() {
+        this.sceneProvider = container.resolve(SceneProvider);
+    }
 
     get intermediateGoal(): Phaser.Math.Vector2 | null {
         return this._intermediateGoal;
@@ -35,7 +36,7 @@ export class GreedyPathFinding implements PathFinding {
 
     moveTo = (monster: MonsterObject, pos: Phaser.Math.Vector2) => {
         // If their are colliding goals in the way, the monster can't just go straight, but must evade the concerned tiles.
-        // TODO: Inefficient!
+        // TODO: Inefficient! At least filter duplicates.
         const tilesToGoal = [
             this.sceneProvider.getNextTileToGoal(monster.sprite.getTopLeft(), pos),
             this.sceneProvider.getNextTileToGoal(monster.sprite.getTopRight(), pos),

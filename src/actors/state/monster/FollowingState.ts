@@ -9,9 +9,11 @@ import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 import { container } from 'tsyringe';
 import { SceneProvider } from '../../../scene/SceneProvider';
 import Scene = Phaser.Scene;
+import { PathFinding } from '../../../ai/PathFinding';
 
 export class FollowingState implements MonsterState {
     private sceneProvider: SceneProvider;
+
     constructor(public following: BaseGameObject | null) {
         this.sceneProvider = container.resolve(SceneProvider);
     }

@@ -5,9 +5,11 @@ import Vector2 = Phaser.Math.Vector2;
 import { FollowingState } from './FollowingState';
 import { ObservingState } from './ObservingState';
 import { FollowingPlayerState } from './FollowingPlayerState';
+import { PathFinding } from '../../../ai/PathFinding';
 
 export abstract class IMonsterStateMachine {
     currentState: MonsterState;
+    protected pathFinding: PathFinding;
 
     abstract update: (time: number, monster: MonsterObject) => void;
 

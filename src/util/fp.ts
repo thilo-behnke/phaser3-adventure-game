@@ -28,3 +28,7 @@ export class Optional<T> {
         return this._value !== null ? callback(this.value) : false;
     }
 }
+
+export const not = (pred: (...predArgs: any[]) => boolean) => (...args: any[]) => {
+    return !pred(...args);
+};

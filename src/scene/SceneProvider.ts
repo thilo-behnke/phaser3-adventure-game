@@ -19,6 +19,7 @@ import { getFirstSegmentOfVector, segmentVector } from '../util/vector';
 import Tile = Phaser.Tilemaps.Tile;
 import Sprite = Phaser.Physics.Arcade.Sprite;
 import { tileCollider } from '../util/collision';
+import { TileVector } from '../global/TileVector';
 
 @singleton()
 export class SceneProvider {
@@ -94,6 +95,38 @@ export class SceneProvider {
         return tilePos;
     };
 
+    getAdjacentTileVectorsFromPos = (pos: Vector2, includeDiagonal = false) => {
+        const tileOpt = this.getTileForPos(pos);
+        if (tileOpt.isEmpty()) {
+            throw new Error(`No tile at position: ${pos}`);
+        }
+        const { x, y } = tileOpt.value;
+        // TODO: This should be transferable to a function call (cross product?).
+        const straightTilePositions = [
+            [x, y + 1],
+            [x, y - 1],
+            [x + 1, y],
+            [x - 1, y],
+        ];
+        const diagonalTilePositions = [
+            [x - 1, y + 1],
+            [x + 1, y - 1],
+            [x + 1, y + 1],
+            [x - 1, y - 1],
+        ];
+        const adjacentTilePositions = [
+            ...straightTilePositions,
+            ...(includeDiagonal ? diagonalTilePositions : []),
+        ]
+            .filter(([posX, posY]) => posX > 0 && posY > 0)
+            .map(([posX, posY]) => new Vector2(posX, posY));
+        return adjacentTilePositions
+            .map(this.getTileVectorForTilePos)
+            .filter(tile => !tile.isEmpty())
+            .map(tile => tile.value);
+    };
+
+    // TODO: Remove.
     getAdjacentTilesFromPos = (pos: Vector2, includeDiagonal = false) => {
         const tileOpt = this.getTileForPos(pos);
         if (tileOpt.isEmpty()) {
@@ -125,11 +158,23 @@ export class SceneProvider {
             .map(tile => tile.value);
     };
 
+    getTileVectorForTilePos = (tilePos: Vector2) => {
+        const tile = this.groundLayer.getTileAt(tilePos.x, tilePos.y);
+        return Optional.of(new TileVector(tile));
+    };
+
+    // TODO: Remove.
     getTileForTilePos = (tilePos: Vector2) => {
         const tile = this.groundLayer.getTileAt(tilePos.x, tilePos.y);
         return Optional.of(tile);
     };
 
+    getTileVectorForPos = (pos: Vector2) => {
+        const tile = this.groundLayer.getTileAtWorldXY(pos.x, pos.y);
+        return Optional.of(new TileVector(tile));
+    };
+
+    // TODO: Remove.
     getTileForPos = (pos: Vector2) => {
         const tile = this.groundLayer.getTileAtWorldXY(pos.x, pos.y);
         return Optional.of(tile);
@@ -141,6 +186,10 @@ export class SceneProvider {
             throw new Error(`No tile at pos ${pos}.`);
         }
         return new Vector2(tileOpt.value.x, tileOpt.value.y);
+    };
+
+    areOnSameTile = (objA: Vector2, objB: Vector2) => {
+        return this.getTilePosForPos(objA).equals(this.getTilePosForPos(objB));
     };
 
     isCollidingTileForPos = (pos: Vector2) => {
