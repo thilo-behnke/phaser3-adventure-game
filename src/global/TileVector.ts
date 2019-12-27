@@ -2,14 +2,26 @@ import Tile = Phaser.Tilemaps.Tile;
 import Vector2 = Phaser.Math.Vector2;
 
 export class TileVector {
-    private readonly _pos: Vector2;
+    private readonly _center: Vector2;
+    private readonly _topLeft: Vector2;
+    private readonly _topRight: Vector2;
+    private readonly _bottomLeft: Vector2;
+    private readonly _bottomRight: Vector2;
+
     private readonly _tilePos: Vector2;
 
     constructor(private tile: Tile) {
         // TODO: This works, but it would be better if the sprite would check its own height / width to properly navigate colliding tiles.
-        this._pos = new Vector2(
+        this._center = new Vector2(
             tile.pixelX + tile.baseWidth / 2,
             tile.pixelY + tile.baseHeight / 2
+        );
+        this._topLeft = new Vector2(tile.pixelX, tile.pixelY);
+        this._topRight = new Vector2(tile.pixelX + tile.baseWidth, tile.pixelY);
+        this._bottomLeft = new Vector2(tile.pixelX, tile.pixelY + tile.baseHeight);
+        this._bottomRight = new Vector2(
+            tile.pixelX + tile.baseWidth,
+            tile.pixelY + tile.baseHeight
         );
         this._tilePos = new Vector2(tile.x, tile.y);
     }
@@ -26,9 +38,26 @@ export class TileVector {
         return `${this.tilePos.x}/${this.tilePos.y}`;
     };
 
-    get pos(): Phaser.Math.Vector2 {
-        return this._pos;
+    get center(): Phaser.Math.Vector2 {
+        return this._center;
     }
+
+    get topLeft(): Phaser.Math.Vector2 {
+        return this._topLeft;
+    }
+
+    get topRight(): Phaser.Math.Vector2 {
+        return this._topRight;
+    }
+
+    get bottomLeft(): Phaser.Math.Vector2 {
+        return this._bottomLeft;
+    }
+
+    get bottomRight(): Phaser.Math.Vector2 {
+        return this._bottomRight;
+    }
+
     get tilePos(): Phaser.Math.Vector2 {
         return this._tilePos;
     }

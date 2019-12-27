@@ -81,6 +81,36 @@ export class SceneProvider {
         return this.getTileVectorForPos(getFirstSegmentOfVector(pos, direction)).value;
     };
 
+    private getSegmentsToGoal = (pos: Vector2, goal: Vector2): TileVector[] => {
+        const direction = goal.clone().subtract(pos);
+        return segmentVector(pos, direction)
+            .map(this.getTileVectorForPos)
+            .filter(val => !val.isEmpty())
+            .map(val => val.value);
+    };
+
+    getTilesToGoal = (start: Sprite | TileVector, goal: Vector2 | Sprite) => {
+        const tiles = [
+            ...this.getSegmentsToGoal(
+                start instanceof Sprite ? start.getTopLeft() : start.center,
+                goal instanceof Vector2 ? goal : goal.getTopLeft()
+            ),
+            ...this.getSegmentsToGoal(
+                start instanceof Sprite ? start.getTopRight() : start.topRight,
+                goal instanceof Vector2 ? goal : goal.getTopRight()
+            ),
+            ...this.getSegmentsToGoal(
+                start instanceof Sprite ? start.getBottomLeft() : start.bottomLeft,
+                goal instanceof Vector2 ? goal : goal.getBottomRight()
+            ),
+            ...this.getSegmentsToGoal(
+                start instanceof Sprite ? start.getBottomRight() : start.bottomRight,
+                goal instanceof Vector2 ? goal : goal.getBottomRight()
+            ),
+        ];
+        return [...TileVectorSet.from(tiles)];
+    };
+
     getNextTilesToGoal = (sprite: Sprite, goal: Vector2 | Sprite) => {
         const tiles = [
             this.getFirstSegmentToGoal(
@@ -101,15 +131,6 @@ export class SceneProvider {
             ),
         ];
         return [...TileVectorSet.from(tiles)];
-    };
-
-    getTilesToGoal = (pos: Vector2, goal: Vector2) => {
-        const direction = goal.clone().subtract(pos);
-        const vectorSegments = segmentVector(pos, direction);
-        return vectorSegments
-            .map(this.getTileForPos)
-            .filter(tile => !tile.isEmpty())
-            .map(tile => tile.value);
     };
 
     getTilesInDirection = (pos: Vector2, dir: Vector2) => {
