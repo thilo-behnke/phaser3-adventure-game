@@ -12,6 +12,7 @@ import { PathFinding } from '../ai/PathFinding';
 import { container } from 'tsyringe';
 import { GreedyPathFinding } from '../ai/GreedyPathFinding';
 import { GreedyMemorizedPathFinding } from '../ai/GreedyMemorizedPathFinding';
+import Sprite = Phaser.Physics.Arcade.Sprite;
 
 export enum MonsterType {
     WOLF = 'WOLF',
@@ -47,7 +48,7 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
         this.stats = stats;
         this._attentionRadius = stats.attentionRadius;
 
-        this.pathFinding = new GreedyMemorizedPathFinding();
+        this.pathFinding = new GreedyPathFinding();
     }
 
     get hp(): number {
@@ -94,8 +95,8 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
         return;
     };
 
-    moveTo = (pos: Vector2) => {
-        this.pathFinding.moveTo(this, pos);
+    moveTo = (goal: Vector2 | Sprite) => {
+        this.pathFinding.moveTo(this, goal);
     };
 
     accelerateTowards = (pos: Vector2): void => {

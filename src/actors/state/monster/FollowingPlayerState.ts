@@ -17,7 +17,7 @@ export class FollowingPlayerState implements MonsterState {
         if (isCloseTo(monster, this.player)) {
             monster.break();
         } else {
-            monster.accelerateTowards(this.player.sprite.getCenter());
+            monster.moveTo(this.player.sprite);
         }
         return this;
     };

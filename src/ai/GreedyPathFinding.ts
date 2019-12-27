@@ -3,6 +3,8 @@ import { MonsterObject } from '../actors/MonsterObject';
 import { container } from 'tsyringe';
 import { SceneProvider } from '../scene/SceneProvider';
 import Vector2 = Phaser.Math.Vector2;
+import Sprite = Phaser.Physics.Arcade.Sprite;
+import instance from 'tsyringe/dist/typings/dependency-container';
 
 export class GreedyPathFinding implements PathFinding {
     private _intermediateGoal: Vector2 | null;
@@ -34,18 +36,39 @@ export class GreedyPathFinding implements PathFinding {
         return current;
     }
 
-    moveTo = (monster: MonsterObject, pos: Phaser.Math.Vector2) => {
+    moveTo = (monster: MonsterObject, goal: Phaser.Math.Vector2 | Sprite) => {
+        const goalPos = goal instanceof Vector2 ? goal : goal.getCenter();
         // If their are colliding goals in the way, the monster can't just go straight, but must evade the concerned tiles.
         // TODO: Inefficient! At least filter duplicates.
-        const tilesToGoal = [
-            this.sceneProvider.getNextTileToGoal(monster.sprite.getTopLeft(), pos),
-            this.sceneProvider.getNextTileToGoal(monster.sprite.getTopRight(), pos),
-            this.sceneProvider.getNextTileToGoal(monster.sprite.getBottomLeft(), pos),
-            this.sceneProvider.getNextTileToGoal(monster.sprite.getBottomRight(), pos),
-        ];
+        const tilesToGoal =
+            goal instanceof Vector2
+                ? [
+                      this.sceneProvider.getNextTileToGoal(monster.sprite.getTopLeft(), goal),
+                      this.sceneProvider.getNextTileToGoal(monster.sprite.getTopRight(), goal),
+                      this.sceneProvider.getNextTileToGoal(monster.sprite.getBottomLeft(), goal),
+                      this.sceneProvider.getNextTileToGoal(monster.sprite.getBottomRight(), goal),
+                  ]
+                : [
+                      this.sceneProvider.getNextTileToGoal(
+                          monster.sprite.getTopLeft(),
+                          goal.getTopLeft()
+                      ),
+                      this.sceneProvider.getNextTileToGoal(
+                          monster.sprite.getTopRight(),
+                          goal.getTopRight()
+                      ),
+                      this.sceneProvider.getNextTileToGoal(
+                          monster.sprite.getBottomLeft(),
+                          goal.getBottomLeft()
+                      ),
+                      this.sceneProvider.getNextTileToGoal(
+                          monster.sprite.getBottomRight(),
+                          goal.getBottomRight()
+                      ),
+                  ];
         if (tilesToGoal.every(({ properties: { collides } }) => !collides)) {
             this.intermediateGoal = null;
-            monster.accelerateTowards(pos);
+            monster.accelerateTowards(goalPos);
         } else if (this.intermediateCounter > 0) {
             monster.accelerateTowards(this.intermediateGoal);
         } else {
@@ -54,13 +77,13 @@ export class GreedyPathFinding implements PathFinding {
                 .filter(({ properties: { collides } }) => !collides)
                 .map(tile => new Vector2(tile.pixelX, tile.pixelY));
             const closestTilePos = adjacentTiles.reduce((best, next) => {
-                const length = pos
+                const length = goalPos
                     .clone()
                     .subtract(next)
                     .length();
                 if (
                     length <
-                    pos
+                    goalPos
                         .clone()
                         .subtract(best)
                         .length()

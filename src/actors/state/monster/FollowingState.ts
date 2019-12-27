@@ -32,7 +32,7 @@ export class FollowingState implements MonsterState {
         if (isCloseTo(monster, this.following)) {
             monster.break();
         } else {
-            monster.moveTo(this.following.sprite.getCenter());
+            monster.moveTo(this.following.sprite);
         }
         return this;
     };
