@@ -4,7 +4,7 @@ import { MonsterObject } from '../../MonsterObject';
 import { FollowingState } from './FollowingState';
 import { Player } from '../../Player';
 import { GameObjectRegistry } from '../../../registry/GameObjectRegistry';
-import { ObservingState } from './ObservingState';
+import { WanderingState } from './WanderingState';
 import { container } from 'tsyringe';
 import { FollowingPlayerState } from './FollowingPlayerState';
 

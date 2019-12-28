@@ -9,7 +9,7 @@ import { IdleState } from './IdleState';
 import { container } from 'tsyringe';
 import { GameObjectRegistry } from '../../../registry/GameObjectRegistry';
 import { FollowingState } from './FollowingState';
-import { ObservingState } from './ObservingState';
+import { WanderingState } from './WanderingState';
 
 export class WildMonsterStateMachine extends IMonsterStateMachine {
     currentState: MonsterState;

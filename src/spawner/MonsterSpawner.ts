@@ -24,7 +24,7 @@ export class MonsterSpawner extends GameObjectSpawner {
     // TODO: Evaluate map, determine monster positions...
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     generateSpawns = (map: ExplorationMap): Array<[Point, BaseGameObject]> => {
-        return [549, 600].map(i => {
+        return [349, 600].map(i => {
             const rarity = i % 2 === 0 ? 20 : 10;
             const obj = this.monsterFactory.generateObject(rarity);
             return [new Point(i, i), obj];

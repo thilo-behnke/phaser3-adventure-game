@@ -5,6 +5,8 @@ import { FollowingState } from './FollowingState';
 import { getClosestObj } from '../../../util/vector';
 import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 import { FleeingState } from './FleeingState';
+import { getRandomNumber, getRandomNumberBetween } from '../../../util/random';
+import { WanderingState } from './WanderingState';
 
 export class IdleState implements MonsterState {
     enter = (monster: MonsterObject): void => {
@@ -15,6 +17,11 @@ export class IdleState implements MonsterState {
     update = (time: number, monster: MonsterObject, objs: DynamicGameObject[]): MonsterState => {
         // Don't do anything if there is nothing in the nearer area.
         if (!objs.length) {
+            // By chance enter wandering mode.
+            const randomNumber = getRandomNumberBetween(1000);
+            if (randomNumber % 500 === 0) {
+                return new WanderingState();
+            }
             return this;
         }
         // TODO: Evaluate objects, maybe most dangerous?

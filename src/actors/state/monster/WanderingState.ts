@@ -1,9 +1,9 @@
 import { MonsterState } from './MonsterState';
 import { DynamicGameObject } from '../../DynamicGameObject';
-import { MonsterObject } from '../../MonsterObject';
+import { MonsterNature, MonsterObject } from '../../MonsterObject';
 import { getClosestObj } from '../../../util/vector';
 import { FollowingState } from './FollowingState';
-import { getNumberBetween } from '../../../util/random';
+import { getRandomNumberBetween } from '../../../util/random';
 import { IdleState } from './IdleState';
 import { Subject } from 'rxjs';
 import { DebugService } from '../../../util/DebugService';
@@ -12,19 +12,18 @@ import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../shared/constants';
 import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 import Vector2 = Phaser.Math.Vector2;
 import { SceneProvider } from '../../../scene/SceneProvider';
+import { FleeingState } from './FleeingState';
 
-export class ObservingState implements MonsterState {
+export class WanderingState implements MonsterState {
     private OBSERVING_TIME_MS = 1500;
     public movingTo: Vector2 | undefined;
     private startedObserving = null;
-    // How long to observe.
-    private counter = 5;
 
     private debugSub: Subject<void>;
     private debugService: DebugService;
     private sceneProvider: SceneProvider;
 
-    constructor() {
+    constructor(private counter: number = 5) {
         this.debugService = container.resolve(DebugService);
         this.sceneProvider = container.resolve(SceneProvider);
     }
@@ -44,7 +43,11 @@ export class ObservingState implements MonsterState {
             if (preferredObj.isEmpty()) {
                 return this;
             }
-            return new FollowingState(preferredObj.value);
+            if (monster.baseStats.nature === MonsterNature.AGGRESSIVE) {
+                return new FollowingState(preferredObj.value);
+            } else if (monster.baseStats.nature === MonsterNature.SHY) {
+                return new FleeingState(preferredObj.value);
+            }
         }
         // Walk to a random point in the nearer area.
         // Wait for a bit before moving to the next point.
@@ -69,8 +72,8 @@ export class ObservingState implements MonsterState {
     };
 
     private getRandomPointToMoveTo = (monster: MonsterObject) => {
-        const radius = getNumberBetween(450, 90);
-        const distance = getNumberBetween(100, 200);
+        const radius = getRandomNumberBetween(450, 90);
+        const distance = getRandomNumberBetween(100, 200);
         // TODO: Don't allow point in colliding tile.
         const movingTo = monster.sprite
             .getCenter()
@@ -78,8 +81,8 @@ export class ObservingState implements MonsterState {
             .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance));
         // Don't allow point outside of screen.
         const movingToInsideScreen = new Vector2(
-            Math.max(0, Math.min(movingTo.x, SCREEN_WIDTH)),
-            Math.max(0, Math.min(movingTo.y, SCREEN_HEIGHT))
+            Math.max(0, Math.min(movingTo.x, SCREEN_WIDTH - 1)),
+            Math.max(0, Math.min(movingTo.y, SCREEN_HEIGHT - 1))
         );
         // TODO: This could create an endless loop.
         if (this.sceneProvider.isCollidingTileForPos(movingToInsideScreen)) {

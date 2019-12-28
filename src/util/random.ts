@@ -4,7 +4,11 @@ export const generateUUID = (): string => {
     return uuid();
 };
 
-export const getNumberBetween = (max: number, min = 1) => {
+export const getRandomNumber = () => {
+    return Math.random();
+};
+
+export const getRandomNumberBetween = (max: number, min = 1) => {
     const rand = Math.random();
-    return rand * (max - min) + min;
+    return Math.ceil(rand * (max - min) + min);
 };

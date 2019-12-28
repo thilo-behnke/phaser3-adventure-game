@@ -3,7 +3,7 @@ import { DynamicGameObject } from '../../DynamicGameObject';
 import { BaseGameObject } from '../../BaseGameObject';
 import { MonsterObject } from '../../MonsterObject';
 import { getClosestObj } from '../../../util/vector';
-import { ObservingState } from './ObservingState';
+import { WanderingState } from './WanderingState';
 import { isCloseTo } from '../../../util/collision';
 import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 import { container } from 'tsyringe';
@@ -25,7 +25,7 @@ export class FollowingState implements MonsterState {
     update = (time: number, monster: MonsterObject, objs: DynamicGameObject[]): MonsterState => {
         const closestObj = getClosestObj(monster, objs);
         if (closestObj.isEmpty()) {
-            return new ObservingState();
+            return new WanderingState();
         }
         this.following = closestObj.value;
         // Stop following when very close to the obj.

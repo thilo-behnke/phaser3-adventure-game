@@ -3,7 +3,7 @@ import { MonsterObject } from '../../MonsterObject';
 import { DynamicGameObject } from '../../DynamicGameObject';
 import Vector2 = Phaser.Math.Vector2;
 import { FollowingState } from './FollowingState';
-import { ObservingState } from './ObservingState';
+import { WanderingState } from './WanderingState';
 import { FollowingPlayerState } from './FollowingPlayerState';
 import { PathFinding } from '../../../ai/PathFinding';
 
@@ -15,7 +15,7 @@ export abstract class IMonsterStateMachine {
     isMovingTowardsPos = () => {
         if (this.currentState instanceof FollowingState) {
             return this.currentState.following.sprite.getCenter();
-        } else if (this.currentState instanceof ObservingState) {
+        } else if (this.currentState instanceof WanderingState) {
             return this.currentState.movingTo;
         } else if (this.currentState instanceof FollowingPlayerState) {
             return this.currentState.player.sprite.getCenter();
