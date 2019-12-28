@@ -8,3 +8,7 @@ export const cartesianProduct = (a: any[], b: any[], ...c: any[]) => {
     const fab = f(a, b);
     return cartesianProduct(fab, b2, c2);
 };
+
+export const isBetween = (n: number, a: number, b: number) => {
+    return n >= a && n <= b;
+};

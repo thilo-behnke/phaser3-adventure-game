@@ -13,6 +13,7 @@ import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 import Vector2 = Phaser.Math.Vector2;
 import { SceneProvider } from '../../../scene/SceneProvider';
 import { FleeingState } from './FleeingState';
+import { validatePosInMap } from '../../../util/map';
 
 export class WanderingState implements MonsterState {
     private OBSERVING_TIME_MS = 1500;
@@ -80,10 +81,7 @@ export class WanderingState implements MonsterState {
             .clone()
             .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance));
         // Don't allow point outside of screen.
-        const movingToInsideScreen = new Vector2(
-            Math.max(0, Math.min(movingTo.x, SCREEN_WIDTH - 1)),
-            Math.max(0, Math.min(movingTo.y, SCREEN_HEIGHT - 1))
-        );
+        const movingToInsideScreen = validatePosInMap(movingTo);
         // TODO: This could create an endless loop.
         if (this.sceneProvider.isCollidingTileForPos(movingToInsideScreen)) {
             console.debug('Monster randomly selected point in colliding tile...');

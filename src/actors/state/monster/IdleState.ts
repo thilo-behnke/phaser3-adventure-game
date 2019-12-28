@@ -5,7 +5,7 @@ import { FollowingState } from './FollowingState';
 import { getClosestObj } from '../../../util/vector';
 import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 import { FleeingState } from './FleeingState';
-import { getRandomNumber, getRandomNumberBetween } from '../../../util/random';
+import { getRandomNumberBetween } from '../../../util/random';
 import { WanderingState } from './WanderingState';
 
 export class IdleState implements MonsterState {

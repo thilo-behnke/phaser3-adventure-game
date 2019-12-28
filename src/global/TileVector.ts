@@ -90,6 +90,10 @@ export class TileVectorSet implements Set<TileVector> {
         this.tileVectors.set(value.toKey(), value);
     }
 
+    addAll = (tileVectors: TileVector[]) => {
+        tileVectors.forEach(tileVector => this.add(tileVector));
+    };
+
     clear(): void {
         this.tileVectors = new Map();
     }

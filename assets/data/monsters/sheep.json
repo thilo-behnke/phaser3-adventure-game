@@ -4,7 +4,7 @@
     "health": 100,
     "strength": 100,
     "agility": 50,
-    "attentionRadius": 200,
+    "attentionRadius": 100,
     "nature": "SHY"
   },
   "rarity": 10

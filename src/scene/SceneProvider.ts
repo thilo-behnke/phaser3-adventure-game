@@ -15,6 +15,8 @@ import Vector2 = Phaser.Math.Vector2;
 import StaticTilemapLayer = Phaser.Tilemaps.StaticTilemapLayer;
 import Tile = Phaser.Tilemaps.Tile;
 import Sprite = Phaser.Physics.Arcade.Sprite;
+import { isValidTile } from '../util/map';
+import Rectangle = Phaser.Geom.Rectangle;
 
 @singleton()
 export class SceneProvider {
@@ -166,6 +168,7 @@ export class SceneProvider {
             ...straightTilePositions,
             ...(includeDiagonal ? diagonalTilePositions : []),
         ]
+            .filter(([posX, posY]) => isValidTile(posX, posY))
             .filter(([posX, posY]) => posX > 0 && posY > 0)
             .map(([posX, posY]) => new Vector2(posX, posY));
         return adjacentTilePositions

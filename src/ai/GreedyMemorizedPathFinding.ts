@@ -62,7 +62,7 @@ export class GreedyMemorizedPathFinding implements PathFinding {
             return lengthA - lengthB;
         });
         const newIntermediateGoal = tilesSortedByPreference[0];
-        tilesSortedByPreference.forEach(rest => visited.add(rest));
+        visited.addAll(tilesSortedByPreference);
         return this.greedyFindGoal(
             goalTile,
             newIntermediateGoal,

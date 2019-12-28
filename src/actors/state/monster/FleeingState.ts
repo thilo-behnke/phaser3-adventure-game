@@ -9,6 +9,7 @@ import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 import { IdleState } from './IdleState';
 import { getClosestObj } from '../../../util/vector';
 import Vector2 = Phaser.Math.Vector2;
+import { validatePosInMap } from '../../../util/map';
 
 export class FleeingState implements MonsterState {
     private sceneProvider: SceneProvider;
@@ -39,9 +40,11 @@ export class FleeingState implements MonsterState {
             .getCenter()
             .clone()
             .add(fromMonster);
-        let fleeingFromPosTile = this.sceneProvider.getTileVectorForPos(fleeingFromPos);
+        const fleeingFromPosTileInsideScreen = validatePosInMap(fleeingFromPos);
+        let fleeingFromPosTile = this.sceneProvider.getTileVectorForPos(
+            fleeingFromPosTileInsideScreen
+        );
         // When running into a colliding tile, try to find a free way.
-        // TODO: This does not cover when the monster would come out of bounds!
         while (fleeingFromPosTile.value.collides()) {
             fleeingFromPos = monster.sprite
                 .getCenter()
