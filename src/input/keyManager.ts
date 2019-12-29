@@ -2,7 +2,7 @@ import Key = Phaser.Input.Keyboard.Key;
 import Scene = Phaser.Scene;
 import { injectable, singleton } from 'tsyringe';
 import { SceneProvider } from '../scene/SceneProvider';
-import { Direction } from '../global/direction';
+import { Direction } from '../shared/direction';
 
 export enum Action {
     LEFT = 'LEFT',

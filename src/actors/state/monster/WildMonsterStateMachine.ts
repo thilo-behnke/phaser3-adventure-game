@@ -10,21 +10,29 @@ import { container } from 'tsyringe';
 import { GameObjectRegistry } from '../../../registry/GameObjectRegistry';
 import { FollowingState } from './FollowingState';
 import { WanderingState } from './WanderingState';
+import { DyingState } from './DyingState';
 
 export class WildMonsterStateMachine extends IMonsterStateMachine {
     currentState: MonsterState;
+    private registry: GameObjectRegistry;
 
     constructor(monster: MonsterObject) {
         super();
+        this.registry = container.resolve(GameObjectRegistry);
         console.log('state machine created for monster', monster);
         this.currentState = new IdleState();
         this.currentState.enter(monster);
     }
 
     update = (time: number, monster: MonsterObject): void => {
-        const registry = container.resolve(GameObjectRegistry);
+        if (monster.dying && !(this.currentState instanceof DyingState)) {
+            this.currentState.exit(monster);
+            this.currentState = new DyingState();
+            this.currentState.enter(monster);
+        }
+
         const monsterPos = monster.sprite.getCenter();
-        const objs = [registry.getPlayer(), ...registry.getMonsters()]
+        const objs = [this.registry.getPlayer(), ...this.registry.getMonsters()]
             .filter(({ id }) => id !== monster.id)
             .filter(({ sprite }) => {
                 const objPos = sprite.getCenter();

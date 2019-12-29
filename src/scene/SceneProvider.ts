@@ -4,7 +4,7 @@ import { CollisionType } from '../collision/CollisionGroup';
 import { Color, TILE_SIZE } from '../shared/constants';
 import { Optional } from '../util/fp';
 import { getFirstSegmentOfVector, segmentVector } from '../util/vector';
-import { TileVector, TileVectorSet } from '../global/TileVector';
+import { TileVector, TileVectorSet } from '../shared/TileVector';
 import Scene = Phaser.Scene;
 
 import Point = Phaser.Geom.Point;

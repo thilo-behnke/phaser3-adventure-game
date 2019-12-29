@@ -1,7 +1,7 @@
 import { PathFinding } from './PathFinding';
 import { MonsterObject } from '../actors/MonsterObject';
 import { SceneProvider } from '../scene/SceneProvider';
-import { TileVector, TileVectorSet } from '../global/TileVector';
+import { TileVector, TileVectorSet } from '../shared/TileVector';
 import { container } from 'tsyringe';
 import Vector2 = Phaser.Math.Vector2;
 import Sprite = Phaser.Physics.Arcade.Sprite;

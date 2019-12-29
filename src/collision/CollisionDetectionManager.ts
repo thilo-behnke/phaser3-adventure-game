@@ -1,6 +1,6 @@
-import { injectable, singleton } from 'tsyringe';
+import { singleton } from 'tsyringe';
 
-import { COLLISION_GROUP_PROP, COLLISION_TYPE_PROP } from './CollisionGroupDef';
+import { COLLISION_GROUP_PROP } from './CollisionGroupDef';
 import { SceneProvider } from '../scene/SceneProvider';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import { BaseGameObject } from '../actors/BaseGameObject';
@@ -8,15 +8,16 @@ import { ItemObject } from '../actors/items/ItemObject';
 import { Player } from '../actors/Player';
 import { MonsterObject } from '../actors/MonsterObject';
 import { tileCollider } from '../util/collision';
-import { noop, from } from 'rxjs';
 import { CollisionGroup, CollisionType } from './CollisionGroup';
+import { Updatable } from '../shared/Updatable';
 import Sprite = Phaser.Physics.Arcade.Sprite;
 import Tile = Phaser.Tilemaps.Tile;
-import { delay, tap, switchMap } from 'rxjs/internal/operators';
 
 @singleton()
-@injectable()
-export class CollisionDetectionManager {
+export class CollisionDetectionManager implements Updatable {
+    private collisionRegistry: Array<[string, string]> = [];
+    private tempCollisionRegistry: Array<[string, string]> = [];
+
     constructor(
         private sceneProvider: SceneProvider,
         private gameObjectRegistry: GameObjectRegistry
@@ -25,6 +26,14 @@ export class CollisionDetectionManager {
     private getCallback = (obj: BaseGameObject, obj2: BaseGameObject): Function => {
         if (obj instanceof ItemObject && obj2 instanceof Player) {
             return obj.handlePlayerCollision;
+        } else if (
+            (obj instanceof MonsterObject && obj2 instanceof MonsterObject) ||
+            obj2 instanceof Player
+        ) {
+            return (objA, objB) => {
+                this.tempCollisionRegistry.push([objA.name, objB.name]);
+                return (() => {})();
+            };
         }
         return console.log;
     };
@@ -62,5 +71,17 @@ export class CollisionDetectionManager {
             // Set collision with world bounds.
             gameObject.sprite.setCollideWorldBounds(true);
         }
+    };
+
+    update = (time: number, delta: number) => {
+        this.collisionRegistry = [...this.tempCollisionRegistry];
+        this.tempCollisionRegistry = [];
+    };
+
+    isCollidingWith = (objA: BaseGameObject, objB: BaseGameObject) => {
+        const objACollisions = this.collisionRegistry
+            .filter(([a, b]) => objA.id === a || objA.id === b)
+            .map(([a, b]) => (a === objA.id ? b : a));
+        return !!objACollisions?.some(objFromRegistry => objB.id === objFromRegistry);
     };
 }

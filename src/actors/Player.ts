@@ -2,11 +2,12 @@ import { DynamicGameObject } from './DynamicGameObject';
 import { PlayerStateMachine } from './state/PlayerStateMachine';
 import { KeyManager } from '../input/keyManager';
 import { container } from 'tsyringe';
-import { Direction } from '../global/direction';
+import { Direction } from '../shared/direction';
 import Point = Phaser.Geom.Point;
 import Scene = Phaser.Scene;
+import { CanDie } from '../shared/CanDie';
 
-export class Player extends DynamicGameObject {
+export class Player extends DynamicGameObject implements CanDie {
     protected _type = 'player';
     protected acceleration = new Point(100, 100);
     protected stateMachine: PlayerStateMachine;
@@ -20,9 +21,11 @@ export class Player extends DynamicGameObject {
             .setMaxVelocity(100, 100)
             .setFriction(100, 100)
             .setDrag(50, 50)
+            .setImmovable(true)
             .setName('player');
         player._sprite.setCollideWorldBounds(true);
         player.onAddToScene();
+        player._stats = { health: 100000, agility: 200, strength: 1, attackRange: 10 };
         return player;
     };
 
@@ -77,5 +80,9 @@ export class Player extends DynamicGameObject {
                 ? this.acceleration.y
                 : 0;
         this.sprite.setAcceleration(accX, accY);
+    };
+
+    onDeath = () => {
+        return;
     };
 }

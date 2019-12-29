@@ -14,6 +14,7 @@ import Vector2 = Phaser.Math.Vector2;
 import { SceneProvider } from '../../../scene/SceneProvider';
 import { FleeingState } from './FleeingState';
 import { validatePosInMap } from '../../../util/map';
+import { Optional } from '../../../util/fp';
 
 export class WanderingState implements MonsterState {
     private OBSERVING_TIME_MS = 1500;
@@ -40,7 +41,7 @@ export class WanderingState implements MonsterState {
         }
         if (objs.length) {
             // TODO: Evaluate objects, maybe most dangerous?
-            const preferredObj = getClosestObj(monster, objs);
+            const preferredObj = getClosestObj(monster, objs) as Optional<DynamicGameObject>;
             if (preferredObj.isEmpty()) {
                 return this;
             }

@@ -5,7 +5,7 @@ import { SceneProvider } from '../scene/SceneProvider';
 import Vector2 = Phaser.Math.Vector2;
 import Sprite = Phaser.Physics.Arcade.Sprite;
 import instance from 'tsyringe/dist/typings/dependency-container';
-import { TileVector } from '../global/TileVector';
+import { TileVector } from '../shared/TileVector';
 
 export class GreedyPathFinding implements PathFinding {
     private _intermediateGoal: Vector2 | null;

@@ -1,9 +1,10 @@
 {
   "type": "WOLF",
   "baseStats": {
-    "health": 100,
+    "health": 1000,
     "strength": 100,
     "agility": 100,
+    "attackRange": 50,
     "attentionRadius": 100,
     "nature": "AGGRESSIVE"
   },

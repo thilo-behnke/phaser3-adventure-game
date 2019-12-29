@@ -1,4 +1,4 @@
-import { Direction } from '../global/direction';
+import { Direction } from '../shared/direction';
 import Sprite = Phaser.Physics.Arcade.Sprite;
 import Point = Phaser.Geom.Point;
 

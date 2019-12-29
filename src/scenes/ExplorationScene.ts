@@ -20,9 +20,11 @@ import { DebugService } from '../util/DebugService';
 import Point = Phaser.Geom.Point;
 import { tileCollider } from '../util/collision';
 import Tile = Phaser.Tilemaps.Tile;
+import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
 
 export default class ExplorationScene extends Phaser.Scene {
     private debugService: DebugService;
+    private collisionDetectionManager: CollisionDetectionManager;
     private player: Player;
     private keyManager: KeyManager;
     private gameObjectRegistry: GameObjectRegistry;
@@ -81,6 +83,7 @@ export default class ExplorationScene extends Phaser.Scene {
 
         this.debugService = container.resolve(DebugService);
         this.gameObjectRegistry = container.resolve(GameObjectRegistry);
+        this.collisionDetectionManager = container.resolve(CollisionDetectionManager);
         this.keyManager = container.resolve(KeyManager);
         this.player = Player.create(this, new Point(100, 100));
         this.gameObjectRegistry.setPlayer(this.player);
@@ -116,6 +119,8 @@ export default class ExplorationScene extends Phaser.Scene {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update(time: number, delta: number): void {
+        // Update collision registry.
+        this.collisionDetectionManager.update(time, delta);
         // Update player position.
         this.player.update(delta);
         this.gameObjectRegistry.getObjects().forEach(obj => obj.update(time));

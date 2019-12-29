@@ -28,7 +28,6 @@ export const tileCollider = (objA: BaseGameObject, tile: Tile) => {
             (spriteTop <= tileBottom && spriteTop >= tileTop))
     ) {
         objA.sprite.setVelocityX(0);
-        console.log('Colliding right!');
     } else if (
         // Collision left
         spriteLeft >= tileRight &&
@@ -36,7 +35,6 @@ export const tileCollider = (objA: BaseGameObject, tile: Tile) => {
             (spriteTop <= tileBottom && spriteTop >= tileTop))
     ) {
         objA.sprite.setVelocityX(0);
-        console.log('Colliding left!');
     } else if (
         // Collision bottom.
         spriteBottom <= tileTop &&
@@ -44,7 +42,6 @@ export const tileCollider = (objA: BaseGameObject, tile: Tile) => {
             (spriteRight <= tileRight && spriteRight >= tileRight))
     ) {
         objA.sprite.setVelocityY(0);
-        console.log('Colliding bottom!');
     } else if (
         // Collision top.
         spriteTop >= tileTop &&
@@ -52,6 +49,5 @@ export const tileCollider = (objA: BaseGameObject, tile: Tile) => {
             (spriteRight <= tileRight && spriteRight >= tileRight))
     ) {
         objA.sprite.setVelocityY(0);
-        console.log('Colliding top!');
     }
 };

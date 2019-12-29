@@ -1,6 +1,6 @@
 import { CollisionGroupDef } from '../collision/CollisionGroupDef';
 import { CollisionGroup, CollisionType } from '../collision/CollisionGroup';
-import { DynamicGameObject } from './DynamicGameObject';
+import { BaseStats, DynamicGameObject } from './DynamicGameObject';
 import { WildMonsterStateMachine } from './state/monster/WildMonsterStateMachine';
 import { IMonsterStateMachine } from './state/monster/IMonsterStateMachine';
 import { Debuggable, DebugInformation, DebugShape } from './Debuggable';
@@ -9,8 +9,11 @@ import { FollowingState } from './state/monster/FollowingState';
 import { CaughtMonsterStateMachine } from './state/monster/CaughtMonsterStateMachine';
 import { PathFinding } from '../ai/PathFinding';
 import { GreedyMemorizedPathFinding } from '../ai/GreedyMemorizedPathFinding';
+import { DynamicObjectAnimation } from './anim/DynamicObjectAnimation';
 import Vector2 = Phaser.Math.Vector2;
 import Sprite = Phaser.Physics.Arcade.Sprite;
+import { CanDie } from '../shared/CanDie';
+import { AttackingState } from './state/monster/AttackingState';
 
 export enum MonsterType {
     WOLF = 'WOLF',
@@ -24,12 +27,7 @@ export enum MonsterNature {
     SHY = 'SHY',
 }
 
-export type MonsterStats = {
-    // Fight stats.
-    health: number;
-    strength: number;
-    agility: number;
-    // Other.
+export type MonsterStats = BaseStats & {
     attentionRadius: number;
     nature: MonsterNature;
 };
@@ -38,10 +36,8 @@ export type MonsterStats = {
     [CollisionGroup.PLAYER, CollisionType.COLLIDE],
     [CollisionGroup.MONSTER, CollisionType.COLLIDE]
 )
-export class MonsterObject extends DynamicGameObject implements Debuggable {
-    private _hp: number;
+export class MonsterObject extends DynamicGameObject implements CanDie, Debuggable {
     protected _type: MonsterType;
-    private stats: MonsterStats;
 
     private _caught = false;
     private _attentionRadius: number;
@@ -52,23 +48,11 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
     constructor(id: string, stats: MonsterStats, type: MonsterType) {
         super(id);
         this._type = type;
-        this.stats = stats;
+        this._stats = stats;
+        this._hp = stats.health;
         this._attentionRadius = stats.attentionRadius;
 
         this.pathFinding = new GreedyMemorizedPathFinding();
-    }
-
-    get hp(): number {
-        return this._hp;
-    }
-
-    set hp(value: number) {
-        // Don't allow hp below 0 or above max hp.
-        const correctedHp = Math.max(0, Math.min(value, this.stats.health));
-        if (correctedHp === 0) {
-            this.onDeath();
-        }
-        this._hp = correctedHp;
     }
 
     get caught(): boolean {
@@ -111,6 +95,10 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
         this.pathFinding.reset();
     };
 
+    get baseStats() {
+        return super.baseStats as MonsterStats;
+    }
+
     accelerateTowards = (pos: Vector2): void => {
         // TODO: This works, but it would be better if the sprite would check its own height / width to properly navigate colliding tiles.
         const dir = pos
@@ -136,10 +124,6 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
         this.sprite.setVelocity(0, 0);
     };
 
-    get baseStats() {
-        return this.stats;
-    }
-
     onDeath = (): void => {
         return;
     };
@@ -153,6 +137,18 @@ export class MonsterObject extends DynamicGameObject implements Debuggable {
                     radius: () => this._attentionRadius,
                     color: () =>
                         this.stateMachine.currentState instanceof FollowingState && !this.caught
+                            ? Color.RED
+                            : Color.BLACK,
+                    alpha: () => 0.2,
+                },
+            ],
+            [
+                DebugShape.CIRCLE,
+                {
+                    center: () => this.sprite.getCenter(),
+                    radius: () => this.baseStats.attackRange,
+                    color: () =>
+                        this.stateMachine.currentState instanceof AttackingState && !this.caught
                             ? Color.RED
                             : Color.BLACK,
                     alpha: () => 0.2,

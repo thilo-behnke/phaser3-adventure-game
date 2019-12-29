@@ -7,6 +7,7 @@ import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 import { FleeingState } from './FleeingState';
 import { getRandomNumberBetween } from '../../../util/random';
 import { WanderingState } from './WanderingState';
+import { Optional } from '../../../util/fp';
 
 export class IdleState implements MonsterState {
     enter = (monster: MonsterObject): void => {
@@ -25,7 +26,7 @@ export class IdleState implements MonsterState {
             return this;
         }
         // TODO: Evaluate objects, maybe most dangerous?
-        const preferredObj = getClosestObj(monster, objs);
+        const preferredObj = getClosestObj(monster, objs) as Optional<DynamicGameObject>;
         if (preferredObj.isEmpty()) {
             return this;
         }

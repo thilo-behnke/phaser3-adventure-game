@@ -4,7 +4,7 @@ import { State } from './State';
 import { IdleState } from './player/IdleState';
 import { BaseGameObject } from '../BaseGameObject';
 import { Player } from '../Player';
-import { Direction } from '../../global/direction';
+import { Direction } from '../../shared/direction';
 import { Optional } from '../../util/fp';
 
 export class PlayerStateMachine implements IPlayerStateMachine {

@@ -1,9 +1,10 @@
 {
   "type": "SHEEP",
   "baseStats": {
-    "health": 100,
-    "strength": 100,
+    "health": 300,
+    "strength": 50,
     "agility": 50,
+    "attackRange": 20,
     "attentionRadius": 100,
     "nature": "SHY"
   },
