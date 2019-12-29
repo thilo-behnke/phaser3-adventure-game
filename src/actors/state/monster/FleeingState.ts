@@ -28,7 +28,7 @@ export class FleeingState implements MonsterState {
     update = (time: number, monster: MonsterObject, objs: DynamicGameObject[]) => {
         // Run from the closest obj.
         const closestObj = getClosestObj(monster, objs);
-        if (!closestObj) {
+        if (closestObj.isEmpty()) {
             return new IdleState();
         }
         this.fleeingFrom = closestObj.value;
