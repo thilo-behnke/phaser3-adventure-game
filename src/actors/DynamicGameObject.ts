@@ -2,6 +2,7 @@ import { BaseGameObject } from './BaseGameObject';
 import { IPlayerStateMachine } from './state/player/IPlayerStateMachine';
 import { Direction } from '../shared/direction';
 import { DynamicObjectAnimation } from './anim/DynamicObjectAnimation';
+import { getAngle } from '../util/map';
 
 export type BaseStats = {
     health: number;

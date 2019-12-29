@@ -61,8 +61,6 @@ export class Player extends DynamicGameObject implements CanDie {
     update = (delta: number): void => {
         const keyManager = container.resolve(KeyManager);
         this.stateMachine.update(delta, this, keyManager.getActions());
-
-        return;
     };
 
     public accelerate = (directions: { x: Direction | null; y: Direction | null }): void => {

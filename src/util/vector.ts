@@ -42,3 +42,7 @@ export const segmentVector = (start: Vector2, vector: Vector2) => {
         return start.clone().add(normalizedVector.clone().scale(scale));
     });
 };
+
+export const getAngle = (direction: Vector2) => {
+    return Math.atan(direction.y / direction.x) * 180;
+};

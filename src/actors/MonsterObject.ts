@@ -83,7 +83,6 @@ export class MonsterObject extends DynamicGameObject implements CanDie, Debuggab
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update = (time: number): void => {
         this.stateMachine.update(time, this);
-        return;
     };
 
     moveTo = (goal: Vector2 | Sprite) => {

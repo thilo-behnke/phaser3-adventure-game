@@ -6,6 +6,10 @@ import { BaseGameObject } from '../BaseGameObject';
 import { Player } from '../Player';
 import { Direction } from '../../shared/direction';
 import { Optional } from '../../util/fp';
+import Body = Phaser.Physics.Arcade.Body;
+import { Vector } from 'phaser/types/matter';
+import Vector2 = Phaser.Math.Vector2;
+import { getAngle } from '../../util/vector';
 
 export class PlayerStateMachine implements IPlayerStateMachine {
     currentState: State<ActiveActions>;
@@ -27,11 +31,16 @@ export class PlayerStateMachine implements IPlayerStateMachine {
 
     update = (time: number, obj: Player, actions: ActiveActions): void => {
         const newState = this.currentState.update(time, obj, actions);
-        const direction = this.extractDirectionFromActions(actions);
-        // Only set the direction if an direction action exists. Otherwise the direction does not change.
+        const direction = obj.sprite.body.velocity
+            .clone()
+            .multiply(new Vector2(1, -1))
+            .normalize();
+        const angle = getAngle(direction);
+        console.log({ angle });
+        /*        // Only set the direction if an direction action exists. Otherwise the direction does not change.
         if (!direction.isEmpty()) {
             obj.direction = direction.value;
-        }
+        }*/
         if (newState !== this.currentState) {
             console.log('Player State has changed!', newState, obj);
             this.currentState = newState;
