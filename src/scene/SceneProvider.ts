@@ -101,29 +101,18 @@ export class SceneProvider {
         const { x: endX, y: endY } = goal instanceof Vector2 ? goal : goal.getCenter();
         const line = new Line(startX, startY, endX, endY);
         const tiles = this.groundLayer.getTilesWithinShape(line).map(TileVector.from);
-        return [...TileVectorSet.from(tiles)];
+        return tiles;
     };
 
-    getNextTilesToGoal = (sprite: Sprite, goal: Vector2 | Sprite) => {
-        const tiles = [
-            this.getFirstSegmentToGoal(
-                sprite.getTopLeft(),
-                goal instanceof Vector2 ? goal : goal.getTopLeft()
-            ),
-            this.getFirstSegmentToGoal(
-                sprite.getTopRight(),
-                goal instanceof Vector2 ? goal : goal.getTopRight()
-            ),
-            this.getFirstSegmentToGoal(
-                sprite.getBottomLeft(),
-                goal instanceof Vector2 ? goal : goal.getBottomRight()
-            ),
-            this.getFirstSegmentToGoal(
-                sprite.getBottomRight(),
-                goal instanceof Vector2 ? goal : goal.getBottomRight()
-            ),
-        ];
-        return [...TileVectorSet.from(tiles)];
+    getNextTilesToGoal = (start: Sprite | TileVector, goal: Vector2 | Sprite) => {
+        const { x: startX, y: startY } = start instanceof Sprite ? start.getCenter() : start.center;
+        const { x: endX, y: endY } = (goal instanceof Vector2 ? goal : goal.getCenter())
+            .clone()
+            .normalize()
+            .scale(TILE_SIZE);
+        const line = new Line(startX, startY, endX, endY);
+        const tiles = this.groundLayer.getTilesWithinShape(line).map(TileVector.from);
+        return tiles;
     };
 
     getTilesInDirection = (pos: Vector2, dir: Vector2) => {

@@ -53,9 +53,13 @@ export class GreedyMemorizedPathFinding implements PathFinding {
             return this.greedyFindGoal(goalTile, newCurrentPos, newPath, visited);
         }*/
 
+        const includeDiagonal = this.sceneProvider
+            .getNextTilesToGoal(currentPos, goalTile.center)
+            .every(t => !t.collides());
+
         // Else observe the adjacent tiles and try to find the goal from choosing the next best tile.
         const adjacentTiles = this.sceneProvider
-            .getAdjacentTileVectorsFromPos(currentPos.center, true)
+            .getAdjacentTileVectorsFromPos(currentPos.center, includeDiagonal)
             // Don't revisit visited tiles.
             .filter((tile: TileVector) => !visited.has(tile) && !tile.collides());
         // If there are no more new adjacent tiles to move to, stop.
