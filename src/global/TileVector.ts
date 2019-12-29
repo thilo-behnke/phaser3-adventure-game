@@ -25,6 +25,10 @@ export class TileVector {
         this._tilePos = new Vector2(tile.x, tile.y);
     }
 
+    static from = (tile: Tile) => {
+        return new TileVector(tile);
+    };
+
     collides = () => {
         return !!this.tile.properties.collides;
     };

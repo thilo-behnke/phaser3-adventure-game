@@ -17,6 +17,7 @@ import Tile = Phaser.Tilemaps.Tile;
 import Sprite = Phaser.Physics.Arcade.Sprite;
 import { isValidTile } from '../util/map';
 import Rectangle = Phaser.Geom.Rectangle;
+import Line = Phaser.Geom.Line;
 
 @singleton()
 export class SceneProvider {
@@ -96,24 +97,10 @@ export class SceneProvider {
     };
 
     getTilesToGoal = (start: Sprite | TileVector, goal: Vector2 | Sprite) => {
-        const tiles = [
-            ...this.getSegmentsToGoal(
-                start instanceof Sprite ? start.getTopLeft() : start.center,
-                goal instanceof Vector2 ? goal : goal.getTopLeft()
-            ),
-            ...this.getSegmentsToGoal(
-                start instanceof Sprite ? start.getTopRight() : start.topRight,
-                goal instanceof Vector2 ? goal : goal.getTopRight()
-            ),
-            ...this.getSegmentsToGoal(
-                start instanceof Sprite ? start.getBottomLeft() : start.bottomLeft,
-                goal instanceof Vector2 ? goal : goal.getBottomRight()
-            ),
-            ...this.getSegmentsToGoal(
-                start instanceof Sprite ? start.getBottomRight() : start.bottomRight,
-                goal instanceof Vector2 ? goal : goal.getBottomRight()
-            ),
-        ];
+        const { x: startX, y: startY } = start instanceof Sprite ? start.getCenter() : start.center;
+        const { x: endX, y: endY } = goal instanceof Vector2 ? goal : goal.getCenter();
+        const line = new Line(startX, startY, endX, endY);
+        const tiles = this.groundLayer.getTilesWithinShape(line).map(TileVector.from);
         return [...TileVectorSet.from(tiles)];
     };
 

@@ -37,9 +37,21 @@ export class GreedyMemorizedPathFinding implements PathFinding {
             return [true, path];
         }
         const tilesToGoal = this.sceneProvider.getTilesToGoal(currentPos, goalTile.center);
-        if (tilesToGoal.every((tileVector: TileVector) => !tileVector.collides())) {
+        const nextCollidingTileIndex = tilesToGoal.findIndex((tileVector: TileVector) =>
+            tileVector.collides()
+        );
+        // Only do path finding if the next tile is obstructed, otherwise just head straight to the goal.
+        if (nextCollidingTileIndex === -1) {
             return [true, [...path, goalTile]];
         }
+        // TODO: Does not work as expected because of missing ordering of goal tiles.
+        /*        else if (nextCollidingTileIndex !== 0) {
+            // Shortcut.
+            const newCurrentPos = tilesToGoal[nextCollidingTileIndex - 1];
+            const newPath = [...path, newCurrentPos];
+            visited.add(newCurrentPos);
+            return this.greedyFindGoal(goalTile, newCurrentPos, newPath, visited);
+        }*/
 
         // Else observe the adjacent tiles and try to find the goal from choosing the next best tile.
         const adjacentTiles = this.sceneProvider
