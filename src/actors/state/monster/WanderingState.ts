@@ -6,7 +6,7 @@ import { FollowingState } from './FollowingState';
 import { getRandomNumberBetween } from '../../../util/random';
 import { IdleState } from './IdleState';
 import { Subject } from 'rxjs';
-import { DebugService } from '../../../util/DebugService';
+import { UIService } from '../../../util/UIService';
 import { container } from 'tsyringe';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../shared/constants';
 import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
@@ -22,11 +22,11 @@ export class WanderingState implements MonsterState {
     private startedObserving = null;
 
     private debugSub: Subject<void>;
-    private debugService: DebugService;
+    private debugService: UIService;
     private sceneProvider: SceneProvider;
 
     constructor(private counter: number = 5) {
-        this.debugService = container.resolve(DebugService);
+        this.debugService = container.resolve(UIService);
         this.sceneProvider = container.resolve(SceneProvider);
     }
 

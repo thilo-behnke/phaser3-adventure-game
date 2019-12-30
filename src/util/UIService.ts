@@ -8,16 +8,18 @@ import { cartesianProduct } from './general';
 import { distinctUntilChanged, map, tap } from 'rxjs/internal/operators';
 import { MonsterObject } from '../actors/MonsterObject';
 import {
-    CircleDebugInfo,
-    DebugInformation,
-    DebugShape,
-    VectorDebugInfo,
-} from '../actors/Debuggable';
+    CircleUiInfo,
+    RectUIInfo,
+    UiInformation,
+    UiMode,
+    UiShape,
+    VectorUiInfo,
+} from '../actors/UiComponent';
+import { BaseGameObject } from '../actors/BaseGameObject';
+import { DynamicGameObject } from '../actors/DynamicGameObject';
 import Vector2 = Phaser.Math.Vector2;
 import Shape = Phaser.GameObjects.Shape;
 import Text = Phaser.GameObjects.Text;
-import { BaseGameObject } from '../actors/BaseGameObject';
-import get = Reflect.get;
 
 enum DebugElement {
     PLAYER_POS = 'PLAYER_POS',
@@ -25,7 +27,7 @@ enum DebugElement {
 }
 
 @injectable()
-export class DebugService {
+export class UIService {
     private updatingElements: {
         [key: string]: { shape: Shape | Text; update: Function; destroy: Function };
     } = {};
@@ -127,7 +129,7 @@ export class DebugService {
         };
     }
 
-    enableObjectDebugInformation() {
+    configureUiInformation(mode = UiMode.ALL) {
         this.gameObjectRegistry
             .subscribeObjects()
             .pipe(
@@ -149,8 +151,9 @@ export class DebugService {
                         (monster, id) => monster.id === id
                     ).map(obj => {
                         const debugInfoItems = obj
-                            .drawDebugInformation()
-                            .map(debugInfo => this.translateDebugInformation(debugInfo));
+                            .getUiInformation()
+                            .filter(([, , itemMode]) => mode === UiMode.ALL || itemMode === mode)
+                            .map(this.translateDebugInformation);
                         return debugInfoItems.map((item, index) => [
                             `${obj.id}--debug--${index}`,
                             item,
@@ -165,10 +168,10 @@ export class DebugService {
             .subscribe();
     }
 
-    private translateDebugInformation = (debugInformation: DebugInformation) => {
+    private translateDebugInformation = (debugInformation: UiInformation) => {
         const [type, info] = debugInformation;
-        if (type === DebugShape.CIRCLE) {
-            const typeInfo = info as CircleDebugInfo;
+        if (type === UiShape.CIRCLE) {
+            const typeInfo = info as CircleUiInfo;
             // TODO: This will create issues when the sprite is removed from the scene.
             const circle = this.drawCircle(
                 typeInfo.center(),
@@ -186,8 +189,8 @@ export class DebugService {
                 },
                 destroy: () => circle.destroy(),
             };
-        } else if (type === DebugShape.VECTOR) {
-            const typeInfo = info as VectorDebugInfo;
+        } else if (type === UiShape.VECTOR) {
+            const typeInfo = info as VectorUiInfo;
             const vector = this.drawVector(typeInfo.start(), typeInfo.end());
             return {
                 shape: vector,
@@ -198,6 +201,34 @@ export class DebugService {
                 },
                 destroy: () => vector.destroy(),
             };
+        } else if (type === UiShape.RECT) {
+            const typeInfo = info as RectUIInfo;
+            const rect = this.drawRect(
+                typeInfo
+                    .start()
+                    .clone()
+                    .add(new Vector2(typeInfo.baseWidth() / 2, typeInfo.height() / 2)),
+                typeInfo.width(),
+                typeInfo.height(),
+                typeInfo.color(),
+                typeInfo.alpha()
+            );
+            return {
+                shape: rect,
+                update: () => {
+                    const { x: startX, y: startY } = typeInfo
+                        .start()
+                        .clone()
+                        .add(new Vector2(typeInfo.baseWidth() / 2, typeInfo.height() / 2));
+                    rect.setX(startX);
+                    rect.setY(startY);
+                    rect.width = typeInfo.width();
+                    rect.height = typeInfo.height();
+                },
+                destroy: () => rect.destroy(),
+            };
+        } else {
+            throw new Error(`Unknown UiShape: ${type}`);
         }
     };
 
@@ -225,6 +256,24 @@ export class DebugService {
     drawVector(from: Vector2, to: Vector2) {
         const vector = this.sceneProvider.addVector(from, to);
         return vector;
+    }
+
+    drawRect(start: Vector2, width: number, height: number, color: Color, alpha: number) {
+        return this.sceneProvider.addRect(start.x, start.y, width, height, color, alpha);
+    }
+
+    drawHealthBar(obj: DynamicGameObject) {
+        const start = obj.sprite.getTopLeft();
+
+        const frame = this.sceneProvider.addRect(
+            start.x,
+            start.y - 20,
+            obj.sprite.width,
+            10,
+            Color.GREY,
+            1
+        );
+        return this.createDestructor(frame);
     }
 
     private createDestructor = (...shapes: Shape[]) => {

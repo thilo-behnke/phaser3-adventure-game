@@ -18,6 +18,8 @@ import Sprite = Phaser.Physics.Arcade.Sprite;
 import { isValidTile } from '../util/map';
 import Rectangle = Phaser.Geom.Rectangle;
 import Line = Phaser.Geom.Line;
+import { Player } from '../actors/Player';
+import Circle = Phaser.Geom.Circle;
 
 @singleton()
 export class SceneProvider {
@@ -262,5 +264,9 @@ export class SceneProvider {
 
     addGrid = (width: number, height: number, gridHor: number, gridVer: number) => {
         return this.scene.add.grid(0, 0, width, height, gridHor, gridVer);
+    };
+
+    addRect = (x: number, y: number, w: number, h: number, c: Color, a: number) => {
+        return this.scene.add.rectangle(x, y, w, h, c, a);
     };
 }

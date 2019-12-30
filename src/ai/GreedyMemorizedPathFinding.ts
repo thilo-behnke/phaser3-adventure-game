@@ -7,13 +7,13 @@ import Vector2 = Phaser.Math.Vector2;
 import Sprite = Phaser.Physics.Arcade.Sprite;
 import { TILE_SIZE } from '../shared/constants';
 import { Subject } from 'rxjs';
-import { DebugService } from '../util/DebugService';
+import { UIService } from '../util/UIService';
 
 export class GreedyMemorizedPathFinding implements PathFinding {
     private intermediateGoals: TileVector[] | null = null;
     private currentIntermediateGoal: number | null;
     private sceneProvider: SceneProvider;
-    private debugService: DebugService;
+    private debugService: UIService;
 
     private debugSubject: Subject<void>;
 
@@ -22,7 +22,7 @@ export class GreedyMemorizedPathFinding implements PathFinding {
 
     constructor() {
         this.sceneProvider = container.resolve(SceneProvider);
-        this.debugService = container.resolve(DebugService);
+        this.debugService = container.resolve(UIService);
     }
 
     private greedyFindGoal = (

@@ -16,14 +16,14 @@ import { ItemSpawner } from '../spawner/ItemSpawner';
 import { ExplorationMap } from '../map/ExplorationMap';
 import { Inventory } from '../inventory/Inventory';
 import { InventoryUi } from '../inventory/InventoryUi';
-import { DebugService } from '../util/DebugService';
+import { UIService } from '../util/UIService';
 import Point = Phaser.Geom.Point;
 import { tileCollider } from '../util/collision';
 import Tile = Phaser.Tilemaps.Tile;
 import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
 
 export default class ExplorationScene extends Phaser.Scene {
-    private debugService: DebugService;
+    private uiService: UIService;
     private collisionDetectionManager: CollisionDetectionManager;
     private player: Player;
     private keyManager: KeyManager;
@@ -81,7 +81,7 @@ export default class ExplorationScene extends Phaser.Scene {
         this.sceneProvider = container.resolve(SceneProvider);
         this.sceneProvider.initialize(this, groundLayer);
 
-        this.debugService = container.resolve(DebugService);
+        this.uiService = container.resolve(UIService);
         this.gameObjectRegistry = container.resolve(GameObjectRegistry);
         this.collisionDetectionManager = container.resolve(CollisionDetectionManager);
         this.keyManager = container.resolve(KeyManager);
@@ -110,11 +110,11 @@ export default class ExplorationScene extends Phaser.Scene {
         // Initialize Controls
         this.keyManager.assignAction(Action.INVENTORY, () => this.inventoryUi.toggle());
         // Debugging.
-        this.debugService.showGrid(true);
-        this.debugService.showPlayerPos();
+        this.uiService.showGrid(true);
+        this.uiService.showPlayerPos();
         const monster = this.gameObjectRegistry.getObjects()[0];
-        this.debugService.showObjectPos(monster.id);
-        this.debugService.enableObjectDebugInformation();
+        this.uiService.showObjectPos(monster.id);
+        this.uiService.configureUiInformation();
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -124,6 +124,6 @@ export default class ExplorationScene extends Phaser.Scene {
         // Update player position.
         this.player.update(delta);
         this.gameObjectRegistry.getObjects().forEach(obj => obj.update(time));
-        this.debugService.update();
+        this.uiService.update();
     }
 }

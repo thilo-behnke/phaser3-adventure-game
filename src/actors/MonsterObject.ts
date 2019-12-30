@@ -3,17 +3,16 @@ import { CollisionGroup, CollisionType } from '../collision/CollisionGroup';
 import { BaseStats, DynamicGameObject } from './DynamicGameObject';
 import { WildMonsterStateMachine } from './state/monster/WildMonsterStateMachine';
 import { IMonsterStateMachine } from './state/monster/IMonsterStateMachine';
-import { Debuggable, DebugInformation, DebugShape } from './Debuggable';
+import { UiComponent, UiInformation, UiMode, UiShape } from './UiComponent';
 import { Color } from '../shared/constants';
 import { FollowingState } from './state/monster/FollowingState';
 import { CaughtMonsterStateMachine } from './state/monster/CaughtMonsterStateMachine';
 import { PathFinding } from '../ai/PathFinding';
 import { GreedyMemorizedPathFinding } from '../ai/GreedyMemorizedPathFinding';
-import { DynamicObjectAnimation } from './anim/DynamicObjectAnimation';
-import Vector2 = Phaser.Math.Vector2;
-import Sprite = Phaser.Physics.Arcade.Sprite;
 import { CanDie } from '../shared/CanDie';
 import { AttackingState } from './state/monster/AttackingState';
+import Vector2 = Phaser.Math.Vector2;
+import Sprite = Phaser.Physics.Arcade.Sprite;
 
 export enum MonsterType {
     WOLF = 'WOLF',
@@ -36,7 +35,7 @@ export type MonsterStats = BaseStats & {
     [CollisionGroup.PLAYER, CollisionType.COLLIDE],
     [CollisionGroup.MONSTER, CollisionType.COLLIDE]
 )
-export class MonsterObject extends DynamicGameObject implements CanDie, Debuggable {
+export class MonsterObject extends DynamicGameObject implements CanDie, UiComponent {
     protected _type: MonsterType;
 
     private _caught = false;
@@ -129,10 +128,43 @@ export class MonsterObject extends DynamicGameObject implements CanDie, Debuggab
         return;
     };
 
-    drawDebugInformation = (): DebugInformation[] => {
+    getUiInformation = (): UiInformation[] => {
         return [
+            // Health bar.
             [
-                DebugShape.CIRCLE,
+                UiShape.RECT,
+                {
+                    start: () =>
+                        this.sprite
+                            .getTopLeft()
+                            .clone()
+                            .add(new Vector2(0, -16)),
+                    baseWidth: () => this.sprite.width,
+                    width: () => this.sprite.width,
+                    height: () => 6,
+                    color: () => Color.GREY,
+                    alpha: () => 1,
+                },
+                UiMode.ALL,
+            ],
+            [
+                UiShape.RECT,
+                {
+                    start: () =>
+                        this.sprite
+                            .getTopLeft()
+                            .clone()
+                            .add(new Vector2(0, -15)),
+                    baseWidth: () => this.sprite.width,
+                    width: () => (this.hp / this.baseStats.health) * (this.sprite.width - 4),
+                    height: () => 4,
+                    color: () => Color.RED,
+                    alpha: () => 1,
+                },
+                UiMode.ALL,
+            ],
+            [
+                UiShape.CIRCLE,
                 {
                     center: () => this.sprite.getCenter(),
                     radius: () => this._attentionRadius,
@@ -142,9 +174,10 @@ export class MonsterObject extends DynamicGameObject implements CanDie, Debuggab
                             : Color.BLACK,
                     alpha: () => 0.2,
                 },
+                UiMode.DEBUG,
             ],
             [
-                DebugShape.CIRCLE,
+                UiShape.CIRCLE,
                 {
                     center: () => this.sprite.getCenter(),
                     radius: () => this.baseStats.attackRange,
@@ -154,13 +187,15 @@ export class MonsterObject extends DynamicGameObject implements CanDie, Debuggab
                             : Color.BLACK,
                     alpha: () => 0.2,
                 },
+                UiMode.DEBUG,
             ],
             [
-                DebugShape.VECTOR,
+                UiShape.VECTOR,
                 {
                     start: () => this.sprite.getCenter(),
                     end: () => this.stateMachine.isMovingTowardsPos() || this.sprite.getCenter(),
                 },
+                UiMode.DEBUG,
             ],
         ];
     };
