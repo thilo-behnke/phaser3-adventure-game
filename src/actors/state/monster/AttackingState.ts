@@ -9,6 +9,8 @@ import { Optional } from '../../../util/fp';
 import { FollowingState } from './FollowingState';
 
 export class AttackingState implements MonsterState {
+    private lastAttack: number;
+
     constructor(private attacking: DynamicGameObject) {}
 
     enter = (monster: MonsterObject) => {
@@ -35,7 +37,14 @@ export class AttackingState implements MonsterState {
             return new FollowingState(closestObj.value);
         }
         this.attacking = closestObj.value;
-        monster.attack(this.attacking);
+        // TODO: Do we need an in game clock? Because time would go by faster on slow frame rates.
+        if (
+            !this.lastAttack ||
+            Date.now() - this.lastAttack > 2000 / (monster.baseStats.agility / 50)
+        ) {
+            monster.attack(this.attacking);
+            this.lastAttack = Date.now();
+        }
         return this;
     };
 }
