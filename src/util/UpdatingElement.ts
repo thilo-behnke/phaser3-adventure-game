@@ -44,7 +44,7 @@ export class CircleUpdatingElement implements UpdatingElement<Arc> {
     };
 
     update = () => {
-        if (this.uiInfo.hide && !this.uiInfo.hide()) {
+        if (this.uiInfo.hide && this.uiInfo.hide()) {
             return;
         }
         if (!this.shape) {
@@ -75,7 +75,7 @@ export class VectorUpdatingElement implements UpdatingElement<Line> {
     };
 
     update = () => {
-        if (this.uiInfo.hide && !this.uiInfo.hide()) {
+        if (this.uiInfo.hide && this.uiInfo.hide()) {
             return;
         }
         if (!this.shape) {
@@ -116,7 +116,7 @@ export class RectUpdatingElement implements UpdatingElement<Rectangle> {
     };
 
     update = () => {
-        if (this.uiInfo.hide && !this.uiInfo.hide()) {
+        if (this.uiInfo.hide && this.uiInfo.hide()) {
             return;
         }
         if (!this.shape) {
@@ -147,7 +147,7 @@ export class TextUpdatingElement implements UpdatingElement<Text> {
     }
 
     initialize = () => {
-        const text = this.sceneProvider.addText(
+        this.shape = this.sceneProvider.addText(
             this.typeInfo.pos().x,
             this.typeInfo.pos().y,
             this.typeInfo.text(),
@@ -156,7 +156,7 @@ export class TextUpdatingElement implements UpdatingElement<Text> {
         );
         if (this.uiInfo.tween) {
             const tweenDef = getTweenByName(this.uiInfo.tween as AvailableTweens);
-            this.sceneProvider.addTween(tweenDef(text));
+            this.sceneProvider.addTween(tweenDef(this.shape));
         }
     };
 
@@ -164,7 +164,7 @@ export class TextUpdatingElement implements UpdatingElement<Text> {
         if (this.uiInfo.tween) {
             return;
         }
-        if (this.uiInfo.hide && !this.uiInfo.hide()) {
+        if (this.uiInfo.hide && this.uiInfo.hide()) {
             return;
         }
         if (!this.shape) {

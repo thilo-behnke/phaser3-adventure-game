@@ -91,7 +91,7 @@ export class UIService {
     private showPosUpdatingTextElement = (name: string, pos: () => Vector2) => {
         const typeInfo = {
             pos: () => {
-                return;
+                return new Vector2(0, 0);
             },
             text: () => {
                 return `${name} - x: ${pos().x.toFixed(2)}, y: ${pos().y.toFixed(2)}`;
@@ -107,12 +107,12 @@ export class UIService {
     };
 
     showPlayerPos() {
-        const playerSprite = this.gameObjectRegistry.getPlayer().sprite;
+        const player = this.gameObjectRegistry.getPlayer();
         /*        const playerPosText = this.sceneProvider.addText(0, 0, newText, Color.WHITE, 16);*/
         this.updatingElements[DebugElement.PLAYER_POS] = this.showPosUpdatingTextElement(
             'Player',
             // TODO: This does not reload the player sprite information once it is ready (get it from the registry?).
-            () => playerSprite.getCenter()
+            () => player.sprite.getTopLeft()
         );
     }
 
