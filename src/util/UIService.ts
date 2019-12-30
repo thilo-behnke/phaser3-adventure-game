@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe';
 import { SceneProvider } from '../scene/SceneProvider';
-import { Subject } from 'rxjs';
+import { noop, Subject } from 'rxjs';
 import { differenceWith, flatten, fromPairs, range, size } from 'lodash';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import { Color, SCREEN_HEIGHT, SCREEN_WIDTH } from '../shared/constants';
@@ -10,6 +10,7 @@ import { MonsterObject } from '../actors/MonsterObject';
 import {
     CircleUiInfo,
     RectUIInfo,
+    TextUiInfo,
     UiInformation,
     UiMode,
     UiShape,
@@ -20,6 +21,7 @@ import { DynamicGameObject } from '../actors/DynamicGameObject';
 import Vector2 = Phaser.Math.Vector2;
 import Shape = Phaser.GameObjects.Shape;
 import Text = Phaser.GameObjects.Text;
+import { AvailableTweens, getTweenByName } from './tween';
 
 enum DebugElement {
     PLAYER_POS = 'PLAYER_POS',
@@ -152,7 +154,9 @@ export class UIService {
                     ).map(obj => {
                         const debugInfoItems = obj
                             .getUiInformation()
-                            .filter(([, , itemMode]) => mode === UiMode.ALL || itemMode === mode)
+                            .filter(
+                                ({ mode: itemMode }) => mode === UiMode.ALL || itemMode === mode
+                            )
                             .map(this.translateDebugInformation);
                         return debugInfoItems.map((item, index) => [
                             `${obj.id}--debug--${index}`,
@@ -169,7 +173,7 @@ export class UIService {
     }
 
     private translateDebugInformation = (debugInformation: UiInformation) => {
-        const [type, info] = debugInformation;
+        const { type, info, tween } = debugInformation;
         if (type === UiShape.CIRCLE) {
             const typeInfo = info as CircleUiInfo;
             // TODO: This will create issues when the sprite is removed from the scene.
@@ -227,6 +231,26 @@ export class UIService {
                 },
                 destroy: () => rect.destroy(),
             };
+        } else if (type === UiShape.TEXT) {
+            const typeInfo = info as TextUiInfo;
+            const text = this.drawText(typeInfo.pos().clone(), typeInfo.text(), Color.RED, 10);
+            if (tween) {
+                const tweenDef = getTweenByName(tween as AvailableTweens);
+                this.sceneProvider.addTween(tweenDef(text));
+            }
+            const update = !tween
+                ? () => {
+                      const { x: startX, y: startY } = typeInfo.pos();
+                      text.setX(startX);
+                      text.setY(startY);
+                      text.setText(typeInfo.text());
+                  }
+                : noop;
+            return {
+                shape: text,
+                update,
+                destroy: () => text.destroy(),
+            };
         } else {
             throw new Error(`Unknown UiShape: ${type}`);
         }
@@ -260,6 +284,10 @@ export class UIService {
 
     drawRect(start: Vector2, width: number, height: number, color: Color, alpha: number) {
         return this.sceneProvider.addRect(start.x, start.y, width, height, color, alpha);
+    }
+
+    drawText(start: Vector2, text: string, fontColor: Color, fontSize: number) {
+        return this.sceneProvider.addText(start.x, start.y, text, fontColor, fontSize);
     }
 
     drawHealthBar(obj: DynamicGameObject) {

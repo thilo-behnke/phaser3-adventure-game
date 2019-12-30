@@ -20,6 +20,7 @@ import Rectangle = Phaser.Geom.Rectangle;
 import Line = Phaser.Geom.Line;
 import { Player } from '../actors/Player';
 import Circle = Phaser.Geom.Circle;
+import TweenBuilderConfig = Phaser.Types.Tweens.TweenBuilderConfig;
 
 @singleton()
 export class SceneProvider {
@@ -268,5 +269,9 @@ export class SceneProvider {
 
     addRect = (x: number, y: number, w: number, h: number, c: Color, a: number) => {
         return this.scene.add.rectangle(x, y, w, h, c, a);
+    };
+
+    addTween = (config: TweenBuilderConfig) => {
+        return this.scene.add.tween(config);
     };
 }

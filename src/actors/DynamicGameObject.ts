@@ -16,6 +16,7 @@ export abstract class DynamicGameObject extends BaseGameObject {
     protected _direction = Direction.DOWN;
     protected _activeAnim: DynamicObjectAnimation;
     protected _hp: number;
+    private _damageReceived: number | null;
     protected _dying = false;
 
     get direction(): Direction {
@@ -37,13 +38,23 @@ export abstract class DynamicGameObject extends BaseGameObject {
         this._dying = value;
     }
 
+    get damageReceived(): number | null {
+        return this._damageReceived;
+    }
+
+    set damageReceived(value: number | null) {
+        this._damageReceived = value;
+    }
+
     get hp(): number {
         return this._hp;
     }
 
     set hp(value: number) {
         // Don't allow hp below 0 or above max hp.
-        const correctedHp = Math.max(0, Math.min(value, this.baseStats.health));
+        const correctedDamage = Math.min(value, this.baseStats.health);
+        const correctedHp = Math.max(0, correctedDamage);
+        this.damageReceived = correctedDamage;
         if (correctedHp === 0) {
             this.dying = true;
         }

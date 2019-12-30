@@ -131,9 +131,9 @@ export class MonsterObject extends DynamicGameObject implements CanDie, UiCompon
     getUiInformation = (): UiInformation[] => {
         return [
             // Health bar.
-            [
-                UiShape.RECT,
-                {
+            {
+                type: UiShape.RECT,
+                info: {
                     start: () =>
                         this.sprite
                             .getTopLeft()
@@ -145,11 +145,11 @@ export class MonsterObject extends DynamicGameObject implements CanDie, UiCompon
                     color: () => Color.GREY,
                     alpha: () => 1,
                 },
-                UiMode.ALL,
-            ],
-            [
-                UiShape.RECT,
-                {
+                mode: UiMode.ALL,
+            },
+            {
+                type: UiShape.RECT,
+                info: {
                     start: () =>
                         this.sprite
                             .getTopLeft()
@@ -161,11 +161,23 @@ export class MonsterObject extends DynamicGameObject implements CanDie, UiCompon
                     color: () => Color.RED,
                     alpha: () => 1,
                 },
-                UiMode.ALL,
-            ],
-            [
-                UiShape.CIRCLE,
-                {
+                mode: UiMode.ALL,
+            },
+            // Damage dealt.
+            this.damageReceived
+                ? {
+                      type: UiShape.TEXT,
+                      info: {
+                          pos: this.sprite.getTopRight(),
+                          text: this.damageReceived.toString(),
+                      },
+                      mode: UiMode.ALL,
+                      tween: 'FADE_OUT_TOP',
+                  }
+                : null,
+            {
+                type: UiShape.CIRCLE,
+                info: {
                     center: () => this.sprite.getCenter(),
                     radius: () => this._attentionRadius,
                     color: () =>
@@ -174,11 +186,11 @@ export class MonsterObject extends DynamicGameObject implements CanDie, UiCompon
                             : Color.BLACK,
                     alpha: () => 0.2,
                 },
-                UiMode.DEBUG,
-            ],
-            [
-                UiShape.CIRCLE,
-                {
+                mode: UiMode.DEBUG,
+            },
+            {
+                type: UiShape.CIRCLE,
+                info: {
                     center: () => this.sprite.getCenter(),
                     radius: () => this.baseStats.attackRange,
                     color: () =>
@@ -187,16 +199,16 @@ export class MonsterObject extends DynamicGameObject implements CanDie, UiCompon
                             : Color.BLACK,
                     alpha: () => 0.2,
                 },
-                UiMode.DEBUG,
-            ],
-            [
-                UiShape.VECTOR,
-                {
+                mode: UiMode.DEBUG,
+            },
+            {
+                type: UiShape.VECTOR,
+                info: {
                     start: () => this.sprite.getCenter(),
                     end: () => this.stateMachine.isMovingTowardsPos() || this.sprite.getCenter(),
                 },
-                UiMode.DEBUG,
-            ],
-        ];
+                mode: UiMode.DEBUG,
+            },
+        ].filter(Boolean) as UiInformation[];
     };
 }

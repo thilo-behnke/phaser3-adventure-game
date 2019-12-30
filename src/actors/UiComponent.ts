@@ -1,10 +1,12 @@
 import Vector2 = Phaser.Math.Vector2;
 import { Color } from '../shared/constants';
+import TweenBuilderConfig = Phaser.Types.Tweens.TweenBuilderConfig;
 
 export enum UiShape {
     CIRCLE = 'CIRCLE',
     VECTOR = 'VECTOR',
     RECT = 'RECT',
+    TEXT = 'TEXT',
 }
 
 export type CircleUiInfo = {
@@ -24,15 +26,21 @@ export type RectUIInfo = {
     alpha: () => number;
 };
 
+export type TextUiInfo = {
+    pos: () => Vector2;
+    text: () => string;
+};
+
 export enum UiMode {
     ALL = 'ALL',
     DEBUG = 'DEBUG',
 }
 
 export type UiInformation =
-    | [UiShape.CIRCLE, CircleUiInfo, UiMode]
-    | [UiShape.VECTOR, VectorUiInfo, UiMode]
-    | [UiShape.RECT, RectUIInfo, UiMode];
+    | { type: UiShape.CIRCLE; info: CircleUiInfo; mode: UiMode; tween?: string }
+    | { type: UiShape.VECTOR; info: VectorUiInfo; mode: UiMode; tween?: string }
+    | { type: UiShape.RECT; info: RectUIInfo; mode: UiMode; tween?: string }
+    | { type: UiShape.TEXT; info: TextUiInfo; mode: UiMode; tween?: string };
 
 export interface UiComponent {
     getUiInformation: () => UiInformation[];
