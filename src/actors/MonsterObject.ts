@@ -164,17 +164,16 @@ export class MonsterObject extends DynamicGameObject implements CanDie, UiCompon
                 mode: UiMode.ALL,
             },
             // Damage dealt.
-            this.damageReceived
-                ? {
-                      type: UiShape.TEXT,
-                      info: {
-                          pos: this.sprite.getTopRight(),
-                          text: this.damageReceived.toString(),
-                      },
-                      mode: UiMode.ALL,
-                      tween: 'FADE_OUT_TOP',
-                  }
-                : null,
+            {
+                type: UiShape.TEXT,
+                info: {
+                    pos: () => this.sprite.getTopRight(),
+                    text: () => this.damageReceived.toString(),
+                },
+                mode: UiMode.ALL,
+                tween: 'FADE_OUT_TOP',
+                hide: () => this.damageReceived === null,
+            },
             {
                 type: UiShape.CIRCLE,
                 info: {

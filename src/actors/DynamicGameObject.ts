@@ -16,7 +16,7 @@ export abstract class DynamicGameObject extends BaseGameObject {
     protected _direction = Direction.DOWN;
     protected _activeAnim: DynamicObjectAnimation;
     protected _hp: number;
-    private _damageReceived: number | null;
+    private _damageReceived: number | null = null;
     protected _dying = false;
 
     get direction(): Direction {

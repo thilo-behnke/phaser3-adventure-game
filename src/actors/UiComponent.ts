@@ -37,10 +37,22 @@ export enum UiMode {
 }
 
 export type UiInformation =
-    | { type: UiShape.CIRCLE; info: CircleUiInfo; mode: UiMode; tween?: string }
-    | { type: UiShape.VECTOR; info: VectorUiInfo; mode: UiMode; tween?: string }
-    | { type: UiShape.RECT; info: RectUIInfo; mode: UiMode; tween?: string }
-    | { type: UiShape.TEXT; info: TextUiInfo; mode: UiMode; tween?: string };
+    | {
+          type: UiShape.CIRCLE;
+          info: CircleUiInfo;
+          mode: UiMode;
+          tween?: string;
+          hide?: () => boolean;
+      }
+    | {
+          type: UiShape.VECTOR;
+          info: VectorUiInfo;
+          mode: UiMode;
+          tween?: string;
+          hide?: () => boolean;
+      }
+    | { type: UiShape.RECT; info: RectUIInfo; mode: UiMode; tween?: string; hide?: () => boolean }
+    | { type: UiShape.TEXT; info: TextUiInfo; mode: UiMode; tween?: string; hide?: () => boolean };
 
 export interface UiComponent {
     getUiInformation: () => UiInformation[];

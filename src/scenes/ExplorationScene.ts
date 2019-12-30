@@ -113,7 +113,7 @@ export default class ExplorationScene extends Phaser.Scene {
         this.uiService.showGrid();
         this.uiService.showPlayerPos();
         const monster = this.gameObjectRegistry.getObjects()[0];
-        this.uiService.showObjectPos(monster.id);
+        /*        this.uiService.showObjectPos(monster.id);*/
         this.uiService.configureUiInformation();
     }
 

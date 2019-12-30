@@ -22,6 +22,13 @@ import Vector2 = Phaser.Math.Vector2;
 import Shape = Phaser.GameObjects.Shape;
 import Text = Phaser.GameObjects.Text;
 import { AvailableTweens, getTweenByName } from './tween';
+import {
+    CircleUpdatingElement,
+    RectUpdatingElement,
+    TextUpdatingElement,
+    UpdatingElement,
+    VectorUpdatingElement,
+} from './UpdatingElement';
 
 enum DebugElement {
     PLAYER_POS = 'PLAYER_POS',
@@ -31,7 +38,7 @@ enum DebugElement {
 @injectable()
 export class UIService {
     private updatingElements: {
-        [key: string]: { shape: Shape | Text; update: Function; destroy: Function };
+        [key: string]: UpdatingElement<Shape | Text>;
     } = {};
 
     constructor(
@@ -40,7 +47,9 @@ export class UIService {
     ) {}
 
     update() {
-        Object.values(this.updatingElements).forEach(({ update }) => update());
+        Object.values(this.updatingElements).forEach(({ update }) => {
+            update();
+        });
     }
 
     showGrid(showTileCoordinates = false) {
@@ -79,25 +88,35 @@ export class UIService {
         }
     }
 
-    showPlayerPos() {
-        const playerPos = this.gameObjectRegistry.getPlayer().sprite.getCenter();
-        const newText = `Player - x: ${playerPos.x.toFixed(2)}, y: ${playerPos.y.toFixed(2)}`;
-        const playerPosText = this.sceneProvider.addText(0, 0, newText, Color.WHITE, 16);
-        this.updatingElements[DebugElement.PLAYER_POS] = {
-            shape: playerPosText,
-            update: () => {
-                const playerPos = this.gameObjectRegistry.getPlayer().sprite.getCenter();
-                const newText = `Player - x: ${playerPos.x.toFixed(2)}, y: ${playerPos.y.toFixed(
-                    2
-                )}`;
-                playerPosText.setText(newText);
-                playerPosText.updateText();
+    private showPosUpdatingTextElement = (name: string, pos: () => Vector2) => {
+        const typeInfo = {
+            pos: () => {
+                return;
             },
-            destroy: () => playerPosText.destroy(),
-        };
+            text: () => {
+                return `${name} - x: ${pos().x.toFixed(2)}, y: ${pos().y.toFixed(2)}`;
+            },
+        } as TextUiInfo;
+        const uiInfo = {
+            type: UiShape.TEXT,
+            info: typeInfo,
+            mode: UiMode.DEBUG,
+            hide: () => !pos,
+        } as UiInformation;
+        return new TextUpdatingElement(typeInfo, uiInfo);
+    };
+
+    showPlayerPos() {
+        const playerSprite = this.gameObjectRegistry.getPlayer().sprite;
+        /*        const playerPosText = this.sceneProvider.addText(0, 0, newText, Color.WHITE, 16);*/
+        this.updatingElements[DebugElement.PLAYER_POS] = this.showPosUpdatingTextElement(
+            'Player',
+            // TODO: This does not reload the player sprite information once it is ready (get it from the registry?).
+            () => playerSprite.getCenter()
+        );
     }
 
-    showObjectPos(id: string) {
+    /*    showObjectPos(id: string) {
         const getObj = () => {
             return this.gameObjectRegistry.getById(id);
         };
@@ -129,7 +148,7 @@ export class UIService {
             },
             destroy: () => objPosText.destroy(),
         };
-    }
+    }*/
 
     configureUiInformation(mode = UiMode.ALL) {
         this.gameObjectRegistry
@@ -157,7 +176,7 @@ export class UIService {
                             .filter(
                                 ({ mode: itemMode }) => mode === UiMode.ALL || itemMode === mode
                             )
-                            .map(this.translateDebugInformation);
+                            .map(this.translateUiComponent);
                         return debugInfoItems.map((item, index) => [
                             `${obj.id}--debug--${index}`,
                             item,
@@ -172,85 +191,20 @@ export class UIService {
             .subscribe();
     }
 
-    private translateDebugInformation = (debugInformation: UiInformation) => {
-        const { type, info, tween } = debugInformation;
+    private translateUiComponent = (debugInformation: UiInformation) => {
+        const { type, info } = debugInformation;
         if (type === UiShape.CIRCLE) {
             const typeInfo = info as CircleUiInfo;
-            // TODO: This will create issues when the sprite is removed from the scene.
-            const circle = this.drawCircle(
-                typeInfo.center(),
-                typeInfo.radius(),
-                typeInfo.color(),
-                typeInfo.alpha()
-            );
-            return {
-                shape: circle,
-                update: () => {
-                    const { x, y } = typeInfo.center();
-                    circle.setPosition(x, y);
-                    circle.setRadius(typeInfo.radius());
-                    circle.setFillStyle(typeInfo.color(), typeInfo.alpha());
-                },
-                destroy: () => circle.destroy(),
-            };
+            return new CircleUpdatingElement(typeInfo, debugInformation);
         } else if (type === UiShape.VECTOR) {
             const typeInfo = info as VectorUiInfo;
-            const vector = this.drawVector(typeInfo.start(), typeInfo.end());
-            return {
-                shape: vector,
-                update: () => {
-                    const { x: startX, y: startY } = typeInfo.start();
-                    const { x: endX, y: endY } = typeInfo.end();
-                    vector.setTo(startX, startY, endX, endY);
-                },
-                destroy: () => vector.destroy(),
-            };
+            return new VectorUpdatingElement(typeInfo, debugInformation);
         } else if (type === UiShape.RECT) {
             const typeInfo = info as RectUIInfo;
-            const rect = this.drawRect(
-                typeInfo
-                    .start()
-                    .clone()
-                    .add(new Vector2(typeInfo.baseWidth() / 2, typeInfo.height() / 2)),
-                typeInfo.width(),
-                typeInfo.height(),
-                typeInfo.color(),
-                typeInfo.alpha()
-            );
-            return {
-                shape: rect,
-                update: () => {
-                    const { x: startX, y: startY } = typeInfo
-                        .start()
-                        .clone()
-                        .add(new Vector2(typeInfo.baseWidth() / 2, typeInfo.height() / 2));
-                    rect.setX(startX);
-                    rect.setY(startY);
-                    rect.width = typeInfo.width();
-                    rect.height = typeInfo.height();
-                },
-                destroy: () => rect.destroy(),
-            };
+            return new RectUpdatingElement(typeInfo, debugInformation);
         } else if (type === UiShape.TEXT) {
             const typeInfo = info as TextUiInfo;
-            const text = this.drawText(typeInfo.pos().clone(), typeInfo.text(), Color.RED, 10);
-            if (tween) {
-                const tweenDef = getTweenByName(tween as AvailableTweens);
-                this.sceneProvider.addTween(tweenDef(text));
-            }
-            const update = !tween
-                ? () => {
-                      const { x: startX, y: startY } = typeInfo.pos();
-                      text.setX(startX);
-                      text.setY(startY);
-                      text.setText(typeInfo.text());
-                  }
-                : noop;
-            return {
-                shape: text,
-                update,
-                destroy: () => text.destroy(),
-            };
+            return new TextUpdatingElement(typeInfo, debugInformation);
         } else {
             throw new Error(`Unknown UiShape: ${type}`);
         }
