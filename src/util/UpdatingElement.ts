@@ -161,14 +161,19 @@ export class TextUpdatingElement implements UpdatingElement<Text> {
     };
 
     update = () => {
-        if (this.uiInfo.tween) {
-            return;
-        }
         if (this.uiInfo.hide && this.uiInfo.hide()) {
             return;
         }
         if (!this.shape) {
             this.initialize();
+            return;
+        }
+        if (this.uiInfo.trigger && this.uiInfo.trigger()) {
+            this.destroy();
+            this.initialize();
+            return;
+        }
+        if (this.uiInfo.tween) {
             return;
         }
         const { x: startX, y: startY } = this.typeInfo.pos();

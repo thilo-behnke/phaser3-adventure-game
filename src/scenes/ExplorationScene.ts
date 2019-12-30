@@ -21,6 +21,7 @@ import Point = Phaser.Geom.Point;
 import { tileCollider } from '../util/collision';
 import Tile = Phaser.Tilemaps.Tile;
 import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
+import { EventRegistry } from '../event/EventRegistry';
 
 export default class ExplorationScene extends Phaser.Scene {
     private uiService: UIService;
@@ -35,6 +36,7 @@ export default class ExplorationScene extends Phaser.Scene {
 
     // Ui elements.
     private inventoryUi: InventoryUi;
+    private eventRegistry: EventRegistry;
 
     constructor() {
         super('demo');
@@ -80,6 +82,7 @@ export default class ExplorationScene extends Phaser.Scene {
         // TODO: Why does constructor autowiring not work here?
         this.sceneProvider = container.resolve(SceneProvider);
         this.sceneProvider.initialize(this, groundLayer);
+        this.eventRegistry = container.resolve(EventRegistry);
 
         this.uiService = container.resolve(UIService);
         this.gameObjectRegistry = container.resolve(GameObjectRegistry);
@@ -119,11 +122,14 @@ export default class ExplorationScene extends Phaser.Scene {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update(time: number, delta: number): void {
+        this.eventRegistry.update(time, delta);
         // Update collision registry.
         this.collisionDetectionManager.update(time, delta);
         // Update player position.
         this.player.update(delta);
-        this.gameObjectRegistry.getObjects().forEach(obj => obj.update(time));
+        this.gameObjectRegistry.getObjects().forEach(obj => {
+            obj.update(time);
+        });
         this.uiService.update();
     }
 }

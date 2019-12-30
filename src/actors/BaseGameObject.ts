@@ -11,7 +11,10 @@ export abstract class BaseGameObject {
 
     // Lifecycle hooks.
     abstract onAddToScene: () => void;
+
+    abstract preUpdate: () => void;
     abstract update: (delta: number) => void;
+    abstract afterUpdate: () => void;
 
     constructor(private _id: string) {}
 

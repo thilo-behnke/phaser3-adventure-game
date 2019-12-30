@@ -47,11 +47,14 @@ export abstract class DynamicGameObject extends BaseGameObject {
     }
 
     hurt(value: number) {
+        const hp = this.hp;
+        this.damageReceived = value;
         this.hp = this.hp - value;
+        // Return actual damage, might be less due to e.g. protection.
+        return this.hp - hp;
     }
 
     heal(value: number) {
-        this.damageReceived = value;
         this.hp = this.hp + value;
     }
 
@@ -84,7 +87,7 @@ export abstract class DynamicGameObject extends BaseGameObject {
     }
 
     attack = (obj: DynamicGameObject) => {
-        obj.hurt(this.baseStats.strength);
+        return obj.hurt(this.baseStats.strength);
     };
 
     protected updateAnim = () => {

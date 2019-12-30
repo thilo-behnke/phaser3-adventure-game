@@ -4,27 +4,29 @@ import { range } from 'lodash';
 import { Vector } from 'phaser/types/matter';
 import Vector2 = Phaser.Math.Vector2;
 import { TILE_SIZE } from '../shared/constants';
+import { DynamicGameObject } from '../actors/DynamicGameObject';
 
 export const getClosestObj = (
-    obj: BaseGameObject,
-    other: BaseGameObject[]
-): Optional<BaseGameObject> => {
+    obj: DynamicGameObject,
+    other: DynamicGameObject[],
+    alive = true
+): Optional<DynamicGameObject> => {
     if (!other.length) {
         return Optional.empty();
     }
     const objPos = obj.sprite.getCenter();
-    const closest = other.reduce((acc, x) =>
-        x.sprite
+    const sorted = [...other].sort((a, b) => {
+        const lengthA = a.sprite
             .getCenter()
             .subtract(objPos)
-            .length() <
-        acc.sprite
+            .length();
+        const lengthB = b.sprite
             .getCenter()
             .subtract(objPos)
-            .length()
-            ? x
-            : acc
-    );
+            .length();
+        return lengthA - lengthB;
+    });
+    const closest = sorted.find(({ dying }) => !alive || !dying);
     return Optional.of(closest);
 };
 

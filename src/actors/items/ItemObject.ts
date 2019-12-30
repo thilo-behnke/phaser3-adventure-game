@@ -16,6 +16,14 @@ export abstract class ItemObject extends BaseGameObject {
         super(id);
     }
 
+    preUpdate = () => {
+        return;
+    };
+
+    afterUpdate = () => {
+        return;
+    };
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update = (delta: number): void => {
         return;

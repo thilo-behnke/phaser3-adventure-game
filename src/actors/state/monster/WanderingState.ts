@@ -42,13 +42,12 @@ export class WanderingState implements MonsterState {
         if (objs.length) {
             // TODO: Evaluate objects, maybe most dangerous?
             const preferredObj = getClosestObj(monster, objs) as Optional<DynamicGameObject>;
-            if (preferredObj.isEmpty()) {
-                return this;
-            }
-            if (monster.baseStats.nature === MonsterNature.AGGRESSIVE) {
-                return new FollowingState(preferredObj.value);
-            } else if (monster.baseStats.nature === MonsterNature.SHY) {
-                return new FleeingState(preferredObj.value);
+            if (!preferredObj.isEmpty()) {
+                if (monster.baseStats.nature === MonsterNature.AGGRESSIVE) {
+                    return new FollowingState(preferredObj.value);
+                } else if (monster.baseStats.nature === MonsterNature.SHY) {
+                    return new FleeingState(preferredObj.value);
+                }
             }
         }
         // Walk to a random point in the nearer area.

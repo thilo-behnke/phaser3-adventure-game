@@ -43,6 +43,7 @@ export type UiInformation =
           mode: UiMode;
           tween?: string;
           hide?: () => boolean;
+          trigger?: () => boolean;
       }
     | {
           type: UiShape.VECTOR;
@@ -50,9 +51,24 @@ export type UiInformation =
           mode: UiMode;
           tween?: string;
           hide?: () => boolean;
+          trigger?: () => boolean;
       }
-    | { type: UiShape.RECT; info: RectUIInfo; mode: UiMode; tween?: string; hide?: () => boolean }
-    | { type: UiShape.TEXT; info: TextUiInfo; mode: UiMode; tween?: string; hide?: () => boolean };
+    | {
+          type: UiShape.RECT;
+          info: RectUIInfo;
+          mode: UiMode;
+          tween?: string;
+          hide?: () => boolean;
+          trigger?: () => boolean;
+      }
+    | {
+          type: UiShape.TEXT;
+          info: TextUiInfo;
+          mode: UiMode;
+          tween?: string;
+          hide?: () => boolean;
+          trigger?: () => boolean;
+      };
 
 export interface UiComponent {
     getUiInformation: () => UiInformation[];

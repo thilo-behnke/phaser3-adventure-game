@@ -57,6 +57,10 @@ export class Player extends DynamicGameObject implements CanDie {
         return;
     };
 
+    preUpdate = () => {};
+
+    afterUpdate = () => {};
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update = (delta: number): void => {
         const keyManager = container.resolve(KeyManager);

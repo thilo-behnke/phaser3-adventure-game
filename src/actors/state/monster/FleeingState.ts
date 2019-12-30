@@ -10,12 +10,16 @@ import { IdleState } from './IdleState';
 import { getClosestObj } from '../../../util/vector';
 import Vector2 = Phaser.Math.Vector2;
 import { validatePosInMap } from '../../../util/map';
+import { AttackingState } from './AttackingState';
+import { EventRegistry } from '../../../event/EventRegistry';
 
 export class FleeingState implements MonsterState {
     private sceneProvider: SceneProvider;
+    private eventRegistry: EventRegistry;
 
     constructor(public fleeingFrom: BaseGameObject | null) {
         this.sceneProvider = container.resolve(SceneProvider);
+        this.eventRegistry = container.resolve(EventRegistry);
     }
 
     enter = (monster: MonsterObject) => {
@@ -30,6 +34,9 @@ export class FleeingState implements MonsterState {
         const closestObj = getClosestObj(monster, objs);
         if (closestObj.isEmpty()) {
             return new IdleState();
+        }
+        if (this.eventRegistry.wasAttackedLastLoop(monster)) {
+            return new AttackingState(closestObj.value);
         }
         this.fleeingFrom = closestObj.value;
         const fromMonster = monster.sprite

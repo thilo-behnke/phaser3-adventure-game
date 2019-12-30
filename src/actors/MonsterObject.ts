@@ -13,6 +13,8 @@ import { CanDie } from '../shared/CanDie';
 import { AttackingState } from './state/monster/AttackingState';
 import Vector2 = Phaser.Math.Vector2;
 import Sprite = Phaser.Physics.Arcade.Sprite;
+import { container } from 'tsyringe';
+import { EventRegistry } from '../event/EventRegistry';
 
 export enum MonsterType {
     WOLF = 'WOLF',
@@ -43,6 +45,7 @@ export class MonsterObject extends DynamicGameObject implements CanDie, UiCompon
 
     protected stateMachine: IMonsterStateMachine;
     protected pathFinding: PathFinding;
+    private eventRegistry: EventRegistry;
 
     constructor(id: string, stats: MonsterStats, type: MonsterType) {
         super(id);
@@ -52,6 +55,8 @@ export class MonsterObject extends DynamicGameObject implements CanDie, UiCompon
         this._attentionRadius = stats.attentionRadius;
 
         this.pathFinding = new GreedyMemorizedPathFinding();
+
+        this.eventRegistry = container.resolve(EventRegistry);
     }
 
     get caught(): boolean {
@@ -78,6 +83,10 @@ export class MonsterObject extends DynamicGameObject implements CanDie, UiCompon
             this.stateMachine = new WildMonsterStateMachine(this);
         }
     };
+
+    preUpdate = () => {};
+
+    afterUpdate = () => {};
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update = (time: number): void => {
@@ -172,7 +181,8 @@ export class MonsterObject extends DynamicGameObject implements CanDie, UiCompon
                 },
                 mode: UiMode.ALL,
                 tween: 'FADE_OUT_TOP',
-                hide: () => this.damageReceived === null,
+                hide: () => !this.eventRegistry.receivedDamageLastLoop(this),
+                trigger: () => this.eventRegistry.receivedDamageLastLoop(this),
             },
             {
                 type: UiShape.CIRCLE,
