@@ -110,7 +110,7 @@ export default class ExplorationScene extends Phaser.Scene {
         // Initialize Controls
         this.keyManager.assignAction(Action.INVENTORY, () => this.inventoryUi.toggle());
         // Debugging.
-        this.uiService.showGrid(true);
+        this.uiService.showGrid();
         this.uiService.showPlayerPos();
         const monster = this.gameObjectRegistry.getObjects()[0];
         this.uiService.showObjectPos(monster.id);

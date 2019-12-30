@@ -46,15 +46,22 @@ export abstract class DynamicGameObject extends BaseGameObject {
         this._damageReceived = value;
     }
 
+    hurt(value: number) {
+        this.hp = this.hp - value;
+    }
+
+    heal(value: number) {
+        this.damageReceived = value;
+        this.hp = this.hp + value;
+    }
+
     get hp(): number {
         return this._hp;
     }
 
     set hp(value: number) {
         // Don't allow hp below 0 or above max hp.
-        const correctedDamage = Math.min(value, this.baseStats.health);
-        const correctedHp = Math.max(0, correctedDamage);
-        this.damageReceived = correctedDamage;
+        const correctedHp = Math.max(0, value);
         if (correctedHp === 0) {
             this.dying = true;
         }
@@ -77,7 +84,7 @@ export abstract class DynamicGameObject extends BaseGameObject {
     }
 
     attack = (obj: DynamicGameObject) => {
-        obj.hp -= this.baseStats.strength;
+        obj.hurt(this.baseStats.strength);
     };
 
     protected updateAnim = () => {
