@@ -79,4 +79,21 @@ export abstract class DynamicGameObject extends BaseGameObject {
         console.log(this.activeAnim, this.direction);
         this._sprite.anims.play(`${this.type}-${this.activeAnim}--${this.direction}`);
     };
+
+    protected getDirection = () => {
+        const angle = Math.acos(this.sprite.body.velocity.clone().normalize().x);
+        if (angle >= Math.PI / 4 && angle <= (Math.PI * 3) / 4) {
+            if (this.sprite.body.velocity.y > 0) {
+                return Direction.DOWN;
+            } else {
+                return Direction.UP;
+            }
+        } else if (angle > (Math.PI * 3) / 4 || angle < Math.PI / 4) {
+            if (this.sprite.body.velocity.x > 0) {
+                return Direction.RIGHT;
+            } else {
+                return Direction.LEFT;
+            }
+        }
+    };
 }

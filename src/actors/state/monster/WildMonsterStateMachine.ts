@@ -19,7 +19,6 @@ export class WildMonsterStateMachine extends IMonsterStateMachine {
     constructor(monster: MonsterObject) {
         super();
         this.registry = container.resolve(GameObjectRegistry);
-        console.log('state machine created for monster', monster);
         this.currentState = new IdleState();
         this.currentState.enter(monster);
     }
