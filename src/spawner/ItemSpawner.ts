@@ -1,6 +1,6 @@
 import Point = Phaser.Geom.Point;
 
-import { injectable } from 'tsyringe';
+import { autoInjectable, injectable } from 'tsyringe';
 import { ItemFactory } from '../factories/ItemFactory';
 import { ExplorationMap } from '../map/ExplorationMap';
 import { GameObjectSpawner } from './GameObjectSpawner';
@@ -10,13 +10,13 @@ import { SceneProvider } from '../scene/SceneProvider';
 import { BaseGameObject } from '../actors/BaseGameObject';
 import { generateUUID } from '../util/random';
 
-@injectable()
+@autoInjectable()
 export class ItemSpawner extends GameObjectSpawner {
     constructor(
-        sceneProvider: SceneProvider,
-        collisionDetectionManager: CollisionDetectionManager,
-        gameObjectRegistry: GameObjectRegistry,
-        private itemFactory: ItemFactory
+        sceneProvider?: SceneProvider,
+        collisionDetectionManager?: CollisionDetectionManager,
+        gameObjectRegistry?: GameObjectRegistry,
+        private itemFactory?: ItemFactory
     ) {
         super(sceneProvider, collisionDetectionManager, gameObjectRegistry);
     }

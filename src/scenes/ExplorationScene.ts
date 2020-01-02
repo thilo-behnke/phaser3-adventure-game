@@ -71,6 +71,22 @@ export default class ExplorationScene extends Phaser.Scene {
     }
 
     create(): void {
+        // Singleton workaround...
+        container.register<GameObjectRegistry>(GameObjectRegistry, {
+            useValue: new GameObjectRegistry(),
+        });
+        container.register<SceneProvider>(SceneProvider, { useValue: new SceneProvider() });
+        container.register<EventRegistry>(EventRegistry, { useValue: new EventRegistry() });
+        container.register<UIService>(UIService, { useValue: new UIService() });
+        container.register<CollisionDetectionManager>(CollisionDetectionManager, {
+            useValue: new CollisionDetectionManager(),
+        });
+        container.register<KeyManager>(KeyManager, { useValue: new KeyManager() });
+        container.register<MonsterSpawner>(MonsterSpawner, { useValue: new MonsterSpawner() });
+        container.register<ItemSpawner>(ItemSpawner, { useValue: new ItemSpawner() });
+        container.register<Inventory>(Inventory, { useValue: new Inventory() });
+        container.register<InventoryUi>(InventoryUi, { useValue: new InventoryUi() });
+
         const map = this.make.tilemap({ key: 'map' });
         const tileset = map.addTilesetImage('tilesheet', 'tiles');
         const groundLayer = map.createStaticLayer('Ground', tileset, 0, 0);
@@ -83,6 +99,8 @@ export default class ExplorationScene extends Phaser.Scene {
 
         this.uiService = container.resolve(UIService);
         this.gameObjectRegistry = container.resolve(GameObjectRegistry);
+        /*        this.gameObjectRegistry.initialize();*/
+
         this.collisionDetectionManager = container.resolve(CollisionDetectionManager);
         this.keyManager = container.resolve(KeyManager);
         this.keyManager.configure(this);
@@ -120,11 +138,6 @@ export default class ExplorationScene extends Phaser.Scene {
         this.uiService.register(this.eventRegistry);
     }
 
-    private launchMenu() {
-        this.scene.pause(SceneName.EXPLORATION);
-        this.scene.launch(SceneName.OVERLAY_MENU);
-    }
-
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update(time: number, delta: number): void {
         this.eventRegistry.update(time, delta);
@@ -136,5 +149,10 @@ export default class ExplorationScene extends Phaser.Scene {
             obj.update(time);
         });
         this.uiService.update();
+    }
+
+    private launchMenu() {
+        this.scene.pause(SceneName.EXPLORATION, { test: 'hallo' });
+        this.scene.launch(SceneName.OVERLAY_MENU);
     }
 }

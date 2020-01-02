@@ -1,4 +1,4 @@
-import { singleton } from 'tsyringe';
+import { autoInjectable, singleton } from 'tsyringe';
 
 import { COLLISION_GROUP_PROP } from './CollisionGroupDef';
 import { SceneProvider } from '../scene/SceneProvider';
@@ -13,14 +13,14 @@ import { Updatable } from '../shared/Updatable';
 import Sprite = Phaser.Physics.Arcade.Sprite;
 import Tile = Phaser.Tilemaps.Tile;
 
-@singleton()
+@autoInjectable()
 export class CollisionDetectionManager implements Updatable {
     private collisionRegistry: Array<[string, string]> = [];
     private tempCollisionRegistry: Array<[string, string]> = [];
 
     constructor(
-        private sceneProvider: SceneProvider,
-        private gameObjectRegistry: GameObjectRegistry
+        private sceneProvider?: SceneProvider,
+        private gameObjectRegistry?: GameObjectRegistry
     ) {}
 
     private getCallback = (obj: BaseGameObject, obj2: BaseGameObject): Function => {

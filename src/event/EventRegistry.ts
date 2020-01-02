@@ -1,6 +1,6 @@
 import { DynamicGameObject } from '../actors/DynamicGameObject';
 import { Updatable } from '../shared/Updatable';
-import { singleton } from 'tsyringe';
+import { autoInjectable, injectable, singleton } from 'tsyringe';
 import { UiComponent, UiInformation, UiMode, UiShape } from '../actors/UiComponent';
 import Vector2 = Phaser.Math.Vector2;
 import { Color, SCREEN_HEIGHT } from '../shared/constants';
@@ -28,7 +28,7 @@ export type Event =
           damage: number;
       };
 
-@singleton()
+@injectable()
 export class EventRegistry implements Updatable, UiComponent {
     private loopCount = 0;
     private registry = new Array<Event>();

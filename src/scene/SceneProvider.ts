@@ -1,4 +1,4 @@
-import { singleton } from 'tsyringe';
+import { injectable, singleton } from 'tsyringe';
 import { BaseGameObject } from '../actors/BaseGameObject';
 import { CollisionType } from '../collision/CollisionGroup';
 import { Color, TILE_SIZE } from '../shared/constants';
@@ -22,7 +22,7 @@ import { Player } from '../actors/Player';
 import Circle = Phaser.Geom.Circle;
 import TweenBuilderConfig = Phaser.Types.Tweens.TweenBuilderConfig;
 
-@singleton()
+@injectable()
 export class SceneProvider {
     private scene: Scene;
     private groundLayer: StaticTilemapLayer;

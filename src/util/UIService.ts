@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { autoInjectable, injectable } from 'tsyringe';
 import { SceneProvider } from '../scene/SceneProvider';
 import { noop, Subject } from 'rxjs';
 import { differenceWith, flatten, fromPairs, range, size } from 'lodash';
@@ -36,15 +36,15 @@ enum DebugElement {
     OBJ_POS = '-pos',
 }
 
-@injectable()
+@autoInjectable()
 export class UIService {
     private updatingElements: {
         [key: string]: UpdatingElement<Shape | Text>;
     } = {};
 
     constructor(
-        private sceneProvider: SceneProvider,
-        private gameObjectRegistry: GameObjectRegistry
+        private sceneProvider?: SceneProvider,
+        private gameObjectRegistry?: GameObjectRegistry
     ) {}
 
     update() {

@@ -1,4 +1,4 @@
-import { singleton } from 'tsyringe';
+import { autoInjectable, singleton } from 'tsyringe';
 import { ItemObject } from '../actors/items/ItemObject';
 import { MonsterObject, MonsterStats } from '../actors/MonsterObject';
 import { Capsule } from '../actors/items/Capsule';
@@ -10,7 +10,7 @@ import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 
 type ItemStorage = { [id: string]: ItemObject };
 
-@singleton()
+@autoInjectable()
 export class Inventory {
     // TODO: This should be subject to change.
     private _inventoryDef = {
@@ -22,8 +22,8 @@ export class Inventory {
     private monsters: { [id: string]: MonsterObject } = {};
 
     constructor(
-        private monsterSpawner: MonsterSpawner,
-        private gameObjectRegistry: GameObjectRegistry
+        private monsterSpawner?: MonsterSpawner,
+        private gameObjectRegistry?: GameObjectRegistry
     ) {}
 
     get inventoryDef(): { capsules: number } {

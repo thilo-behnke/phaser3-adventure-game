@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { autoInjectable, injectable } from 'tsyringe';
 import { Inventory } from './Inventory';
 import Scene = Phaser.Scene;
 import { SceneProvider } from '../scene/SceneProvider';
@@ -6,7 +6,7 @@ import Image = Phaser.GameObjects.Image;
 import { range } from 'lodash';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../shared/constants';
 
-@injectable()
+@autoInjectable()
 export class InventoryUi {
     private readonly CAPSULE_WIDTH = 40;
     private readonly CAPSULE_HEIGHT = 88;
@@ -20,7 +20,7 @@ export class InventoryUi {
 
     private show = false;
 
-    constructor(private inventory: Inventory, private sceneProvider: SceneProvider) {
+    constructor(private inventory?: Inventory, private sceneProvider?: SceneProvider) {
         this.INVENTORY_START_POS_HOR =
             SCREEN_WIDTH -
             this.inventory.inventoryDef.capsules * (this.CAPSULE_WIDTH + this.CAPSULE_PADDING_HOR);

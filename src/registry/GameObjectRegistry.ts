@@ -1,4 +1,4 @@
-import { singleton } from 'tsyringe';
+import { injectable, isTokenProvider, singleton } from 'tsyringe';
 import { CollisionGroup, CollisionType } from '../collision/CollisionGroup';
 import { COLLISION_GROUP_PROP } from '../collision/CollisionGroupDef';
 import { BaseGameObject } from '../actors/BaseGameObject';
@@ -10,12 +10,16 @@ import { MonsterObject } from '../actors/MonsterObject';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { compose, filter, map, identity, flatten, fromPairs } from 'lodash/fp';
 
-@singleton()
+@injectable()
 export class GameObjectRegistry {
     private registry: { [key: string]: BaseGameObject } = {};
     private player: Player;
 
     private subject = new BehaviorSubject(Object.values(this.registry));
+
+    initialize = () => {
+        this.registry = {};
+    };
 
     setPlayer(player: Player): void {
         this.player = player;

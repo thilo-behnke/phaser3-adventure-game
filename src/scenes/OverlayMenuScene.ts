@@ -82,8 +82,6 @@ export class OverlayMenuScene extends Phaser.Scene {
     }
 
     private onRestart() {
-        this.scene.stop(SceneName.OVERLAY_MENU);
-        this.scene.stop(SceneName.EXPLORATION);
         this.scene.start(SceneName.EXPLORATION);
     }
 

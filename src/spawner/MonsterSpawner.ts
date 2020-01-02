@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { autoInjectable, injectable } from 'tsyringe';
 import { range } from 'lodash';
 
 import Point = Phaser.Geom.Point;
@@ -10,13 +10,13 @@ import { CollisionDetectionManager } from '../collision/CollisionDetectionManage
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import { BaseGameObject } from '../actors/BaseGameObject';
 
-@injectable()
+@autoInjectable()
 export class MonsterSpawner extends GameObjectSpawner {
     constructor(
-        sceneProvider: SceneProvider,
-        collisionDetectionManager: CollisionDetectionManager,
-        gameObjectRegistry: GameObjectRegistry,
-        private monsterFactory: MonsterFactory
+        sceneProvider?: SceneProvider,
+        collisionDetectionManager?: CollisionDetectionManager,
+        gameObjectRegistry?: GameObjectRegistry,
+        private monsterFactory?: MonsterFactory
     ) {
         super(sceneProvider, collisionDetectionManager, gameObjectRegistry);
     }
