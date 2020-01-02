@@ -16,12 +16,19 @@ export enum SceneName {
     OVERLAY_MENU = 'OVERLAY_MENU',
 }
 
+export enum Z_INDEX {
+    DEAD = 0,
+    DEFAULT = 1,
+    PLAYER = 2,
+}
+
 export const generateConfig = (scene: typeof Phaser.Scene) => {
     return {
-        type: Phaser.AUTO,
+        type: Phaser.WEBGL,
         width: SCREEN_WIDTH,
         height: SCREEN_HEIGHT,
         scene: scene,
+        pixelArt: true,
         physics: {
             default: 'arcade',
             arcade: { debug: true },

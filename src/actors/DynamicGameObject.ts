@@ -2,6 +2,7 @@ import { BaseGameObject } from './BaseGameObject';
 import { IPlayerStateMachine } from './state/player/IPlayerStateMachine';
 import { Direction } from '../shared/direction';
 import { DynamicObjectAnimation } from './anim/DynamicObjectAnimation';
+import { Z_INDEX } from '../shared/constants';
 
 export type BaseStats = {
     health: number;
@@ -36,6 +37,10 @@ export abstract class DynamicGameObject extends BaseGameObject {
 
     set dying(value: boolean) {
         this._dying = value;
+        // TODO: Difference between dying and dead.
+        if (this._dying) {
+            this.sprite.setDepth(Z_INDEX.DEAD);
+        }
     }
 
     get damageReceived(): number | null {

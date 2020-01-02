@@ -6,6 +6,7 @@ import { Direction } from '../shared/direction';
 import Point = Phaser.Geom.Point;
 import Scene = Phaser.Scene;
 import { CanDie } from '../shared/CanDie';
+import { Z_INDEX } from '../shared/constants';
 
 export class Player extends DynamicGameObject implements CanDie {
     private scene: Phaser.Scene;
@@ -19,6 +20,7 @@ export class Player extends DynamicGameObject implements CanDie {
         player.createAnimations(scene);
         player._sprite = scene.physics.add
             .sprite(initialPos.x, initialPos.y, 'player', 0)
+            .setDepth(Z_INDEX.PLAYER)
             .setMass(10000)
             .setMaxVelocity(100, 100)
             .setFriction(100, 100)

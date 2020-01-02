@@ -1,7 +1,7 @@
 import { injectable, singleton } from 'tsyringe';
 import { BaseGameObject } from '../actors/BaseGameObject';
 import { CollisionType } from '../collision/CollisionGroup';
-import { Color, TILE_SIZE } from '../shared/constants';
+import { Color, TILE_SIZE, Z_INDEX } from '../shared/constants';
 import { Optional } from '../util/fp';
 import { getFirstSegmentOfVector, segmentVector } from '../util/vector';
 import { TileVector, TileVectorSet } from '../shared/TileVector';
@@ -45,6 +45,7 @@ export class SceneProvider {
     addToScene = (obj: BaseGameObject, pos: Point): BaseGameObject => {
         const sprite = this.scene.physics.add
             .sprite(pos.x, pos.y, obj.type)
+            .setDepth(Z_INDEX.DEFAULT)
             .setMass(1)
             .setImmovable(true)
             .setName(obj.id);
