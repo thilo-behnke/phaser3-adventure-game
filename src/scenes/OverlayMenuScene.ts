@@ -23,35 +23,72 @@ export class OverlayMenuScene extends Phaser.Scene {
     }
 
     set selected(value: number) {
-        this.menus[this._selected].setBackgroundColor('white');
-        this._selected = value % this.menus.length;
-        this.menus[this._selected].setBackgroundColor('red');
+        this._selected = Math.abs(value % this.menus.length);
+        this.renderMenu();
     }
 
     preload() {}
 
     create() {
+        // TODO: This is probably always the same - generalize.
         this.keyManager = container.resolve(KeyManager);
+        this.keyManager.configure(this);
+
+        this.keyManager.assignAction(this, Action.DOWN, () => {
+            this.selected++;
+        });
+        this.keyManager.assignAction(this, Action.UP, () => {
+            this.selected--;
+        });
+        this.keyManager.assignAction(this, Action.CONFIRM, () => {
+            this.executeSelected();
+        });
+        this.keyManager.assignAction(this, Action.CANCEL, () => {
+            this.onClose();
+        });
 
         const restart = this.add.text(500, 500, Menu.RESTART_GAME).setInteractive();
         restart.on('pointerdown', () => {
-            this.scene.stop(SceneName.OVERLAY_MENU);
-            this.scene.stop(SceneName.EXPLORATION);
-            this.scene.start(SceneName.EXPLORATION);
+            this.onRestart();
         });
         const close = this.add.text(500, 550, Menu.CLOSE_MENU).setInteractive();
         close.on('pointerdown', () => {
-            this.scene.stop(SceneName.OVERLAY_MENU);
-            this.scene.resume(SceneName.EXPLORATION);
+            this.onClose();
         });
         this.menus = [restart, close];
-        this.keyManager.assignAction(Action.DOWN, () => {
-            this.selected++;
-        });
-        this.keyManager.assignAction(Action.UP, () => {
-            this.selected--;
-        });
+
+        this.renderMenu();
     }
 
     update() {}
+
+    private renderMenu() {
+        this.menus.forEach((menu, i) => {
+            if (i === this.selected) {
+                this.menus[i].setBackgroundColor('red');
+            } else {
+                this.menus[i].setBackgroundColor('white');
+            }
+        });
+    }
+
+    private executeSelected() {
+        const selectedMenu = this.menus[this.selected];
+        if (selectedMenu.text === Menu.RESTART_GAME) {
+            this.onRestart();
+        } else if (selectedMenu.text === Menu.CLOSE_MENU) {
+            this.onClose();
+        }
+    }
+
+    private onRestart() {
+        this.scene.stop(SceneName.OVERLAY_MENU);
+        this.scene.stop(SceneName.EXPLORATION);
+        this.scene.start(SceneName.EXPLORATION);
+    }
+
+    private onClose() {
+        this.scene.stop(SceneName.OVERLAY_MENU);
+        this.scene.resume(SceneName.EXPLORATION);
+    }
 }

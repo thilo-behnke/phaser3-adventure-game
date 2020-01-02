@@ -85,6 +85,7 @@ export default class ExplorationScene extends Phaser.Scene {
         this.gameObjectRegistry = container.resolve(GameObjectRegistry);
         this.collisionDetectionManager = container.resolve(CollisionDetectionManager);
         this.keyManager = container.resolve(KeyManager);
+        this.keyManager.configure(this);
         this.player = Player.create(this, new Point(100, 100));
         this.gameObjectRegistry.setPlayer(this.player);
         this.monsterSpawner = container.resolve(MonsterSpawner);
@@ -108,8 +109,8 @@ export default class ExplorationScene extends Phaser.Scene {
         // Initialize Ui Elements
         this.inventoryUi = container.resolve(InventoryUi);
         // Initialize Controls
-        this.keyManager.assignAction(Action.INVENTORY, () => this.inventoryUi.toggle());
-        this.keyManager.assignAction(Action.MENU, () => {
+        this.keyManager.assignAction(this, Action.INVENTORY, () => this.inventoryUi.toggle());
+        this.keyManager.assignAction(this, Action.MENU, () => {
             this.launchMenu();
         });
         // Debugging.

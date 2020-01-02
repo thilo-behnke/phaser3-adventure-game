@@ -8,12 +8,14 @@ import Scene = Phaser.Scene;
 import { CanDie } from '../shared/CanDie';
 
 export class Player extends DynamicGameObject implements CanDie {
+    private scene: Phaser.Scene;
     protected _type = 'player';
     protected acceleration = new Point(100, 100);
     protected stateMachine: PlayerStateMachine;
 
     static create = (scene: Phaser.Scene, initialPos: Phaser.Geom.Point): Player => {
         const player = new Player('player');
+        player.scene = scene;
         player.createAnimations(scene);
         player._sprite = scene.physics.add
             .sprite(initialPos.x, initialPos.y, 'player', 0)
@@ -64,7 +66,7 @@ export class Player extends DynamicGameObject implements CanDie {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update = (delta: number): void => {
         const keyManager = container.resolve(KeyManager);
-        this.stateMachine.update(delta, this, keyManager.getActions());
+        this.stateMachine.update(delta, this, keyManager.getActions(this.scene));
         this.direction = this.getDirection();
 
         return;
