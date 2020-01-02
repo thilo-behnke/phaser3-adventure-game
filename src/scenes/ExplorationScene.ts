@@ -99,7 +99,6 @@ export default class ExplorationScene extends Phaser.Scene {
 
         this.uiService = container.resolve(UIService);
         this.gameObjectRegistry = container.resolve(GameObjectRegistry);
-        /*        this.gameObjectRegistry.initialize();*/
 
         this.collisionDetectionManager = container.resolve(CollisionDetectionManager);
         this.keyManager = container.resolve(KeyManager);
@@ -133,9 +132,10 @@ export default class ExplorationScene extends Phaser.Scene {
         });
         // Debugging.
         this.uiService.showGrid();
-        this.uiService.showPlayerPos();
         this.uiService.configureUiInformation();
         this.uiService.register(this.eventRegistry);
+
+        this.scene.launch(SceneName.HUD);
 
         this.events.on('resume', console.log);
     }

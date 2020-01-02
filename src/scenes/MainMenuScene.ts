@@ -1,6 +1,7 @@
 import { generateConfig, SceneName, SCREEN_HEIGHT, SCREEN_WIDTH } from '../shared/constants';
 import ExplorationScene from './ExplorationScene';
 import { OverlayMenuScene } from './OverlayMenuScene';
+import { HUDScene } from './HUDScene';
 
 export class MainMenuScene extends Phaser.Scene {
     preload() {}
@@ -13,6 +14,7 @@ export class MainMenuScene extends Phaser.Scene {
         this.add.text(100, 150, 'Quit');
         this.scene.add(SceneName.EXPLORATION, ExplorationScene, false);
         this.scene.add(SceneName.OVERLAY_MENU, OverlayMenuScene, false, { transparent: true });
+        this.scene.add(SceneName.HUD, HUDScene, false, { transparent: true });
     }
 
     private startGame = () => {

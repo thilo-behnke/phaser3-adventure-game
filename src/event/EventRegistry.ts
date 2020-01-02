@@ -6,6 +6,8 @@ import Vector2 = Phaser.Math.Vector2;
 import { Color, SCREEN_HEIGHT } from '../shared/constants';
 import { sortBy, takeRight } from 'lodash';
 import { ItemObject } from '../actors/items/ItemObject';
+import { BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/internal/operators';
 
 export enum EventType {
     ATTACK = 'ATTACK',
@@ -49,7 +51,8 @@ export type Event = BaseEvent & (AttackEvent | DamageEvent | ItemPickUpEvent | I
 @injectable()
 export class EventRegistry implements Updatable, UiComponent {
     private loopCount = 0;
-    private registry = new Array<Event>();
+    private registry: Array<Event> = [];
+    private subject = new BehaviorSubject(this.registry);
 
     update = (time: number, delta: number) => {
         this.loopCount++;
@@ -59,8 +62,13 @@ export class EventRegistry implements Updatable, UiComponent {
         return 'EventRegistry';
     }
 
+    get() {
+        return this.subject.asObservable().pipe(map(events => events.map(this.eventToString)));
+    }
+
     register = (event: Event) => {
         this.registry.push({ ...event, loop: this.loopCount, ts: Date.now() });
+        this.subject.next(this.registry);
     };
 
     wasAttackedLastLoop = (obj: DynamicGameObject) => {
@@ -87,7 +95,7 @@ export class EventRegistry implements Updatable, UiComponent {
     getUiInformation = () => {
         const pos = new Vector2(10, SCREEN_HEIGHT - 100);
         return [
-            {
+            /*            {
                 type: UiShape.TEXT,
                 info: {
                     pos: () => pos,
@@ -97,7 +105,7 @@ export class EventRegistry implements Updatable, UiComponent {
                     },
                 },
                 mode: UiMode.ALL,
-            },
+            },*/
         ] as UiInformation[];
     };
 

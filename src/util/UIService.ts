@@ -117,50 +117,6 @@ export class UIService {
         return new TextUpdatingElement(typeInfo, uiInfo);
     };
 
-    showPlayerPos() {
-        const player = this.gameObjectRegistry.getPlayer();
-        /*        const playerPosText = this.sceneProvider.addText(0, 0, newText, Color.WHITE, 16);*/
-        this.updatingElements[DebugElement.PLAYER_POS] = this.showPosUpdatingTextElement(
-            'Player',
-            // TODO: This does not reload the player sprite information once it is ready (get it from the registry?).
-            () => player.sprite.getTopLeft()
-        );
-    }
-
-    /*    showObjectPos(id: string) {
-        const getObj = () => {
-            return this.gameObjectRegistry.getById(id);
-        };
-        const generateText = (obj: BaseGameObject) => {
-            return `Obj - x: ${obj.sprite.x.toFixed(2)}, y: ${obj.sprite.y.toFixed(2)}`;
-        };
-        const obj = getObj();
-        if (obj.isEmpty()) {
-            return;
-        }
-        const initialText = generateText(obj.value);
-        const objPosText = this.sceneProvider.addText(
-            0,
-            size(this.updatingElements) * 20,
-            initialText,
-            Color.WHITE,
-            16
-        );
-        this.updatingElements[`${id}-${DebugElement.OBJ_POS}`] = {
-            shape: objPosText,
-            update: () => {
-                const obj = getObj();
-                if (obj.isEmpty()) {
-                    return;
-                }
-                const newText = generateText(obj.value);
-                objPosText.setText(newText);
-                objPosText.updateText();
-            },
-            destroy: () => objPosText.destroy(),
-        };
-    }*/
-
     configureUiInformation(mode = UiMode.ALL) {
         this.gameObjectRegistry
             .subscribeObjects()

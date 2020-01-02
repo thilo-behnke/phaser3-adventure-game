@@ -12,6 +12,7 @@ export enum Color {
 export enum SceneName {
     MAIN_MENU = 'MAIN_MENU',
     EXPLORATION = 'EXPLORATION',
+    HUD = 'HUD',
     OVERLAY_MENU = 'OVERLAY_MENU',
 }
 
