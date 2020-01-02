@@ -22,6 +22,7 @@ import { tileCollider } from '../util/collision';
 import Tile = Phaser.Tilemaps.Tile;
 import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
 import { EventRegistry } from '../event/EventRegistry';
+import { SceneName } from '../shared/constants';
 
 export default class ExplorationScene extends Phaser.Scene {
     private uiService: UIService;
@@ -37,10 +38,6 @@ export default class ExplorationScene extends Phaser.Scene {
     // Ui elements.
     private inventoryUi: InventoryUi;
     private eventRegistry: EventRegistry;
-
-    constructor() {
-        super('demo');
-    }
 
     preload(): void {
         // Tileset + map.
@@ -112,6 +109,9 @@ export default class ExplorationScene extends Phaser.Scene {
         this.inventoryUi = container.resolve(InventoryUi);
         // Initialize Controls
         this.keyManager.assignAction(Action.INVENTORY, () => this.inventoryUi.toggle());
+        this.keyManager.assignAction(Action.MENU, () => {
+            this.launchMenu();
+        });
         // Debugging.
         this.uiService.showGrid();
         this.uiService.showPlayerPos();
@@ -119,6 +119,11 @@ export default class ExplorationScene extends Phaser.Scene {
         /*        this.uiService.showObjectPos(monster.id);*/
         this.uiService.configureUiInformation();
         this.uiService.register(this.eventRegistry);
+    }
+
+    private launchMenu() {
+        this.scene.pause(SceneName.EXPLORATION);
+        this.scene.launch(SceneName.OVERLAY_MENU);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -8,3 +8,22 @@ export enum Color {
     GREY = 0xe8e8e8,
     RED = 0xd11141,
 }
+
+export enum SceneName {
+    MAIN_MENU = 'MAIN_MENU',
+    EXPLORATION = 'EXPLORATION',
+    OVERLAY_MENU = 'OVERLAY_MENU',
+}
+
+export const generateConfig = (scene: typeof Phaser.Scene) => {
+    return {
+        type: Phaser.AUTO,
+        width: SCREEN_WIDTH,
+        height: SCREEN_HEIGHT,
+        scene: scene,
+        physics: {
+            default: 'arcade',
+            arcade: { debug: true },
+        },
+    };
+};

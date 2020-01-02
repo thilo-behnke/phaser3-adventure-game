@@ -10,6 +10,7 @@ export enum Action {
     DOWN = 'DOWN',
     UP = 'UP',
     INVENTORY = 'INVENTORY',
+    MENU = 'MENU',
 }
 
 export type ActiveActions = {
@@ -34,6 +35,7 @@ export class KeyManager {
             [Action.UP]: sceneProvider.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
             [Action.DOWN]: sceneProvider.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
             [Action.INVENTORY]: sceneProvider.addKey(Phaser.Input.Keyboard.KeyCodes.I),
+            [Action.MENU]: sceneProvider.addKey(Phaser.Input.Keyboard.KeyCodes.ESC),
         };
     }
 
