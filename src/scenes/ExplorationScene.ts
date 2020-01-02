@@ -129,7 +129,7 @@ export default class ExplorationScene extends Phaser.Scene implements GameScene 
             this.launchMenu();
         });
         // Debugging.
-        this.uiService.showGrid();
+        /*        this.uiService.showGrid();*/
         this.uiService.configureUiInformation();
         this.uiService.register(this.eventRegistry);
 

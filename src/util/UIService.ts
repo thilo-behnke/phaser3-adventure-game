@@ -63,42 +63,6 @@ export class UIService {
             });
     }
 
-    showGrid(showTileCoordinates = false) {
-        const gridLen = 32,
-            gridColor = Color.GREY,
-            gridAlpha = 0.2;
-        range(1, SCREEN_WIDTH / gridLen).forEach(pos => {
-            const grid = pos * gridLen;
-            // Vertical lines.
-            this.sceneProvider.addLine(
-                new Vector2(grid, 0),
-                new Vector2(grid, SCREEN_HEIGHT),
-                gridColor,
-                gridAlpha
-            );
-        });
-        range(1, SCREEN_HEIGHT / gridLen).forEach(pos => {
-            const grid = pos * gridLen;
-            // Horizontal lines.
-            this.sceneProvider.addLine(
-                new Vector2(0, grid),
-                new Vector2(SCREEN_WIDTH, grid),
-                gridColor,
-                gridAlpha
-            );
-        });
-        if (showTileCoordinates) {
-            const gridTiles = cartesianProduct(
-                range(SCREEN_HEIGHT / gridLen),
-                range(SCREEN_WIDTH / gridLen)
-            );
-            gridTiles.forEach(tilePos => {
-                const [x, y] = tilePos;
-                this.sceneProvider.addText(x * gridLen, y * gridLen, `${x}/${y}`, Color.GREY, 10);
-            });
-        }
-    }
-
     private showPosUpdatingTextElement = (name: string, pos: () => Vector2) => {
         const typeInfo = {
             pos: () => {

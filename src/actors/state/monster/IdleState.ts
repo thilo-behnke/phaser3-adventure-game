@@ -8,6 +8,7 @@ import { FleeingState } from './FleeingState';
 import { getRandomNumberBetween } from '../../../util/random';
 import { WanderingState } from './WanderingState';
 import { Optional } from '../../../util/fp';
+import { AttackingState } from './AttackingState';
 
 export class IdleState implements MonsterState {
     enter = (monster: MonsterObject): void => {
@@ -33,7 +34,7 @@ export class IdleState implements MonsterState {
         if (monster.baseStats.nature === MonsterNature.AGGRESSIVE) {
             return new FollowingState(preferredObj.value);
         } else if (monster.baseStats.nature === MonsterNature.SHY) {
-            return new FleeingState(preferredObj.value);
+            return new AttackingState(preferredObj.value);
         }
         return this;
     };

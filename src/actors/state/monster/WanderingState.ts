@@ -14,6 +14,7 @@ import { SceneProvider } from '../../../scene/SceneProvider';
 import { FleeingState } from './FleeingState';
 import { validatePosInMap } from '../../../util/map';
 import { Optional } from '../../../util/fp';
+import { AttackingState } from './AttackingState';
 
 export class WanderingState implements MonsterState {
     private OBSERVING_TIME_MS = 1500;
@@ -45,7 +46,7 @@ export class WanderingState implements MonsterState {
                 if (monster.baseStats.nature === MonsterNature.AGGRESSIVE) {
                     return new FollowingState(preferredObj.value);
                 } else if (monster.baseStats.nature === MonsterNature.SHY) {
-                    return new FleeingState(preferredObj.value);
+                    return new AttackingState(preferredObj.value);
                 }
             }
         }

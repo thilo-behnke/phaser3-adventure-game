@@ -6,6 +6,7 @@ import Image = Phaser.GameObjects.Image;
 import { range } from 'lodash';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../shared/constants';
 
+// TODO: This should better be a scene (overlay).
 @autoInjectable()
 export class InventoryUi {
     private readonly CAPSULE_WIDTH = 40;

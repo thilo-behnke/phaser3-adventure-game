@@ -56,6 +56,7 @@ export class FleeingState implements MonsterState {
             fleeingFromPosTileInsideScreen
         );
         // When running into a colliding tile, try to find a free way.
+        // TODO: This seems to create an endless loop under certain conditions.
         while (fleeingFromPosTile.value.collides()) {
             fleeingFromPos = monster.sprite
                 .getCenter()
