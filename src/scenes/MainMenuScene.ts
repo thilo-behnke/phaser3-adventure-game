@@ -2,11 +2,15 @@ import { generateConfig, SceneName, SCREEN_HEIGHT, SCREEN_WIDTH } from '../share
 import ExplorationScene from './ExplorationScene';
 import { OverlayMenuScene } from './OverlayMenuScene';
 import { HUDScene } from './HUDScene';
+import { KeyManager } from '../input/keyManager';
+import { container } from 'tsyringe';
 
 export class MainMenuScene extends Phaser.Scene {
     preload() {}
 
     create() {
+        container.register<KeyManager>(KeyManager, { useValue: new KeyManager() });
+
         this.add
             .text(100, 100, 'Start Game')
             .setInteractive()

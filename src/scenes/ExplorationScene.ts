@@ -23,8 +23,9 @@ import Tile = Phaser.Tilemaps.Tile;
 import { CollisionDetectionManager } from '../collision/CollisionDetectionManager';
 import { EventRegistry } from '../event/EventRegistry';
 import { SceneName } from '../shared/constants';
+import { GameScene } from './GameScene';
 
-export default class ExplorationScene extends Phaser.Scene {
+export default class ExplorationScene extends Phaser.Scene implements GameScene {
     private uiService: UIService;
     private collisionDetectionManager: CollisionDetectionManager;
     private player: Player;
@@ -81,7 +82,6 @@ export default class ExplorationScene extends Phaser.Scene {
         container.register<CollisionDetectionManager>(CollisionDetectionManager, {
             useValue: new CollisionDetectionManager(),
         });
-        container.register<KeyManager>(KeyManager, { useValue: new KeyManager() });
         container.register<MonsterSpawner>(MonsterSpawner, { useValue: new MonsterSpawner() });
         container.register<ItemSpawner>(ItemSpawner, { useValue: new ItemSpawner() });
         container.register<Inventory>(Inventory, { useValue: new Inventory() });
@@ -115,6 +115,7 @@ export default class ExplorationScene extends Phaser.Scene {
             return tileCollider(this.player, tile);
         });
 
+        this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         const camera = this.cameras.main;
         camera.startFollow(this.player.sprite);
         // TODO: Player can't move past the screen width / height defined in the game config.
@@ -152,6 +153,8 @@ export default class ExplorationScene extends Phaser.Scene {
         });
         this.uiService.update();
     }
+
+    onShutdown() {}
 
     private launchMenu() {
         this.scene.pause(SceneName.EXPLORATION, { test: 'hallo' });

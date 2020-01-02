@@ -5,19 +5,21 @@ import { takeRight } from 'lodash';
 import { SCREEN_HEIGHT } from '../shared/constants';
 import Text = Phaser.GameObjects.Text;
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
-import { interval, timer } from 'rxjs';
+import { interval, Subscription, timer } from 'rxjs';
 import Vector2 = Phaser.Math.Vector2;
 
 export class HUDScene extends Phaser.Scene {
     private playerPosText: Text;
     private eventText: Text;
 
+    private subscriptions: Subscription[];
+
     create() {
         const eventRegistry = container.resolve(EventRegistry);
         const gameObjectRegistry = container.resolve(GameObjectRegistry);
         // Show player pos.
         const player = gameObjectRegistry.getPlayer();
-        interval(100)
+        const playerPosSub = interval(100)
             .pipe(
                 map(() => player.sprite.getCenter()),
                 tap((pos: Vector2) => {
@@ -33,7 +35,7 @@ export class HUDScene extends Phaser.Scene {
             )
             .subscribe();
         // Show events.
-        eventRegistry
+        const eventSub = eventRegistry
             .get()
             .pipe(
                 map(events => takeRight(events, 5)),
@@ -45,5 +47,16 @@ export class HUDScene extends Phaser.Scene {
                 })
             )
             .subscribe();
+        this.subscriptions = [playerPosSub, eventSub];
+
+        this.events.on('shutdown', () => {
+            this.onShutdown();
+        });
+    }
+
+    onShutdown() {
+        if (this.subscriptions) {
+            this.subscriptions.forEach(sub => sub.unsubscribe());
+        }
     }
 }
