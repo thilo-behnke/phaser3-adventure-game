@@ -43,11 +43,12 @@ export class FleeingState implements MonsterState {
             .getCenter()
             .clone()
             .subtract(closestObj.value.sprite.getCenter());
+        // TODO: Clean up!
         let fleeingFromPos = monster.sprite
             .getCenter()
             .clone()
             .add(fromMonster);
-        const fleeingFromPosTileInsideScreen = validatePosInMap(
+        let fleeingFromPosTileInsideScreen = validatePosInMap(
             this.sceneProvider.getMapDimensions(),
             fleeingFromPos
         );
@@ -61,14 +62,20 @@ export class FleeingState implements MonsterState {
                 .clone()
                 .add(
                     fleeingFromPos
-                        .normalize()
                         .clone()
+                        .normalize()
                         .add(new Vector2(1, -1))
                         .scale(fromMonster.length())
                 );
-            fleeingFromPosTile = this.sceneProvider.getTileVectorForPos(fleeingFromPos);
+            fleeingFromPosTileInsideScreen = validatePosInMap(
+                this.sceneProvider.getMapDimensions(),
+                fleeingFromPos
+            );
+            fleeingFromPosTile = this.sceneProvider.getTileVectorForPos(
+                fleeingFromPosTileInsideScreen
+            );
         }
-        monster.moveTo(fleeingFromPos);
+        monster.moveTo(fleeingFromPosTileInsideScreen);
         return this;
     };
 }

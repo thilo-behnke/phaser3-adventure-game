@@ -22,6 +22,7 @@ import { Player } from '../actors/Player';
 import Circle = Phaser.Geom.Circle;
 import TweenBuilderConfig = Phaser.Types.Tweens.TweenBuilderConfig;
 import Tilemap = Phaser.Tilemaps.Tilemap;
+import { DynamicGameObject } from '../actors/DynamicGameObject';
 
 @injectable()
 export class SceneProvider {
@@ -44,7 +45,8 @@ export class SceneProvider {
     addToScene = (obj: BaseGameObject, pos: Point): BaseGameObject => {
         const sprite = this.scene.physics.add
             .sprite(pos.x, pos.y, obj.type)
-            .setImmovable(false)
+            .setMass(1)
+            .setImmovable(true)
             .setName(obj.id);
         obj.setSprite(sprite);
         obj.onAddToScene();
@@ -62,7 +64,8 @@ export class SceneProvider {
                 obj.sprite,
                 obj2.sprite,
                 onCollide,
-                null,
+                // No collision detection for corpses.
+                () => !(obj instanceof DynamicGameObject) || !obj.dying,
                 this.scene
             );
         } else if (type === CollisionType.OVERLAP) {

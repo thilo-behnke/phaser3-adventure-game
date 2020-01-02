@@ -19,12 +19,12 @@ export class Player extends DynamicGameObject implements CanDie {
         player.createAnimations(scene);
         player._sprite = scene.physics.add
             .sprite(initialPos.x, initialPos.y, 'player', 0)
-            .setMass(50)
+            .setMass(10000)
             .setMaxVelocity(100, 100)
             .setFriction(100, 100)
             .setDrag(50, 50)
             // TODO: Why does this fix handling collisions? Must one sprite be not immovable?
-            .setImmovable(true)
+            .setImmovable(false)
             .setName('player');
         player._sprite.setCollideWorldBounds(true);
         player.onAddToScene();
