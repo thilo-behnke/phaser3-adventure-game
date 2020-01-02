@@ -6,6 +6,7 @@ import { Direction } from '../shared/direction';
 import ExplorationScene from '../scenes/ExplorationScene';
 import { OverlayMenuScene } from '../scenes/OverlayMenuScene';
 import EventEmitter = Phaser.Events.EventEmitter;
+import { MainMenuScene } from '../scenes/MainMenuScene';
 
 export enum Action {
     LEFT = 'LEFT',
@@ -45,7 +46,7 @@ export class KeyManager {
                 [Action.INVENTORY]: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I),
                 [Action.MENU]: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC),
             };
-        } else if (scene instanceof OverlayMenuScene) {
+        } else if (scene instanceof OverlayMenuScene || scene instanceof MainMenuScene) {
             this.actions[scene.sys.settings.key] = {
                 [Action.UP]: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
                 [Action.DOWN]: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),

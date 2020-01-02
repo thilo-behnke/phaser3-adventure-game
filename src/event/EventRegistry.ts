@@ -86,9 +86,9 @@ export class EventRegistry implements Updatable, UiComponent {
     private eventToString = (e: Event) => {
         switch (e.type) {
             case EventType.ATTACK:
-                return `${e.from.id} attacked ${e.to.id}.`;
+                return `[${e.ts}] ${e.from.id} attacked ${e.to.id}.`;
             case EventType.DAMAGE_DEALT:
-                return `${e.to.id} received ${Math.abs(e.damage)} damage.`;
+                return `[${e.ts}] ${e.to.id} received ${Math.abs(e.damage)} damage.`;
         }
     };
 }
