@@ -5,28 +5,46 @@ import { UiComponent, UiInformation, UiMode, UiShape } from '../actors/UiCompone
 import Vector2 = Phaser.Math.Vector2;
 import { Color, SCREEN_HEIGHT } from '../shared/constants';
 import { sortBy, takeRight } from 'lodash';
+import { ItemObject } from '../actors/items/ItemObject';
 
 export enum EventType {
     ATTACK = 'ATTACK',
     DAMAGE_DEALT = 'DAMAGE_DEALT',
+    ITEM_PICKED_UP = 'ITEM_PICKED_UP',
+    ITEM_USED = 'ITEM_USED',
 }
 
-export type Event =
-    | {
-          type: EventType.ATTACK;
-          loop?: number;
-          ts?: number;
-          from: DynamicGameObject;
-          to: DynamicGameObject;
-      }
-    | {
-          type: EventType.DAMAGE_DEALT;
-          loop?: number;
-          ts?: number;
-          from: DynamicGameObject;
-          to: DynamicGameObject;
-          damage: number;
-      };
+type BaseEvent = {
+    type: EventType;
+    loop?: number;
+    ts?: number;
+};
+
+type AttackEvent = {
+    type: EventType.ATTACK;
+    from: DynamicGameObject;
+    to: DynamicGameObject;
+};
+type DamageEvent = {
+    type: EventType.DAMAGE_DEALT;
+    from: DynamicGameObject;
+    to: DynamicGameObject;
+    damage: number;
+};
+
+type ItemPickUpEvent = {
+    type: EventType.ITEM_PICKED_UP;
+    by: DynamicGameObject;
+    item: ItemObject;
+};
+
+type ItemUsedEvent = {
+    type: EventType.ITEM_USED;
+    by: DynamicGameObject;
+    item: ItemObject;
+};
+
+export type Event = BaseEvent & (AttackEvent | DamageEvent | ItemPickUpEvent | ItemUsedEvent);
 
 @injectable()
 export class EventRegistry implements Updatable, UiComponent {
@@ -51,7 +69,7 @@ export class EventRegistry implements Updatable, UiComponent {
         }
         return this.registry
             .filter(({ loop, type }) => loop === this.loopCount - 1 && type === EventType.ATTACK)
-            .some(({ to }) => to.id === obj.id);
+            .some((event: AttackEvent) => event.to.id === obj.id);
     };
 
     // TODO: Generalize.
@@ -63,7 +81,7 @@ export class EventRegistry implements Updatable, UiComponent {
             .filter(
                 ({ loop, type }) => loop === this.loopCount - 1 && type === EventType.DAMAGE_DEALT
             )
-            .some(({ to }) => to.id === obj.id);
+            .some((event: DamageEvent) => event.to.id === obj.id);
     };
 
     getUiInformation = () => {
@@ -86,9 +104,13 @@ export class EventRegistry implements Updatable, UiComponent {
     private eventToString = (e: Event) => {
         switch (e.type) {
             case EventType.ATTACK:
-                return `[${e.ts}] ${e.from.id} attacked ${e.to.id}.`;
+                return `[${e.ts}] ${e.from.type} attacked ${e.to.type}.`;
             case EventType.DAMAGE_DEALT:
-                return `[${e.ts}] ${e.to.id} received ${Math.abs(e.damage)} damage.`;
+                return `[${e.ts}] ${e.to.type} received ${Math.abs(e.damage)} damage.`;
+            case EventType.ITEM_PICKED_UP:
+                return `[${e.ts}] ${e.by.type} picked up item ${e.item.type}.`;
+            case EventType.ITEM_USED:
+                return `[${e.ts}] Item ${e.item.type} used by ${e.by.type}.`;
         }
     };
 }

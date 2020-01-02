@@ -1,12 +1,12 @@
-import { autoInjectable, singleton } from 'tsyringe';
+import { autoInjectable } from 'tsyringe';
 import { ItemObject } from '../actors/items/ItemObject';
-import { MonsterObject, MonsterStats } from '../actors/MonsterObject';
+import { MonsterObject } from '../actors/MonsterObject';
 import { Capsule } from '../actors/items/Capsule';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { SceneProvider } from '../scene/SceneProvider';
 import { MonsterSpawner } from '../spawner/MonsterSpawner';
 import { GameObjectRegistry } from '../registry/GameObjectRegistry';
+import { EventRegistry, EventType } from '../event/EventRegistry';
 
 type ItemStorage = { [id: string]: ItemObject };
 
@@ -23,7 +23,8 @@ export class Inventory {
 
     constructor(
         private monsterSpawner?: MonsterSpawner,
-        private gameObjectRegistry?: GameObjectRegistry
+        private gameObjectRegistry?: GameObjectRegistry,
+        private eventRegistry?: EventRegistry
     ) {}
 
     get inventoryDef(): { capsules: number } {
@@ -34,6 +35,11 @@ export class Inventory {
         this.items[item.id] = item;
         this.itemSubject.next(this.items);
         console.log('Inventory was updated: ', this.items);
+        this.eventRegistry.register({
+            type: EventType.ITEM_PICKED_UP,
+            by: this.gameObjectRegistry.getPlayer(),
+            item,
+        });
     }
 
     remove(id: string): void {
@@ -59,6 +65,11 @@ export class Inventory {
                 this.items,
                 this.monsters
             );
+            this.eventRegistry.register({
+                type: EventType.ITEM_PICKED_UP,
+                by: this.gameObjectRegistry.getPlayer(),
+                item,
+            });
         }
     }
 }

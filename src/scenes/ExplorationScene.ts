@@ -136,6 +136,8 @@ export default class ExplorationScene extends Phaser.Scene {
         this.uiService.showPlayerPos();
         this.uiService.configureUiInformation();
         this.uiService.register(this.eventRegistry);
+
+        this.events.on('resume', console.log);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

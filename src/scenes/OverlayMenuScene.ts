@@ -87,6 +87,6 @@ export class OverlayMenuScene extends Phaser.Scene {
 
     private onClose() {
         this.scene.stop(SceneName.OVERLAY_MENU);
-        this.scene.resume(SceneName.EXPLORATION);
+        this.scene.resume(SceneName.EXPLORATION, { resume: 'now' });
     }
 }
