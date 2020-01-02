@@ -118,6 +118,7 @@ export default class ExplorationScene extends Phaser.Scene {
         const monster = this.gameObjectRegistry.getObjects()[0];
         /*        this.uiService.showObjectPos(monster.id);*/
         this.uiService.configureUiInformation();
+        this.uiService.register(this.eventRegistry);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

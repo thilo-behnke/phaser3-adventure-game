@@ -137,6 +137,10 @@ export class MonsterObject extends DynamicGameObject implements CanDie, UiCompon
         return;
     };
 
+    getId() {
+        return this.id;
+    }
+
     getUiInformation = (): UiInformation[] => {
         return [
             // Health bar.

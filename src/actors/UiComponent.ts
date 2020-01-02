@@ -71,5 +71,6 @@ export type UiInformation =
       };
 
 export interface UiComponent {
+    getId: () => string;
     getUiInformation: () => UiInformation[];
 }

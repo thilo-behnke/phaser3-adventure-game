@@ -11,6 +11,7 @@ import {
     CircleUiInfo,
     RectUIInfo,
     TextUiInfo,
+    UiComponent,
     UiInformation,
     UiMode,
     UiShape,
@@ -50,6 +51,16 @@ export class UIService {
         Object.values(this.updatingElements).forEach(({ update }) => {
             update();
         });
+    }
+
+    register(uiComponent: UiComponent) {
+        const uiId = uiComponent.getId();
+        uiComponent
+            .getUiInformation()
+            .map(this.translateUiComponent)
+            .forEach((uiElement, i) => {
+                this.updatingElements[[uiId, i].join('_')] = uiElement;
+            });
     }
 
     showGrid(showTileCoordinates = false) {
