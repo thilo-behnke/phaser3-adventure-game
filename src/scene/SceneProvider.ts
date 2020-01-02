@@ -21,15 +21,18 @@ import Line = Phaser.Geom.Line;
 import { Player } from '../actors/Player';
 import Circle = Phaser.Geom.Circle;
 import TweenBuilderConfig = Phaser.Types.Tweens.TweenBuilderConfig;
+import Tilemap = Phaser.Tilemaps.Tilemap;
 
 @injectable()
 export class SceneProvider {
     private scene: Scene;
+    private map: Tilemap;
     private groundLayer: StaticTilemapLayer;
     private _collidingTilePositions: Vector2[];
 
-    initialize = (scene: Phaser.Scene, groundLayer: StaticTilemapLayer): void => {
+    initialize = (scene: Phaser.Scene, map: Tilemap, groundLayer: StaticTilemapLayer): void => {
         this.scene = scene;
+        this.map = map;
         this.groundLayer = groundLayer;
         const tiles = groundLayer.getTilesWithin();
         // Cache colliding tiles to make quick assumptions about navigating in the world.
@@ -39,10 +42,11 @@ export class SceneProvider {
     };
 
     addToScene = (obj: BaseGameObject, pos: Point): BaseGameObject => {
-        const sprite = this.scene.physics.add.sprite(pos.x, pos.y, obj.type);
-        sprite.setName(obj.id);
+        const sprite = this.scene.physics.add
+            .sprite(pos.x, pos.y, obj.type)
+            .setImmovable(false)
+            .setName(obj.id);
         obj.setSprite(sprite);
-        obj.sprite.setImmovable(true);
         obj.onAddToScene();
         return obj;
     };
@@ -53,7 +57,6 @@ export class SceneProvider {
         onCollide,
         type: CollisionType
     ): Collider => {
-        console.log(`Registering ${type} for objs: `, obj, obj2);
         if (type === CollisionType.COLLIDE) {
             return this.scene.physics.add.collider(
                 obj.sprite,
@@ -84,6 +87,10 @@ export class SceneProvider {
         return this.getTilesInDirection(pos, dir).ifPresent(
             ({ properties }) => !!properties.collides
         );
+    };
+
+    getMapDimensions = (): [number, number] => {
+        return [this.map.widthInPixels, this.map.heightInPixels];
     };
 
     private getFirstSegmentToGoal = (pos: Vector2, goal: Vector2): TileVector => {

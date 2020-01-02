@@ -2,12 +2,9 @@ import Vector2 = Phaser.Math.Vector2;
 import { SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE } from '../shared/constants';
 import { isBetween } from './general';
 
-export const validatePosInMap = (pos: Vector2) => {
+export const validatePosInMap = ([x, y]: [number, number], pos: Vector2) => {
     // Don't allow point outside of screen.
-    return new Vector2(
-        Math.max(0, Math.min(pos.x, SCREEN_WIDTH - 1)),
-        Math.max(0, Math.min(pos.y, SCREEN_HEIGHT - 1))
-    );
+    return new Vector2(Math.max(0, Math.min(pos.x, x - 1)), Math.max(0, Math.min(pos.y, y - 1)));
 };
 
 export const isDiagonalMove = (start: Vector2, end: Vector2) => {

@@ -47,7 +47,10 @@ export class FleeingState implements MonsterState {
             .getCenter()
             .clone()
             .add(fromMonster);
-        const fleeingFromPosTileInsideScreen = validatePosInMap(fleeingFromPos);
+        const fleeingFromPosTileInsideScreen = validatePosInMap(
+            this.sceneProvider.getMapDimensions(),
+            fleeingFromPos
+        );
         let fleeingFromPosTile = this.sceneProvider.getTileVectorForPos(
             fleeingFromPosTileInsideScreen
         );

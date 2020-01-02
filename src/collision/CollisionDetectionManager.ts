@@ -32,7 +32,6 @@ export class CollisionDetectionManager implements Updatable {
         ) {
             return (objA, objB) => {
                 this.tempCollisionRegistry.push([objA.name, objB.name]);
-                return (() => {})();
             };
         }
         return console.log;

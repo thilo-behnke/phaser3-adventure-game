@@ -34,7 +34,6 @@ export class Inventory {
     add(item: ItemObject): void {
         this.items[item.id] = item;
         this.itemSubject.next(this.items);
-        console.log('Inventory was updated: ', this.items);
         this.eventRegistry.register({
             type: EventType.ITEM_PICKED_UP,
             by: this.gameObjectRegistry.getPlayer(),
@@ -45,7 +44,6 @@ export class Inventory {
     remove(id: string): void {
         delete this.items[id];
         this.itemSubject.next(this.items);
-        console.log('Inventory was updated: ', this.items);
     }
 
     getItems(): Observable<ItemStorage> {
@@ -60,11 +58,6 @@ export class Inventory {
             this.monsters[monster.id] = monster;
             this.remove(item.id);
             this.monsterSpawner.addToScene(this.gameObjectRegistry.getPlayerPos(), monster);
-            console.log(
-                'Capsule was opened, monster added to inventory',
-                this.items,
-                this.monsters
-            );
             this.eventRegistry.register({
                 type: EventType.ITEM_PICKED_UP,
                 by: this.gameObjectRegistry.getPlayer(),

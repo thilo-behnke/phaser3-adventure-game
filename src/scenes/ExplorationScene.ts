@@ -94,7 +94,7 @@ export default class ExplorationScene extends Phaser.Scene implements GameScene 
 
         // TODO: Why does constructor autowiring not work here?
         this.sceneProvider = container.resolve(SceneProvider);
-        this.sceneProvider.initialize(this, groundLayer);
+        this.sceneProvider.initialize(this, map, groundLayer);
         this.eventRegistry = container.resolve(EventRegistry);
 
         this.uiService = container.resolve(UIService);
@@ -121,9 +121,6 @@ export default class ExplorationScene extends Phaser.Scene implements GameScene 
         // TODO: Player can't move past the screen width / height defined in the game config.
         camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
-        this.monsterSpawner.spawn(new ExplorationMap());
-        this.itemSpawner.spawn(new ExplorationMap());
-
         // Initialize Ui Elements
         this.inventoryUi = container.resolve(InventoryUi);
         // Initialize Controls
@@ -138,7 +135,8 @@ export default class ExplorationScene extends Phaser.Scene implements GameScene 
 
         this.scene.launch(SceneName.HUD);
 
-        this.events.on('resume', console.log);
+        this.monsterSpawner.spawn(new ExplorationMap());
+        this.itemSpawner.spawn(new ExplorationMap());
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

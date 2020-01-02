@@ -13,7 +13,6 @@ export class CaughtMonsterStateMachine extends IMonsterStateMachine {
 
     constructor(monster: MonsterObject) {
         super();
-        console.log('state machine created for monster', monster);
         const registry = container.resolve(GameObjectRegistry);
         this.currentState = new FollowingPlayerState(registry.getPlayer());
         this.currentState.enter(monster);
@@ -24,7 +23,6 @@ export class CaughtMonsterStateMachine extends IMonsterStateMachine {
         const objs = [registry.getPlayer()];
         const newState = this.currentState.update(time, monster, objs);
         if (newState !== this.currentState) {
-            console.log('Caught Monster State has changed!', newState, monster);
             monster.stopMoveTo();
             this.currentState.exit(monster);
             this.currentState = newState;

@@ -8,7 +8,6 @@ import { IdleState } from './IdleState';
 import { Subject } from 'rxjs';
 import { UIService } from '../../../util/UIService';
 import { container } from 'tsyringe';
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../shared/constants';
 import { DynamicObjectAnimation } from '../../anim/DynamicObjectAnimation';
 import Vector2 = Phaser.Math.Vector2;
 import { SceneProvider } from '../../../scene/SceneProvider';
@@ -81,7 +80,10 @@ export class WanderingState implements MonsterState {
             .clone()
             .add(new Vector2(Math.cos(radius), Math.sin(radius)).scale(distance));
         // Don't allow point outside of screen.
-        const movingToInsideScreen = validatePosInMap(movingTo);
+        const movingToInsideScreen = validatePosInMap(
+            this.sceneProvider.getMapDimensions(),
+            movingTo
+        );
         // TODO: This could create an endless loop.
         if (this.sceneProvider.isCollidingTileForPos(movingToInsideScreen)) {
             console.debug('Monster randomly selected point in colliding tile...');

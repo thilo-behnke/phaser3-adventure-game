@@ -69,11 +69,6 @@ export class GreedyPathFinding implements PathFinding {
                     return best;
                 }
             });
-            console.log(
-                `New intermediate Goal: `,
-                closestTilePos,
-                this.sceneProvider.getTileForPos(closestTilePos).value
-            );
             // TODO: Further increase attention radius? How to reset to which value?
             this.intermediateGoal = this.sceneProvider.getTileCenter(
                 this.sceneProvider.getTileForPos(closestTilePos).value

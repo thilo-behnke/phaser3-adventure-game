@@ -22,7 +22,6 @@ export class Capsule extends ItemObject {
     };
 
     handlePlayerCollision = (): void => {
-        console.log('Player picked up item: ', this);
         const inventory = container.resolve(Inventory);
         inventory.add(this);
         this.destroySprite();

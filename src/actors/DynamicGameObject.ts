@@ -97,7 +97,6 @@ export abstract class DynamicGameObject extends BaseGameObject {
             );
             return;
         }
-        console.log(this.activeAnim, this.direction);
         this._sprite.anims.play(`${this.type}-${this.activeAnim}--${this.direction}`);
     };
 
