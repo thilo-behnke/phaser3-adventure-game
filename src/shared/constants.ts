@@ -31,7 +31,7 @@ export const generateConfig = (scene: typeof Phaser.Scene) => {
         pixelArt: true,
         physics: {
             default: 'arcade',
-            arcade: { debug: true },
+            fps: 60,
         },
     };
 };
