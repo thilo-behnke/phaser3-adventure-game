@@ -47,12 +47,12 @@ export class AttackingState implements MonsterState {
             Date.now() - this.lastAttack > 2000 / (monster.baseStats.agility / 100)
         ) {
             const damageDealt = monster.attack(this.attacking);
-            this.eventRegistry.register({
+            this.eventRegistry.sendEvent({
                 type: EventType.ATTACK,
                 from: monster,
                 to: this.attacking,
             });
-            this.eventRegistry.register({
+            this.eventRegistry.sendEvent({
                 type: EventType.DAMAGE_DEALT,
                 from: monster,
                 to: this.attacking,

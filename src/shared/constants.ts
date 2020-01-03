@@ -24,7 +24,7 @@ export enum Z_INDEX {
 
 export const generateConfig = (scene: typeof Phaser.Scene) => {
     return {
-        type: Phaser.WEBGL,
+        type: Phaser.AUTO,
         width: SCREEN_WIDTH,
         height: SCREEN_HEIGHT,
         scene: scene,

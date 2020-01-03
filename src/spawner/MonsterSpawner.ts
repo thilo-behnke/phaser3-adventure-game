@@ -28,7 +28,7 @@ export class MonsterSpawner extends GameObjectSpawner {
     // TODO: Evaluate map, determine monster positions...
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     generateSpawns = (map: ExplorationMap): Array<[Point, BaseGameObject]> => {
-        return range(20)
+        return range(10)
             .map(() => {
                 const [x, y] = this.sceneProvider.getMapDimensions();
                 return [getRandomNumberBetween(0, x), getRandomNumberBetween(0, y)];

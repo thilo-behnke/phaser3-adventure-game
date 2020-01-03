@@ -34,7 +34,7 @@ export class Inventory {
     add(item: ItemObject): void {
         this.items[item.id] = item;
         this.itemSubject.next(this.items);
-        this.eventRegistry.register({
+        this.eventRegistry.sendEvent({
             type: EventType.ITEM_PICKED_UP,
             by: this.gameObjectRegistry.getPlayer(),
             item,
@@ -58,7 +58,7 @@ export class Inventory {
             this.monsters[monster.id] = monster;
             this.remove(item.id);
             this.monsterSpawner.addToScene(this.gameObjectRegistry.getPlayerPos(), monster);
-            this.eventRegistry.register({
+            this.eventRegistry.sendEvent({
                 type: EventType.ITEM_PICKED_UP,
                 by: this.gameObjectRegistry.getPlayer(),
                 item,

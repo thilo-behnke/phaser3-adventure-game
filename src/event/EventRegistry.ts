@@ -8,6 +8,8 @@ import { sortBy, takeRight } from 'lodash';
 import { ItemObject } from '../actors/items/ItemObject';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/internal/operators';
+import { Subject } from '../async/Subject';
+import { Observer } from '../async/Observer';
 
 export enum EventType {
     ATTACK = 'ATTACK',
@@ -46,29 +48,21 @@ type ItemUsedEvent = {
     item: ItemObject;
 };
 
-export type Event = BaseEvent & (AttackEvent | DamageEvent | ItemPickUpEvent | ItemUsedEvent);
+export type GameEvent = BaseEvent & (AttackEvent | DamageEvent | ItemPickUpEvent | ItemUsedEvent);
 
 @injectable()
-export class EventRegistry implements Updatable, UiComponent {
+export class EventRegistry extends Subject<GameEvent[]> implements Updatable {
     private loopCount = 0;
-    private registry: Array<Event> = [];
+    private registry: Array<GameEvent> = [];
     private subject = new BehaviorSubject(this.registry);
 
     update = (time: number, delta: number) => {
         this.loopCount++;
     };
 
-    getId() {
-        return 'EventRegistry';
-    }
-
-    get() {
-        return this.subject.asObservable().pipe(map(events => events.map(this.eventToString)));
-    }
-
-    register = (event: Event) => {
+    sendEvent = (event: GameEvent) => {
         this.registry.push({ ...event, loop: this.loopCount, ts: Date.now() });
-        this.subject.next(this.registry);
+        this.notifyObservers(this.registry);
     };
 
     wasAttackedLastLoop = (obj: DynamicGameObject) => {
@@ -90,49 +84,5 @@ export class EventRegistry implements Updatable, UiComponent {
                 ({ loop, type }) => loop === this.loopCount - 1 && type === EventType.DAMAGE_DEALT
             )
             .some((event: DamageEvent) => event.to.id === obj.id);
-    };
-
-    getUiInformation = () => {
-        const pos = new Vector2(10, SCREEN_HEIGHT - 100);
-        return [
-            /*            {
-                type: UiShape.TEXT,
-                info: {
-                    pos: () => pos,
-                    text: () => {
-                        const lastFiveEvents = takeRight(this.registry, 5).map(this.eventToString);
-                        return lastFiveEvents.join('\n');
-                    },
-                },
-                mode: UiMode.ALL,
-            },*/
-        ] as UiInformation[];
-    };
-
-    private eventToString = (e: Event) => {
-        const date = new Date(e.ts);
-        const formattedDate = `${date
-            .getHours()
-            .toString()
-            .padStart(2, '0')}:${date
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')}:${date
-            .getSeconds()
-            .toString()
-            .padStart(2, '0')}:${date
-            .getMilliseconds()
-            .toString()
-            .padStart(3, '0')}`;
-        switch (e.type) {
-            case EventType.ATTACK:
-                return `[${formattedDate}] ${e.from.type} attacked ${e.to.type}.`;
-            case EventType.DAMAGE_DEALT:
-                return `[${formattedDate}] ${e.to.type} received ${Math.abs(e.damage)} damage.`;
-            case EventType.ITEM_PICKED_UP:
-                return `[${formattedDate}] ${e.by.type} picked up item ${e.item.type}.`;
-            case EventType.ITEM_USED:
-                return `[${formattedDate}] Item ${e.item.type} used by ${e.by.type}.`;
-        }
     };
 }

@@ -1,5 +1,5 @@
 import { container } from 'tsyringe';
-import { EventRegistry } from '../event/EventRegistry';
+import { GameEvent, EventRegistry } from '../event/EventRegistry';
 import { map, tap } from 'rxjs/internal/operators';
 import { takeRight, range } from 'lodash';
 import { Color, SCREEN_HEIGHT, TILE_SIZE } from '../shared/constants';
@@ -9,19 +9,26 @@ import { interval, Subscription, timer } from 'rxjs';
 import Vector2 = Phaser.Math.Vector2;
 import { SceneProvider } from '../scene/SceneProvider';
 import Shape = Phaser.GameObjects.Shape;
+import { EventObserver } from '../async/EventObserver';
+import { eventToString } from '../util/event';
+import { PositionObserver } from '../async/PositionObserver';
 
 export class HUDScene extends Phaser.Scene {
     private playerPosText: Text;
     private eventText: Text;
     private grid: Shape[];
 
-    private subscriptions: Subscription[];
+    private eventObserver: EventObserver;
+    private playerPosObserver: PositionObserver;
 
     create() {
         const sceneProvider = container.resolve(SceneProvider);
-        const eventRegistry = container.resolve(EventRegistry);
         const gameObjectRegistry = container.resolve(GameObjectRegistry);
-        // Show player pos.
+        this.eventObserver = container.resolve(EventObserver).onReceive(this.updateEvents);
+        this.playerPosObserver = new PositionObserver(
+            gameObjectRegistry.getPlayer().sprite
+        ).onReceive(this.updatePlayerPos);
+        /*        // Show player pos.
         const player = gameObjectRegistry.getPlayer();
         const playerPosSub = interval(100)
             .pipe(
@@ -37,9 +44,10 @@ export class HUDScene extends Phaser.Scene {
                     );
                 })
             )
-            .subscribe();
+            .subscribe();*/
+
         // Show events.
-        const eventSub = eventRegistry
+        /*        const eventSub = eventRegistry
             .get()
             .pipe(
                 map(events => takeRight(events, 5)),
@@ -50,8 +58,8 @@ export class HUDScene extends Phaser.Scene {
                     this.eventText = this.add.text(10, SCREEN_HEIGHT - 100, events.join('\n'));
                 })
             )
-            .subscribe();
-        this.subscriptions = [playerPosSub, eventSub];
+            .subscribe();*/
+        /*        this.subscriptions = [playerPosSub];*/
         // Grid.
         const [mapX, mapY] = sceneProvider.getMapDimensions();
         const gridLen = TILE_SIZE,
@@ -94,9 +102,30 @@ export class HUDScene extends Phaser.Scene {
         });
     }
 
-    onShutdown() {
-        if (this.subscriptions) {
-            this.subscriptions.forEach(sub => sub.unsubscribe());
+    private updateEvents = (events: GameEvent[]) => {
+        const eventString = events
+            .slice(-5)
+            .map(event => eventToString(event))
+            .join('\n');
+        if (this.eventText) {
+            this.eventText.destroy();
         }
+        this.eventText = this.add.text(10, SCREEN_HEIGHT - 100, eventString);
+    };
+
+    private updatePlayerPos = (pos: Vector2) => {
+        if (this.playerPosText) {
+            this.playerPosText.destroy();
+        }
+        this.playerPosText = this.add.text(
+            5,
+            5,
+            `Player - x: ${pos.x.toFixed(2)}, y: ${pos.y.toFixed(2)}`
+        );
+    };
+
+    onShutdown() {
+        this.eventObserver.shutdown();
+        this.playerPosObserver.shutdown();
     }
 }

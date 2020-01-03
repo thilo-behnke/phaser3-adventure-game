@@ -128,11 +128,8 @@ export default class ExplorationScene extends Phaser.Scene implements GameScene 
         this.keyManager.assignAction(this, Action.MENU, () => {
             this.launchMenu();
         });
-        // Debugging.
-        /*        this.uiService.showGrid();*/
-        this.uiService.configureUiInformation();
-        this.uiService.register(this.eventRegistry);
 
+        this.uiService.configureUiInformation();
         this.scene.launch(SceneName.HUD);
 
         this.monsterSpawner.spawn(new ExplorationMap());
