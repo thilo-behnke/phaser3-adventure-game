@@ -21,7 +21,7 @@ export class WalkingState implements PlayerState {
             obj.accelerate(actions.directions);
             return this;
         } else {
-            this.enter(obj);
+            this.exit(obj);
             return new IdleState();
         }
     };
