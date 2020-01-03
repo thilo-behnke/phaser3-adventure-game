@@ -23,6 +23,8 @@ import Circle = Phaser.Geom.Circle;
 import TweenBuilderConfig = Phaser.Types.Tweens.TweenBuilderConfig;
 import Tilemap = Phaser.Tilemaps.Tilemap;
 import { DynamicGameObject } from '../actors/DynamicGameObject';
+import Animation = Phaser.Types.Animations.Animation;
+import GenerateFrameNames = Phaser.Types.Animations.GenerateFrameNames;
 
 @injectable()
 export class SceneProvider {
@@ -284,5 +286,13 @@ export class SceneProvider {
 
     addTween = (config: TweenBuilderConfig) => {
         return this.scene.add.tween(config);
+    };
+
+    createAnim = (config: Animation) => {
+        return this.scene.anims.create(config);
+    };
+
+    generateFrameNames = (key: string, config: GenerateFrameNames) => {
+        return this.scene.anims.generateFrameNames(key, config);
     };
 }

@@ -18,7 +18,7 @@ import { EventRegistry } from '../event/EventRegistry';
 
 export enum MonsterType {
     WOLF = 'WOLF',
-    SHEEP = 'SHEEP',
+    BLOB = 'BLOB',
 }
 
 export const NUMBER_OF_MONSTERS = Object.keys(MonsterType).length;

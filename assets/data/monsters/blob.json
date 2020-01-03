@@ -1,5 +1,5 @@
 {
-  "type": "SHEEP",
+  "type": "BLOB",
   "baseStats": {
     "health": 300,
     "strength": 50,

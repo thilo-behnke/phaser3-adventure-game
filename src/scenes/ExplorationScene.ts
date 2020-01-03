@@ -6,6 +6,7 @@ import * as playerFront from '../../assets/graphics/hero/hero-male-front-walk.pn
 import * as playerLeft from '../../assets/graphics/hero/hero-male-left-walk.png';
 import * as playerRight from '../../assets/graphics/hero/hero-male-right-walk.png';
 import * as wolf from '../../assets/graphics/green-knight.png';
+import * as blob from '../../assets/graphics/blue-blob.png';
 import { Player } from '../actors/Player';
 import { Action, KeyManager } from '../input/keyManager';
 import { container } from 'tsyringe';
@@ -65,6 +66,10 @@ export default class ExplorationScene extends Phaser.Scene implements GameScene 
         this.load.spritesheet('WOLF', wolf, {
             frameWidth: 20,
             frameHeight: 29,
+        });
+        this.load.spritesheet('BLOB', blob, {
+            frameWidth: 32,
+            frameHeight: 32,
         });
         this.load.image('CAPSULE', 'assets/CAPSULE.png');
         this.load.image('CAPSULE_INVENTORY', 'assets/CAPSULE_INVENTORY.png');
