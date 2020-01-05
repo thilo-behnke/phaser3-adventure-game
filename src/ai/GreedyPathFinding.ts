@@ -37,7 +37,7 @@ export class GreedyPathFinding implements PathFinding {
         return current;
     }
 
-    moveTo = (monster: MonsterObject, goal: Phaser.Math.Vector2 | Sprite) => {
+    moveTo = (monster: MonsterObject, goal: Phaser.Math.Vector2 | Sprite, reference?: Vector2) => {
         const goalPos = goal instanceof Vector2 ? goal : goal.getCenter();
         // If their are colliding goals in the way, the monster can't just go straight, but must evade the concerned tiles.
         // TODO: Inefficient! At least filter duplicates.

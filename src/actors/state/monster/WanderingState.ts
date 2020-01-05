@@ -46,7 +46,7 @@ export class WanderingState implements MonsterState {
                 if (monster.baseStats.nature === MonsterNature.AGGRESSIVE) {
                     return new FollowingState(preferredObj.value);
                 } else if (monster.baseStats.nature === MonsterNature.SHY) {
-                    return new AttackingState(preferredObj.value);
+                    return new FleeingState(preferredObj.value);
                 }
             }
         }

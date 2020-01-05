@@ -95,8 +95,8 @@ export class MonsterObject extends DynamicGameObject implements CanDie, UiCompon
         return;
     };
 
-    moveTo = (goal: Vector2 | Sprite) => {
-        this.pathFinding.moveTo(this, goal);
+    moveTo = (goal: Vector2 | Sprite, reference?: Vector2) => {
+        this.pathFinding.moveTo(this, goal, reference);
     };
 
     stopMoveTo = () => {

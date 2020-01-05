@@ -10,6 +10,7 @@ import { Subject } from 'rxjs';
 import { UIService } from '../util/UIService';
 
 export class GreedyMemorizedPathFinding implements PathFinding {
+    private reference: Vector2;
     private intermediateGoals: TileVector[] | null = null;
     private currentIntermediateGoal: number | null;
     private sceneProvider: SceneProvider;
@@ -87,14 +88,14 @@ export class GreedyMemorizedPathFinding implements PathFinding {
         );
     };
 
-    moveTo = (monster: MonsterObject, goal: Vector2 | Sprite) => {
+    moveTo = (monster: MonsterObject, goal: Vector2 | Sprite, reference?: Vector2) => {
         const goalPos = goal instanceof Vector2 ? goal : goal.getCenter();
+        reference = reference || goalPos;
         // If the goal has moved too far, stop following the intermediate goal and repeat the path checking (there might be a better path now...).
         if (
-            this.intermediateGoals &&
-            this.intermediateGoals[this.intermediateGoals.length - 1].center
-                .clone()
-                .distance(goalPos) > this.PATH_FINDING_RESET_DISTANCE
+            this.reference &&
+            reference &&
+            this.reference.clone().distance(reference) > this.PATH_FINDING_RESET_DISTANCE
         ) {
             this.reset();
         } else if (this.intermediateGoals) {
@@ -117,26 +118,28 @@ export class GreedyMemorizedPathFinding implements PathFinding {
         }
         // If their are colliding goals in the way, the monster can't just go straight, but must evade the concerned tiles.
         const tilesToGoal = this.sceneProvider.getTilesToGoal(monster.sprite, goal);
+        this.reference = reference;
+
         if (tilesToGoal.every((tileVector: TileVector) => !tileVector.collides())) {
             this.intermediateGoals = null;
             monster.accelerateTowards(goalPos);
-        } else {
-            const goalTile = this.sceneProvider.getTileVectorForPos(goalPos).value;
-            const [success, path] = this.greedyFindGoal(
-                goalTile,
-                this.sceneProvider.getTileVectorForPos(monster.sprite.getCenter()).value
-            );
-            if (!success) {
-                this.reset();
-                return;
-            }
-            this.intermediateGoals = path;
-            this.currentIntermediateGoal = 0;
-
-            monster.accelerateTowards(this.intermediateGoals[this.currentIntermediateGoal].center);
-
-            this.drawDebugInfo(monster);
+            return;
         }
+        const goalTile = this.sceneProvider.getTileVectorForPos(goalPos).value;
+        const [success, path] = this.greedyFindGoal(
+            goalTile,
+            this.sceneProvider.getTileVectorForPos(monster.sprite.getCenter()).value
+        );
+        if (!success) {
+            this.reset();
+            return;
+        }
+        this.intermediateGoals = path;
+        this.currentIntermediateGoal = 0;
+
+        monster.accelerateTowards(this.intermediateGoals[this.currentIntermediateGoal].center);
+
+        this.drawDebugInfo(monster);
     };
 
     private drawDebugInfo = (monster: MonsterObject) => {

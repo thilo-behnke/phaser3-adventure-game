@@ -39,44 +39,22 @@ export class FleeingState implements MonsterState {
             return new AttackingState(closestObj.value);
         }
         this.fleeingFrom = closestObj.value;
-        const fromMonster = monster.sprite
+        const fleeingDirection = monster.sprite
             .getCenter()
             .clone()
             .subtract(closestObj.value.sprite.getCenter());
-        // TODO: Clean up!
-        let fleeingFromPos = monster.sprite
+        const goal = monster.sprite
             .getCenter()
             .clone()
-            .add(fromMonster);
-        let fleeingFromPosTileInsideScreen = validatePosInMap(
-            this.sceneProvider.getMapDimensions(),
-            fleeingFromPos
-        );
-        let fleeingFromPosTile = this.sceneProvider.getTileVectorForPos(
-            fleeingFromPosTileInsideScreen
-        );
-        // When running into a colliding tile, try to find a free way.
-        // TODO: This seems to create an endless loop under certain conditions.
-        while (fleeingFromPosTile.value.collides()) {
-            fleeingFromPos = monster.sprite
-                .getCenter()
-                .clone()
-                .add(
-                    fleeingFromPos
-                        .clone()
-                        .normalize()
-                        .add(new Vector2(1, -1))
-                        .scale(fromMonster.length())
-                );
-            fleeingFromPosTileInsideScreen = validatePosInMap(
-                this.sceneProvider.getMapDimensions(),
-                fleeingFromPos
-            );
-            fleeingFromPosTile = this.sceneProvider.getTileVectorForPos(
-                fleeingFromPosTileInsideScreen
-            );
+            .add(fleeingDirection.scale(3));
+        const tilesToFleeingSpot = this.sceneProvider.getTilesToGoal(monster.sprite, goal);
+        if (!tilesToFleeingSpot.length) {
+            // Don't move if nowhere to go.
+            return;
         }
-        monster.moveTo(fleeingFromPosTileInsideScreen);
+        // TODO: Does not always give the farthest tile.
+        const farthestTile = tilesToFleeingSpot[tilesToFleeingSpot.length - 1];
+        monster.moveTo(farthestTile.center, this.fleeingFrom.sprite.getCenter());
         return this;
     };
 }
