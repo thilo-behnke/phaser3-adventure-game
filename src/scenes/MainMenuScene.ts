@@ -17,6 +17,7 @@ export class MainMenuScene extends Phaser.Scene {
             .setInteractive()
             .on('pointerdown', () => this.startGame());
         this.add.text(100, 150, 'Quit');
+
         this.scene.add(SceneName.EXPLORATION, ExplorationScene, false);
         this.scene.add(SceneName.OVERLAY_MENU, OverlayMenuScene, false, { transparent: true });
         this.scene.add(SceneName.HUD, HUDScene, false, { transparent: true });

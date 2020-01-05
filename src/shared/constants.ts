@@ -1,5 +1,5 @@
-export const SCREEN_WIDTH = 800;
-export const SCREEN_HEIGHT = 800;
+export const SCREEN_WIDTH = 960;
+export const SCREEN_HEIGHT = 540;
 export const TILE_SIZE = 32;
 
 export enum Color {
