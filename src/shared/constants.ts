@@ -13,6 +13,7 @@ export enum SceneName {
     MAIN_MENU = 'MAIN_MENU',
     EXPLORATION = 'EXPLORATION',
     HUD = 'HUD',
+    INVENTORY = 'INVENTORY',
     OVERLAY_MENU = 'OVERLAY_MENU',
 }
 

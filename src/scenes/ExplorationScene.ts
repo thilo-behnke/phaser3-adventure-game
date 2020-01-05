@@ -16,7 +16,7 @@ import { GameObjectRegistry } from '../registry/GameObjectRegistry';
 import { ItemSpawner } from '../spawner/ItemSpawner';
 import { ExplorationMap } from '../map/ExplorationMap';
 import { Inventory } from '../inventory/Inventory';
-import { InventoryUi } from '../inventory/InventoryUi';
+import { InventoryScene } from '../inventory/InventoryScene';
 import { UIService } from '../util/UIService';
 import Point = Phaser.Geom.Point;
 import { tileCollider } from '../util/collision';
@@ -37,9 +37,8 @@ export default class ExplorationScene extends Phaser.Scene implements GameScene 
     private monsterSpawner: MonsterSpawner;
     private itemSpawner: ItemSpawner;
 
-    // Ui elements.
-    private inventoryUi: InventoryUi;
     private eventRegistry: EventRegistry;
+    private inventoryOpen: boolean;
 
     preload(): void {
         // Tileset + map.
@@ -90,7 +89,6 @@ export default class ExplorationScene extends Phaser.Scene implements GameScene 
         container.register<MonsterSpawner>(MonsterSpawner, { useValue: new MonsterSpawner() });
         container.register<ItemSpawner>(ItemSpawner, { useValue: new ItemSpawner() });
         container.register<Inventory>(Inventory, { useValue: new Inventory() });
-        container.register<InventoryUi>(InventoryUi, { useValue: new InventoryUi() });
 
         const map = this.make.tilemap({ key: 'map' });
         const tileset = map.addTilesetImage('tilesheet', 'tiles');
@@ -126,10 +124,8 @@ export default class ExplorationScene extends Phaser.Scene implements GameScene 
         // TODO: Player can't move past the screen width / height defined in the game config.
         camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
-        // Initialize Ui Elements
-        this.inventoryUi = container.resolve(InventoryUi);
         // Initialize Controls
-        this.keyManager.assignAction(this, Action.INVENTORY, () => this.inventoryUi.toggle());
+        this.keyManager.assignAction(this, Action.INVENTORY, () => this.toggleInventory());
         this.keyManager.assignAction(this, Action.MENU, () => {
             this.launchMenu();
         });
@@ -156,8 +152,17 @@ export default class ExplorationScene extends Phaser.Scene implements GameScene 
 
     onShutdown() {}
 
+    private toggleInventory() {
+        if (!this.inventoryOpen) {
+            this.scene.launch(SceneName.INVENTORY);
+        } else {
+            this.scene.stop(SceneName.INVENTORY);
+        }
+        this.inventoryOpen = !this.inventoryOpen;
+    }
+
     private launchMenu() {
-        this.scene.pause(SceneName.EXPLORATION, { test: 'hallo' });
+        this.scene.pause(SceneName.EXPLORATION);
         this.scene.launch(SceneName.OVERLAY_MENU);
     }
 }

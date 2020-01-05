@@ -1,48 +1,54 @@
-import { autoInjectable, injectable } from 'tsyringe';
+import { container } from 'tsyringe';
 import { Inventory } from './Inventory';
-import Scene = Phaser.Scene;
 import { SceneProvider } from '../scene/SceneProvider';
-import Image = Phaser.GameObjects.Image;
 import { range } from 'lodash';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../shared/constants';
+import { GameScene } from '../scenes/GameScene';
+import Image = Phaser.GameObjects.Image;
+import { tap } from 'rxjs/internal/operators';
 
-// TODO: This should better be a scene (overlay).
-@autoInjectable()
-export class InventoryUi {
-    private readonly CAPSULE_WIDTH = 40;
-    private readonly CAPSULE_HEIGHT = 88;
-    private readonly CAPSULE_PADDING_HOR = 10;
-    private readonly CAPSULE_PADDING_VER = 10;
-    private readonly INVENTORY_START_POS_VER;
-    private readonly INVENTORY_START_POS_HOR;
+export class InventoryScene extends Phaser.Scene implements GameScene {
+    private CAPSULE_WIDTH = 40;
+    private CAPSULE_HEIGHT = 88;
+    private CAPSULE_PADDING_HOR = 10;
+    private CAPSULE_PADDING_VER = 10;
+    private INVENTORY_START_POS_VER;
+    private INVENTORY_START_POS_HOR;
 
     private renderedInventory = [];
     private inventoryItems = {};
 
-    private show = false;
+    private inventory: Inventory;
+    private sceneProvider: SceneProvider;
 
-    constructor(private inventory?: Inventory, private sceneProvider?: SceneProvider) {
+    private subscriptions = [];
+
+    create() {
+        this.inventory = container.resolve(Inventory);
+        this.sceneProvider = container.resolve(SceneProvider);
+        /*        this.events.on('resume', this.onResume);*/
+
         this.INVENTORY_START_POS_HOR =
             SCREEN_WIDTH -
             this.inventory.inventoryDef.capsules * (this.CAPSULE_WIDTH + this.CAPSULE_PADDING_HOR);
         this.INVENTORY_START_POS_VER =
             SCREEN_HEIGHT - this.CAPSULE_HEIGHT + this.CAPSULE_PADDING_VER;
-        // Render inventory.
-        this.inventory.getItems().subscribe(items => {
-            this.inventoryItems = items;
-            if (this.show) {
-                this.renderInventory();
-            }
-        });
+
+        const inventoryItemSubscription = this.inventory
+            .getItems()
+            .pipe(
+                tap(items => {
+                    this.inventoryItems = items;
+                    this.renderInventory();
+                })
+            )
+            .subscribe();
+
+        this.subscriptions.push(inventoryItemSubscription);
     }
 
-    toggle = (): void => {
-        if (this.show) {
-            this.destroyInventory();
-        } else {
-            this.renderInventory();
-        }
-        this.show = !this.show;
+    onShutdown = () => {
+        this.subscriptions.forEach(sub => sub.unsubscribe());
     };
 
     private renderInventory = (): void => {
@@ -74,7 +80,7 @@ export class InventoryUi {
     };
 
     private createCapsuleImg = (x: number, y: number, active = false): Image => {
-        const image = this.sceneProvider.addImage(
+        const image = this.add.image(
             x,
             y,
             active ? 'CAPSULE_INVENTORY' : 'CAPSULE_INVENTORY_INACTIVE'
