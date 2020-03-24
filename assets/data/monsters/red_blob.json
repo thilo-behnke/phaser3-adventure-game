@@ -1,5 +1,5 @@
 {
-  "type": "WOLF",
+  "type": "RED_BLOB",
   "baseStats": {
     "health": 1000,
     "strength": 100,

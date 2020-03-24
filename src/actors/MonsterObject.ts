@@ -17,8 +17,8 @@ import { container } from 'tsyringe';
 import { EventRegistry } from '../event/EventRegistry';
 
 export enum MonsterType {
-    WOLF = 'WOLF',
-    BLOB = 'BLOB',
+    RED_BLOB = 'RED_BLOB',
+    BLUE_BLOB = 'BLUE_BLOB',
 }
 
 export const NUMBER_OF_MONSTERS = Object.keys(MonsterType).length;

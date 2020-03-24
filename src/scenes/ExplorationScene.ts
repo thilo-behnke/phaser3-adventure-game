@@ -5,8 +5,8 @@ import * as playerBack from '../../assets/graphics/hero/hero-male-back-walk.png'
 import * as playerFront from '../../assets/graphics/hero/hero-male-front-walk.png';
 import * as playerLeft from '../../assets/graphics/hero/hero-male-left-walk.png';
 import * as playerRight from '../../assets/graphics/hero/hero-male-right-walk.png';
-import * as wolf from '../../assets/graphics/green-knight.png';
-import * as blob from '../../assets/graphics/blue-blob.png';
+import * as redBlob from '../../assets/graphics/red-blob.png';
+import * as blueBlob from '../../assets/graphics/blue-blob.png';
 import { Player } from '../actors/Player';
 import { Action, KeyManager } from '../input/keyManager';
 import { container } from 'tsyringe';
@@ -62,11 +62,11 @@ export default class ExplorationScene extends Phaser.Scene implements GameScene 
             frameHeight: 32,
         });
         // TODO: Replace with proper spritesheet.
-        this.load.spritesheet('WOLF', wolf, {
-            frameWidth: 20,
-            frameHeight: 29,
+        this.load.spritesheet('RED_BLOB', redBlob, {
+            frameWidth: 32,
+            frameHeight: 32,
         });
-        this.load.spritesheet('BLOB', blob, {
+        this.load.spritesheet('BLUE_BLOB', blueBlob, {
             frameWidth: 32,
             frameHeight: 32,
         });

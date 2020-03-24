@@ -2,8 +2,8 @@ import { IGameObjectFactory } from './IGameObjectFactory';
 import { MonsterObject, MonsterStats, MonsterType } from '../actors/MonsterObject';
 import { singleton } from 'tsyringe';
 
-import * as wolfTemplate from '../../assets/data/monsters/wolf.json';
-import * as blobTemplate from '../../assets/data/monsters/blob.json';
+import * as wolfTemplate from '../../assets/data/monsters/red_blob.json';
+import * as blobTemplate from '../../assets/data/monsters/blue_blob.json';
 import { generateUUID } from '../util/random';
 import { SceneProvider } from '../scene/SceneProvider';
 import { Direction } from '../shared/direction';
@@ -45,7 +45,10 @@ export class MonsterFactory implements IGameObjectFactory<MonsterObject> {
     generateObject(rarity: number): MonsterObject {
         const seed = generateUUID();
         const monsterTemplate = this.getMonsterByRarity(rarity, seed);
-        if (!this.animsLoaded[monsterTemplate.type] && monsterTemplate.type === MonsterType.BLOB) {
+        if (
+            !this.animsLoaded[monsterTemplate.type] &&
+            monsterTemplate.type === MonsterType.BLUE_BLOB
+        ) {
             this.animDesc.forEach(([direction, config]) => {
                 return this.sceneProvider.createAnim({
                     key: `${monsterTemplate.type}-WALKING--${direction}`,
