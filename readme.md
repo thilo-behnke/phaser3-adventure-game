@@ -9,3 +9,7 @@ Uses assets from this [tutorial](https://medium.com/@michaelwesthadley/modular-g
 # Run
 
 `npm install && npm run dev`
+
+# Demo
+
+![](doc/demo.gif)
